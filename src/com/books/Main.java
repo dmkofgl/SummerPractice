@@ -14,9 +14,12 @@ public class Main {
                 new Person("Sam", "Third"),
                 new Person("Andrew", "Fourth")
         };
-        books.add(new Book("first book", date, new Publisher("Publisher1"), authors[0], authors[0], authors[1]));
-        books.add(new Book("Second book", date, new Publisher("Publisher2"), authors[1]));
-        books.add(new Book("Third book", date, new Publisher("Publisher3"), authors[2], authors[3]));
+        books.add(new Book("first book", date, new Publisher("Publisher1"),
+                           authors[0], authors[0], authors[1]));
+        books.add(new Book("Second book", date, new Publisher("Publisher2"),
+                           authors[1]));
+        books.add(new Book("Third book", date, new Publisher("Publisher3"),
+                           authors[2], authors[3]));
         System.out.println(books);
         System.out.println(books.filterByAuthorName("a"));
 

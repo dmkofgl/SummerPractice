@@ -9,7 +9,8 @@ public class Book {
     private Set<Person> authors;
     private Publisher publisher;
 
-    public Book(String name, Date publishDate, Publisher publisher, Person... authors) {
+    public Book(String name, Date publishDate, Publisher publisher,
+                Person... authors) {
         this.name = name;
         this.publishDate = publishDate;
         this.authors = new HashSet<Person>(Arrays.asList(authors)) {
