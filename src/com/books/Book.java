@@ -47,7 +47,7 @@ public class Book {
     }
 
     @Override
-    public java.lang.String toString() {
+    public String toString() {
         return name +
                 " " + publishDate +
                 ", by " + authors +
