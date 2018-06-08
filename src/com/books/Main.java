@@ -3,37 +3,23 @@ package com.books;
 import java.util.*;
 
 public class Main {
-    private static Set<Book> books;
+    private static BookStorage books;
 
     public static void main(String[] args) {
-        books = new HashSet<Book>() {
-            @Override
-            public String toString() {
-                String result = "";
-                Iterator<Book> iterator = iterator();
-                while (iterator.hasNext()) {
-                    Book book = iterator.next();
-                    result += book + "\n";
-
-                }
-                return result;
-            }
-        };
+        books = new BookStorage();
         Date date = new Date();
-
-        books.add(new Book("first book", date, new Person("Ivan", "First"), new Publisher("Publisher1")));
-        books.add(new Book("Second book", date, new Person("Andrew", "Second"), new Publisher("Publisher2")));
-        books.add(new Book("Third book", date, new Person("Sam", "Second"), new Publisher("Publisher3")));
+        Person[] authors = {
+                new Person("Ivan", "First"),
+                new Person("Andrew", "Second"),
+                new Person("Sam", "Third"),
+                new Person("Andrew", "Fourth")
+        };
+        books.add(new Book("first book", date, new Publisher("Publisher1"), authors[0], authors[0], authors[1]));
+        books.add(new Book("Second book", date, new Publisher("Publisher2"), authors[1]));
+        books.add(new Book("Third book", date, new Publisher("Publisher3"), authors[2], authors[3]));
         System.out.println(books);
+        System.out.println(books.filterByAuthorName("a"));
 
-    }
-
-    public static Set<Book> filerByAuthorName(String name) {
-        Set<Book> result = new HashSet<Book>();
-        for (Book book : books) {
-            if (book.getAuthor().getFirstName().contains(name))
-                result.add(book);
-        }
-        return result;
     }
 }
+

@@ -1,9 +1,33 @@
 package com.books;
 
-import java.util.Date;
+import java.util.*;
 
 public class Book {
+
     private String name;
+    private Date publishDate;
+    private Set<Person> authors;
+    private Publisher publisher;
+
+    public Book(String name, Date publishDate, Publisher publisher, Person... authors) {
+        this.name = name;
+        this.publishDate = publishDate;
+        this.authors = new HashSet<Person>(Arrays.asList(authors)) {
+            @Override
+            public String toString() {
+                String result = "";
+                Iterator<Person> iterator = iterator();
+                while (iterator.hasNext()) {
+                    Person author = iterator.next();
+                    result += author + ", ";
+
+                }
+                return result;
+            }
+        };
+        this.publisher = publisher;
+    }
+
 
     public String getName() {
         return name;
@@ -13,30 +37,19 @@ public class Book {
         return publishDate;
     }
 
-    public Person getAuthor() {
-        return author;
+    public Set<Person> getAuthors() {
+        return authors;
     }
 
     public Publisher getPublisher() {
         return publisher;
     }
 
-    private Date publishDate;
-    private Person author;
-    private Publisher publisher;
-
-    public Book(String name, Date publishDate, Person author, Publisher publisher) {
-        this.name = name;
-        this.publishDate = publishDate;
-        this.author = author;
-        this.publisher = publisher;
-    }
-
-    @java.lang.Override
+    @Override
     public java.lang.String toString() {
         return name +
                 " " + publishDate +
-                ", by " + author +
-                ", published by " + publisher;
+                ", by " + authors +
+                "published by " + publisher;
     }
 }
