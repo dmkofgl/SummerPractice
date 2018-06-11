@@ -44,9 +44,11 @@ public class BookServiceTest extends TestCase {
     @Test
     public void testFilterByName() {
         List<Book> testList = new ArrayList<Book>();
-        testList = new ArrayList<>();
-        testList.add(books[2]);
+        testList = new ArrayList<>(Arrays.asList(books));
+        Assert.assertEquals(testList.toString(), filter.filterByAuthorName(testList, "").toString());
 
+        testList.clear();
+        testList.add(books[2]);
         Assert.assertEquals(testList.toString(), filter.filterByAuthorName(testList, "am").toString());
         Assert.assertEquals(testList.toString(), filter.filterByAuthorName(testList, "Am").toString());
 

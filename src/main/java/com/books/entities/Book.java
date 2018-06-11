@@ -7,26 +7,14 @@ public class Book {
 
     private String name;
     private Date publishDate;
-    private Set<Person> authors;
+    private List<Person> authors;
     private Publisher publisher;
 
     public Book(String name, Date publishDate, Publisher publisher,
                 Person... authors) {
         this.name = name;
         this.publishDate = publishDate;
-        this.authors = new HashSet<Person>(Arrays.asList(authors)) {
-            @Override
-            public String toString() {
-                String result = "";
-                Iterator<Person> iterator = iterator();
-                while (iterator.hasNext()) {
-                    Person author = iterator.next();
-                    result += author + ", ";
-
-                }
-                return result;
-            }
-        };
+        this.authors = Arrays.asList(authors);
         this.publisher = publisher;
     }
 
@@ -39,7 +27,7 @@ public class Book {
         return publishDate;
     }
 
-    public Set<Person> getAuthors() {
+    public List<Person> getAuthors() {
         return authors;
     }
 
