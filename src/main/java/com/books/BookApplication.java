@@ -23,7 +23,6 @@ public class BookApplication {
         List<Book> books = new ArrayList<Book>();
         books.add(new Book("first book", date, new Publisher("Publisher1"),
                 authors[0], authors[1]));
-
         books.add(new Book("Second book", date, new Publisher("Publisher2"),
                 authors[1]));
         books.add(new Book("Third book", date, new Publisher("Publisher3"),
