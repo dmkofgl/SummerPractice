@@ -7,7 +7,7 @@ public class Main {
 
     public static void main(String[] args) {
         books = new ArrayList<Book>();
-        BookFilter filter = new BookFilter();
+        BookService filter = new BookService();
         Date date = new Date();
         Person[] authors = {
                 new Person("Ivan", "First"),
