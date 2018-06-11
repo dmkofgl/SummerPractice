@@ -15,5 +15,9 @@ public class BookService {
 
     }
 
+    public List<Book> filterByAuthorName(Book[] books, String part) {
+        return filterByAuthorName(Arrays.asList(books), part);
+    }
+
 
 }
