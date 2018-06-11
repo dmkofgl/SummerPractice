@@ -1,6 +1,7 @@
 package com.books;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Book {
 
@@ -50,7 +51,8 @@ public class Book {
     public String toString() {
         return name +
                 " " + publishDate +
-                ", by " + authors +
-                "published by " + publisher;
+                ", by " + authors.stream().map(author -> author.getFirstName() + " " + author.getLastName())
+                .collect(Collectors.joining(", ")) +
+                ", published by " + publisher.getName();
     }
 }

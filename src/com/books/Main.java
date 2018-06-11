@@ -3,10 +3,11 @@ package com.books;
 import java.util.*;
 
 public class Main {
-    private static BookStorage books;
+    private static List<Book> books;
 
     public static void main(String[] args) {
-        books = new BookStorage();
+        books = new ArrayList<Book>();
+        BookFilter filter = new BookFilter();
         Date date = new Date();
         Person[] authors = {
                 new Person("Ivan", "First"),
@@ -19,9 +20,9 @@ public class Main {
         books.add(new Book("Second book", date, new Publisher("Publisher2"),
                            authors[1]));
         books.add(new Book("Third book", date, new Publisher("Publisher3"),
-                           authors[2], authors[3]));
+                           authors[2]));
         System.out.println(books);
-        System.out.println(books.filterByAuthorName("a"));
+        System.out.println(filter.filterByAuthorName(books,"nd"));
 
     }
 }
