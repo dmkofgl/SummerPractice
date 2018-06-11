@@ -5,6 +5,7 @@ import com.books.entities.Person;
 import com.books.entities.Publisher;
 import junit.framework.TestCase;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 
 
@@ -13,12 +14,13 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public class BookServiceTest extends TestCase {
+public class BookServiceTest {
 
     private BookService filter;
     private Person[] authors;
     private Book[] books;
 
+    @Before
     public void setUp() {
         filter = new BookService();
         Date date = new Date();
@@ -31,7 +33,7 @@ public class BookServiceTest extends TestCase {
         };
         books = new Book[]{
                 new Book("first book", date, new Publisher("Publisher1"),
-                        authors[0], authors[0], authors[1]),
+                        authors[0], authors[1]),
                 new Book("Second book", date, new Publisher("Publisher2"),
                         authors[1]),
                 new Book("Third book", date, new Publisher("Publisher3"),
@@ -46,7 +48,6 @@ public class BookServiceTest extends TestCase {
         List<Book> testList = new ArrayList<Book>();
         testList = new ArrayList<>(Arrays.asList(books));
         Assert.assertEquals(testList.toString(), filter.filterByAuthorName(testList, "").toString());
-
         testList.clear();
         testList.add(books[2]);
         Assert.assertEquals(testList.toString(), filter.filterByAuthorName(testList, "am").toString());
