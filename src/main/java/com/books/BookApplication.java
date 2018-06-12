@@ -15,6 +15,8 @@ public class BookApplication {
 
     private static final Logger logger = LoggerFactory.getLogger(BookApplication.class);
 
+    static List<Book> books;
+
     public static void main(String[] args) {
         BookService filter = new BookService();
         Date date = new Date();
@@ -24,7 +26,7 @@ public class BookApplication {
                 new Person("Sam", "Third"),
                 new Person("Andrew", "Fourth")
         };
-        List<Book> books = new ArrayList<Book>();
+        books = new ArrayList<Book>();
         books.add(new Book("first book", date, new Publisher("Publisher1"),
                 authors[0], authors[1]));
         books.add(new Book("Second book", date, new Publisher("Publisher2"),
@@ -40,6 +42,10 @@ public class BookApplication {
         logger.debug("{}", books);
         logger.debug("{}", filter.filterByAuthorName(books, "an"));
 
+    }
+
+    public static List<Book> getBooks() {
+        return books;
     }
 }
 
