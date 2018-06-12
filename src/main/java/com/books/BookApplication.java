@@ -4,12 +4,16 @@ import com.books.entities.Book;
 import com.books.entities.Person;
 import com.books.entities.Publisher;
 import com.books.services.BookService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class BookApplication {
+
+    private static final Logger logger = LoggerFactory.getLogger(BookApplication.class);
 
     public static void main(String[] args) {
         BookService filter = new BookService();
@@ -30,8 +34,11 @@ public class BookApplication {
         books.add(new Book("Third book", date, new Publisher("Publisher4"),
                 authors[3]));
 
-        System.out.println(books);
-        System.out.println(filter.filterByAuthorName(books, "an"));
+        logger.info("View books");
+        logger.debug("{}", books);
+        logger.info("View filtered by author name books that contains 'an'");
+        logger.debug("{}", books);
+        logger.debug("{}", filter.filterByAuthorName(books, "an"));
 
     }
 }
