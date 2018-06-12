@@ -1,4 +1,4 @@
-package com.books;
+package com.books.entities;
 
 public class Person {
     private String firstName;
