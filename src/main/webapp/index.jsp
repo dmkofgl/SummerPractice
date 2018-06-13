@@ -1,5 +1,5 @@
 <head>
 </head>
 <body>
-<jsp:forward page="books/list" />
+<jsp:forward page="books/list"/>
 </body>

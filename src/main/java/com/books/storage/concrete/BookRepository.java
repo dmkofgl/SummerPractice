@@ -24,6 +24,9 @@ public class BookRepository implements Repository<Book> {
     }
 
     public BookRepository() {
+
+    }
+    static{
         books = new ArrayList<>();
         final Date date = new Date();
         Person[] authors = new Person[]{
@@ -34,13 +37,13 @@ public class BookRepository implements Repository<Book> {
         };
         books = new ArrayList<Book>();
         books.add(new Book(0, "first book", date, new Publisher("Publisher1"),
-                authors[0], authors[1]));
+                           authors[0], authors[1]));
         books.add(new Book(1, "Second book", date, new Publisher("Publisher2"),
-                authors[1]));
+                           authors[1]));
         books.add(new Book(2, "Third book", date, new Publisher("Publisher3"),
-                authors[2]));
+                           authors[2]));
         books.add(new Book(3, "Third book", date, new Publisher("Publisher4"),
-                authors[3]));
+                           authors[3]));
     }
 
     @Override

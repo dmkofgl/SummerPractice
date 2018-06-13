@@ -7,7 +7,7 @@
 <body>
 
       <c:forEach items="${list}" var="book">
-          <a href=/books/${book.id}?id=${book.id}>${book}</a><br>
+          <a href=/books/${book.id}>${book}</a><br>
       </c:forEach>
 </body>
 </html>
