@@ -11,6 +11,7 @@ http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
         <servlet-name>HelloServlet</servlet-name>
         <url-pattern>/Hello</url-pattern>
     </servlet-mapping>
+
     <servlet>
         <servlet-name>BooksList</servlet-name>
         <servlet-class>com.books.servlets.BookList</servlet-class>
@@ -18,6 +19,15 @@ http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
     <servlet-mapping>
         <servlet-name>BooksList</servlet-name>
         <url-pattern>/books/list</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>BookEdit</servlet-name>
+        <servlet-class>com.books.servlets.BookEditRouterServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>BookEdit</servlet-name>
+        <url-pattern>/books/*</url-pattern>
     </servlet-mapping>
 
 

@@ -5,13 +5,9 @@
 <head>
 </head>
 <body>
-  <%
-  List<Book> list = (List<Book>)request.getAttribute("list");
-  int id=0;
-        for(Book book : list){
-        out.println("<a href=books/"+id+">" + book + "</a><br>");
-          id++;
-        }
-      %>
+
+      <c:forEach items="${list}" var="book">
+          <a href=/books/${book.id}?id=${book.id}>${book}</a><br>
+      </c:forEach>
 </body>
 </html>

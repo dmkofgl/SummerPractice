@@ -3,6 +3,7 @@ package com.books.servlets;
 
 
 import com.books.services.BookService;
+import com.books.storage.concrete.BookRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +22,8 @@ public class BookList extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         BookService service = new BookService();
-        req.setAttribute("list", service.getAllBooks());
+        BookRepository repository = new BookRepository();
+        req.setAttribute("list", repository.getCollection());
         RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/jsp/BookList.jsp");
         dispatcher.forward(req, resp);
 

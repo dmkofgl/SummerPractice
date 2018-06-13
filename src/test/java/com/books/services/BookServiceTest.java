@@ -32,13 +32,13 @@ public class BookServiceTest {
                 new Person("Дмитрий", "Fourth")
         };
         books = new Book[]{
-                new Book("first book", date, new Publisher("Publisher1"),
+                new Book(0,"first book", date, new Publisher("Publisher1"),
                         authors[0], authors[1]),
-                new Book("Second book", date, new Publisher("Publisher2"),
+                new Book(1,"Second book", date, new Publisher("Publisher2"),
                         authors[1]),
-                new Book("Third book", date, new Publisher("Publisher3"),
+                new Book(2,"Third book", date, new Publisher("Publisher3"),
                         authors[2]),
-                new Book("Third book", date, new Publisher("Publisher4"),
+                new Book(3,"Third book", date, new Publisher("Publisher4"),
                         authors[4])
         };
     }
