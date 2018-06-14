@@ -3,6 +3,7 @@
 <head>
 </head>
 <body>
-Hi
+<p> Sorry, i am crashed</p>
+      <a href=/books/list>To book list</a>
 </body>
 </html>

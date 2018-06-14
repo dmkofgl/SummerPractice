@@ -1,7 +1,9 @@
 package com.books.entities;
 
-import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class Book {
@@ -26,7 +28,8 @@ public class Book {
         this.publisher = publisher;
     }
 
-    public Book() {
+    public Book(int id) {
+        this.id =id;
         this.name = "";
         this.publishDate = new Date();
         this.authors = new ArrayList<>();
@@ -44,6 +47,7 @@ public class Book {
     public Date getPublishDate() {
         return publishDate;
     }
+
 
     public List<Person> getAuthors() {
         return authors;

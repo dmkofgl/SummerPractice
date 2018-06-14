@@ -22,12 +22,30 @@ http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
     </servlet-mapping>
 
     <servlet>
-        <servlet-name>BookEdit</servlet-name>
+        <servlet-name>BookEditRouter</servlet-name>
         <servlet-class>com.books.servlets.BookEditRouterServlet</servlet-class>
     </servlet>
     <servlet-mapping>
+    <servlet-name>BookEditRouter</servlet-name>
+    <url-pattern>/books/*</url-pattern>
+</servlet-mapping>
+
+    <servlet>
+        <servlet-name>BookFilter</servlet-name>
+        <servlet-class>com.books.servlets.BookFilterServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>BookFilter</servlet-name>
+        <url-pattern>/books/search</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
         <servlet-name>BookEdit</servlet-name>
-        <url-pattern>/books/*</url-pattern>
+        <servlet-class>com.books.servlets.BookEditServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>BookEdit</servlet-name>
+        <url-pattern>/books/edit</url-pattern>
     </servlet-mapping>
 
 

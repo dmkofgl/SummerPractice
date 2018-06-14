@@ -1,6 +1,9 @@
 package com.books.entities;
 
 public class Person {
+
+
+    private int id;
     private String firstName;
     private String lastName;
 
@@ -15,6 +18,14 @@ public class Person {
 
     public String getLastName() {
         return lastName;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setFirstName(String firstName) {
