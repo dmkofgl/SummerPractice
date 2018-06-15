@@ -22,7 +22,7 @@ import java.util.Date;
 public class BookEditRouterServlet extends HttpServlet {
 
     private static final Logger logger = LoggerFactory.getLogger(BookEditRouterServlet.class);
-    BookService service = null;
+    BookService service = new BookService();
 
     @Override
     protected void doGet(HttpServletRequest req,
@@ -39,9 +39,9 @@ public class BookEditRouterServlet extends HttpServlet {
             req.setAttribute("id", bookId);
             dispatcher.forward(req, resp);
 
-        } else if (action == "new") {
+        } else if (action.equals("new")) {
             dispatcher = getServletContext().getRequestDispatcher(
-                    "BookCreateServlet");
+                    "/books/create");
             dispatcher.forward(req, resp);
         } else {
             dispatcher = getServletContext().getRequestDispatcher(
@@ -54,29 +54,21 @@ public class BookEditRouterServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest req,
                           HttpServletResponse resp) throws ServletException, IOException {
-
-        service = new BookService();
+        RequestDispatcher dispatcher;
         int bookId = Integer.valueOf(req.getParameter("bookId"));
-        String date = req.getParameter("publishDate");
-        Date bookDate = null;
-        try {
-            bookDate = new SimpleDateFormat("yyyy-MM-dd").parse(date);
-        } catch (ParseException e) {
-            bookDate = new Date();
-        }
+
         Book book = service.getBookById(bookId);
         if (book == null) {
-            book = new Book(bookId);
+            dispatcher = getServletContext().getRequestDispatcher(
+                    "/books/create");
+            dispatcher.forward(req, resp);
+        } else {
+            req.setAttribute("bookId", bookId);
+            dispatcher = getServletContext().getRequestDispatcher(
+                    "/books/edit");
+            dispatcher.forward(req, resp);
         }
-        Book editedBook = new Book(
-                bookId,
-                req.getParameter("name"),
-                bookDate,
-                book.getPublisher(),
-                book.getAuthors());
 
-        service.setBook(bookId, editedBook);
-        resp.sendRedirect("/books/list");
     }
 
     public boolean isNumber(String str) {

@@ -22,8 +22,8 @@ public class BookList extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         BookService service = new BookService();
-        BookRepository repository = new BookRepository();
-        req.setAttribute("list", repository.getCollection());
+       // BookRepository repository = new BookRepository();
+        req.setAttribute("list", service.getAllBooks());
         RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/jsp/BookList.jsp");
         dispatcher.forward(req, resp);
 

@@ -47,6 +47,14 @@ http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
         <servlet-name>BookEdit</servlet-name>
         <url-pattern>/books/edit</url-pattern>
     </servlet-mapping>
+    <servlet>
+        <servlet-name>BookCreate</servlet-name>
+        <servlet-class>com.books.servlets.BookCreateServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>BookCreate</servlet-name>
+        <url-pattern>/books/create</url-pattern>
+    </servlet-mapping>
 
 
 </web-app>

@@ -1,9 +1,8 @@
 package com.books.entities;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import com.books.services.AuthorService;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Book {
@@ -16,20 +15,20 @@ public class Book {
 
     public Book(int id, String name, Date publishDate, Publisher publisher,
                 Person... authors) {
-        this(id, name, publishDate, publisher, Arrays.asList(authors));
+        this(id, name, publishDate, publisher, new ArrayList<>(Arrays.asList(authors)));
     }
 
     public Book(int id, String name, Date publishDate, Publisher publisher,
-                List<Person> authors) {
+                Collection<Person> authors) {
         this.id = id;
         this.name = name;
         this.publishDate = publishDate;
-        this.authors = authors;
+        this.authors = new ArrayList<>(authors);
         this.publisher = publisher;
     }
 
     public Book(int id) {
-        this.id =id;
+        this.id = id;
         this.name = "";
         this.publishDate = new Date();
         this.authors = new ArrayList<>();
@@ -49,7 +48,7 @@ public class Book {
     }
 
 
-    public List<Person> getAuthors() {
+    public Collection<Person> getAuthors() {
         return authors;
     }
 
@@ -65,8 +64,8 @@ public class Book {
         this.publishDate = publishDate;
     }
 
-    public void setAuthors(List<Person> authors) {
-        this.authors = authors;
+    public void setAuthors(Collection<Person> authors) {
+        this.authors = new ArrayList<>(authors);
     }
 
     public void setPublisher(Publisher publisher) {
@@ -77,22 +76,19 @@ public class Book {
         this.id = id;
     }
 
+    public void removeAuthor(int authorId) {
+        AuthorService authorService = new AuthorService();
+        authors.remove(authorService.getAuthorById(authorId));
+    }
+
     @Override
     public int hashCode() {
         int authorHash = authors.stream().mapToInt(author -> author.toString().hashCode()).sum();
         return name.hashCode() + publishDate.hashCode() + publisher.getName().hashCode() + authorHash;
-
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        Book otherBook;
-        try {
-            otherBook = (Book) obj;
+    public boolean equals(Book otherBook) {
 
-        } catch (ClassCastException castException) {
-            return false;
-        }
         return
                 this.hashCode() == otherBook.hashCode();
                 /* name == otherBook.getName();

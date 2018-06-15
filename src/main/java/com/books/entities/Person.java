@@ -7,7 +7,8 @@ public class Person {
     private String firstName;
     private String lastName;
 
-    public Person(String firstName, String lastName) {
+    public Person(int id,String firstName, String lastName) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
     }
@@ -39,5 +40,19 @@ public class Person {
     @Override
     public String toString() {
         return firstName + " " + lastName;
+    }
+
+    @Override
+    public int hashCode() {
+        return id + firstName.hashCode()+lastName.hashCode();
+    }
+
+    public boolean equals(Person obj) {
+        return id == obj.getId();
+
+    }
+    public boolean equals(Object obj) {
+        return id == ((Person)obj).getId();
+
     }
 }
