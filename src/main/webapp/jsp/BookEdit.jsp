@@ -56,7 +56,7 @@ out.print(author);
 
 </label>
 <br>
-<input type="submit" value="confirm changes">
+<input type="submit" value="confirm changes" name="confirmChange">
 </form>
 </body>
 </html>

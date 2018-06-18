@@ -1,6 +1,7 @@
 package com.books.servlets;
 
 import com.books.services.BookService;
+import com.books.utils.NavigateServletConstants;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -17,7 +18,7 @@ public class BookFilterServlet extends HttpServlet {
         service = new BookService();
         req.setAttribute("list", service.getAllBooks());
 
-        RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/jsp/BookFilter.jsp");
+        RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(NavigateServletConstants.BOOK_FILTER_JSP_PATH);
         dispatcher.forward(req, resp);
     }
 
@@ -26,8 +27,7 @@ public class BookFilterServlet extends HttpServlet {
         service = new BookService();
         String query = req.getParameter("query");
         req.setAttribute("list", service.filterByAuthorName(query));
-        RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/jsp/BookFilter.jsp");
+        RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(NavigateServletConstants.BOOK_FILTER_JSP_PATH);
         dispatcher.forward(req, resp);
-
     }
 }

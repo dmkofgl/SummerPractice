@@ -30,7 +30,6 @@ public class BookService {
                 .anyMatch(
                         authorInfo -> authorInfo.contains(part.toLowerCase()))))
                 .collect(Collectors.toList());
-
     }
 
     public int generateId() {
@@ -63,5 +62,15 @@ public class BookService {
 
     public void setBook(int id, Book book) {
         repository.setItem(id, book);
+    }
+    public void removeAuthorBook(int bookId, int authorId) {
+        Book book = getBookById(bookId);
+        book.removeAuthor(authorId);
+    }
+    public void addAuthorBook(int bookId, int authorId) {
+        Book book = getBookById(bookId);
+        AuthorService authorService = new AuthorService();
+        Person author = authorService.getAuthorById(authorId);
+        book.getAuthors().add(author);
     }
 }

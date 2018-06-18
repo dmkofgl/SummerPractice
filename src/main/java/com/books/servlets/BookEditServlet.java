@@ -4,6 +4,8 @@ import com.books.entities.Book;
 import com.books.entities.Person;
 import com.books.services.AuthorService;
 import com.books.services.BookService;
+import com.books.utils.Constants;
+import com.books.utils.NavigateServletConstants;
 import javafx.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,67 +27,66 @@ public class BookEditServlet extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(BookEditServlet.class);
     BookService bookService = new BookService();
     AuthorService authorService = new AuthorService();
-    ;
+
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Book book = null;
         RequestDispatcher dispatcher;
-        int bookId = (Integer) req.getAttribute("id");
+        String action = req.getPathInfo().substring(1);
+        String path = "/jsp/BookEdit.jsp";
+        Integer bookId = -1;
+        if (!(action == null && action.isEmpty())) {
+            try {
+                bookId = Integer.parseInt(action);
+            } catch (NumberFormatException numberFormatException) {
+                path = NavigateServletConstants.NOT_FOND_JSP_PATH;
+            }
+        }
         try {
             book = bookService.getBookById(bookId);
         } catch (IndexOutOfBoundsException indexOut) {
             logger.info("IndexOutOfBoundsException, can't found this book id" + bookId);
-            dispatcher = getServletContext().getRequestDispatcher(
-                    "/jsp/NotFound.jsp");
+            path = NavigateServletConstants.NOT_FOND_JSP_PATH;
         }
         addAvailableAuthors(req, book.getAuthors());
-        setAttributesAndForward("/jsp/BookEdit.jsp", req, resp,
+        setAttributesAndForward(path, req, resp,
                 new Pair<String, Object>("book", book));
 
     }
-
-    private void addAvailableAuthors(HttpServletRequest request, Collection<Person> exclude) {
-        List<Person> canAuthorsAdd = authorService.getAllAuthors().stream()
-                .filter(author -> !(exclude.contains(author))).collect(Collectors.toList());
-        request.setAttribute("canAuthorsAdd", canAuthorsAdd);
-    }
-
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String removeAuthor = req.getParameter("removeAuthor");
         String addAuthor = req.getParameter("addedAuthor");
-        Integer bookId = (Integer) req.getAttribute("bookId");
-        Book book = bookService.getBookById(bookId);
+        int bookId = Integer.valueOf(req.getParameter("bookId"));
 
+        Book book = bookService.getBookById(bookId);
+        SaveBook(req, book);
         if (removeAuthor != null) {
             Integer removedAuthorId = Integer.valueOf(removeAuthor);
-            book.removeAuthor(removedAuthorId);
-            bookService.setBook(book.getId(), book);
-            addAvailableAuthors(req, book.getAuthors());
-            SaveBook(req, book);
-            setAttributesAndForward("/jsp/BookEdit.jsp", req, resp,
-                    new Pair<String, Object>("book", book));
+            bookService.removeAuthorBook(bookId, removedAuthorId);
         }
         if (addAuthor != null) {
             Integer addedAuthorId = Integer.valueOf(addAuthor);
-            book.getAuthors().add(authorService.getAuthorById(addedAuthorId));
+            bookService.addAuthorBook(bookId, addedAuthorId);
 
-            bookService.setBook(book.getId(), book);
-            addAvailableAuthors(req, book.getAuthors());
-            SaveBook(req, book);
-            setAttributesAndForward("/jsp/BookEdit.jsp", req, resp,
-                    new Pair<String, Object>("book", book));
-        } else {
-            SaveBook(req, book);
-            resp.sendRedirect("/books/list");
         }
+        if (req.getParameter("confirmChange") != null) {
+            SaveBook(req, book);
+            resp.sendRedirect(NavigateServletConstants.BOOK_LIST_SERVLET_PATH);
+            bookService.setBook(bookId, book);
+            return;
+        }
+        addAvailableAuthors(req, book.getAuthors());
+        bookService.setBook(bookId, book);
+        setAttributesAndForward(NavigateServletConstants.BOOK_EDIT_JSP_PATH, req, resp,
+                new Pair<String, Object>("book", book));
     }
 
     private void SaveBook(HttpServletRequest req, Book book) {
 
-        Integer bookId = (Integer) req.getAttribute("bookId");
+        Integer bookId = Integer.valueOf(req.getParameter("bookId"));
         book.setName(req.getParameter("name"));
         book.getPublisher().setName(req.getParameter("publisher"));
         String date = req.getParameter("publishDate");
@@ -96,7 +97,7 @@ public class BookEditServlet extends HttpServlet {
             logger.info("incorrect date in book#" + bookId);
         }
         book.setPublishDate(bookDate);
-        bookService.setBook(bookId, book);
+
     }
 
     private void setAttributesAndForward(String forwardTo, HttpServletRequest req, HttpServletResponse resp,
@@ -106,7 +107,13 @@ public class BookEditServlet extends HttpServlet {
             req.setAttribute(attribute.getKey(), attribute.getValue());
         }
         RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(
-                "/jsp/BookEdit.jsp");
+                NavigateServletConstants.BOOK_EDIT_JSP_PATH);
         dispatcher.forward(req, resp);
+    }
+
+    private void addAvailableAuthors(HttpServletRequest request, Collection<Person> exclude) {
+        List<Person> canAuthorsAdd = authorService.getAllAuthors().stream()
+                .filter(author -> !(exclude.contains(author))).collect(Collectors.toList());
+        request.setAttribute("canAuthorsAdd", canAuthorsAdd);
     }
 }

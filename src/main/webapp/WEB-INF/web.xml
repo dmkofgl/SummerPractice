@@ -14,21 +14,12 @@ http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
 
     <servlet>
         <servlet-name>BooksList</servlet-name>
-        <servlet-class>com.books.servlets.BookList</servlet-class>
+        <servlet-class>com.books.servlets.BookListServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>BooksList</servlet-name>
         <url-pattern>/books/list</url-pattern>
     </servlet-mapping>
-
-    <servlet>
-        <servlet-name>BookEditRouter</servlet-name>
-        <servlet-class>com.books.servlets.BookEditRouterServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-    <servlet-name>BookEditRouter</servlet-name>
-    <url-pattern>/books/*</url-pattern>
-</servlet-mapping>
 
     <servlet>
         <servlet-name>BookFilter</servlet-name>
@@ -45,15 +36,16 @@ http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
     </servlet>
     <servlet-mapping>
         <servlet-name>BookEdit</servlet-name>
-        <url-pattern>/books/edit</url-pattern>
+        <url-pattern>/books/*</url-pattern>
     </servlet-mapping>
+
     <servlet>
         <servlet-name>BookCreate</servlet-name>
         <servlet-class>com.books.servlets.BookCreateServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>BookCreate</servlet-name>
-        <url-pattern>/books/create</url-pattern>
+        <url-pattern>/books/new</url-pattern>
     </servlet-mapping>
 
 
