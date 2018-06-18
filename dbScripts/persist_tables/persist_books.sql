@@ -1,0 +1,10 @@
+INSERT INTO books VALUES(1, 'CodeFirst',1,'1990-12-1');
+INSERT INTO books VALUES(2, 'CodeSecond',10,'1995-12-1');
+INSERT INTO books VALUES(3, 'CodeFirst:MySql',2,'1998-2-1');
+INSERT INTO books VALUES(4, 'CodeFirst:-1',3,'2002-1-20');
+INSERT INTO books VALUES(5, 'CodeFirst:0',4,'2002-1-25');
+INSERT INTO books VALUES(6, 'CodeFirst:$',5,'2012-1-20');
+INSERT INTO books VALUES(7, 'CodeFirst:#',7,'2012-1-20');
+INSERT INTO books VALUES(8, 'How to mouth cats',9,'2015-7-15');
+INSERT INTO books VALUES(9, 'AJAX',8,'2012-1-18');
+INSERT INTO books VALUES(10, 'REST',6,'2009-1-7');

@@ -1,0 +1,10 @@
+INSERT INTO publishers VALUES(1, 'Publish');
+INSERT INTO publishers VALUES(2, 'TP');
+INSERT INTO publishers VALUES(3, 'TruePrint');
+INSERT INTO publishers VALUES(4, 'PPP');
+INSERT INTO publishers VALUES(5, 'Any');
+INSERT INTO publishers VALUES(6, 'PrintIT');
+INSERT INTO publishers VALUES(7, 'PublishTimes');
+INSERT INTO publishers VALUES(8, 'PubloBook');
+INSERT INTO publishers VALUES(9, 'dnis');
+INSERT INTO publishers VALUES(10, 'juee');
