@@ -1,0 +1,52 @@
+<web-app version="2.4" xmlns="http://java.sun.com/xml/ns/j2ee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
+http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+
+    <servlet>
+        <servlet-name>HelloServlet</servlet-name>
+        <servlet-class>com.books.servlets.HelloServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>HelloServlet</servlet-name>
+        <url-pattern>/Hello</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>BooksList</servlet-name>
+        <servlet-class>com.books.servlets.BookListServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>BooksList</servlet-name>
+        <url-pattern>/books/list</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>BookFilter</servlet-name>
+        <servlet-class>com.books.servlets.BookFilterServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>BookFilter</servlet-name>
+        <url-pattern>/books/search</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>BookEdit</servlet-name>
+        <servlet-class>com.books.servlets.BookEditServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>BookEdit</servlet-name>
+        <url-pattern>/books/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>BookCreate</servlet-name>
+        <servlet-class>com.books.servlets.BookCreateServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>BookCreate</servlet-name>
+        <url-pattern>/books/new</url-pattern>
+    </servlet-mapping>
+
+
+</web-app>

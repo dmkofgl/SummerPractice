@@ -25,20 +25,20 @@ public class BookServiceTest {
         filter = new BookService();
         Date date = new Date();
         authors = new Person[]{
-                new Person("Ivan", "First"),
-                new Person("Andrew", "Second"),
-                new Person("Sam", "Third"),
-                new Person("Andrew", "Fourth"),
-                new Person("Дмитрий", "Fourth")
+                new Person(0,"Ivan", "First"),
+                new Person(1,"Andrew", "Second"),
+                new Person(2,"Sam", "Third"),
+                new Person(3,"Andrew", "Fourth"),
+                new Person(4,"Дмитрий", "Fourth")
         };
         books = new Book[]{
-                new Book("first book", date, new Publisher("Publisher1"),
+                new Book(0,"first book", date, new Publisher("Publisher1"),
                         authors[0], authors[1]),
-                new Book("Second book", date, new Publisher("Publisher2"),
+                new Book(1,"Second book", date, new Publisher("Publisher2"),
                         authors[1]),
-                new Book("Third book", date, new Publisher("Publisher3"),
+                new Book(2,"Third book", date, new Publisher("Publisher3"),
                         authors[2]),
-                new Book("Third book", date, new Publisher("Publisher4"),
+                new Book(3,"Third book", date, new Publisher("Publisher4"),
                         authors[4])
         };
     }

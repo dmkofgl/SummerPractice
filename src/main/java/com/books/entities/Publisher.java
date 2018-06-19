@@ -6,6 +6,9 @@ public class Publisher {
     public Publisher(String name) {
         this.name = name;
     }
+    public Publisher() {
+        this.name = "";
+    }
 
     public String getName() {
         return name;
