@@ -1,11 +1,9 @@
 package com.books.services;
 
-import com.books.BookApplication;
 import com.books.entities.Book;
 import com.books.entities.Person;
-import com.books.entities.Publisher;
 import com.books.storage.abstracts.Repository;
-import com.books.storage.concrete.BookRepository;
+import com.books.storage.concrete.SQL.BookSQLRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +15,8 @@ public class BookService {
     private static Repository<Book> repository;
 
     static {
-        repository = new BookRepository();
+      //  repository = new BookRepository();
+        repository =BookSQLRepository.getInstance();
     }
 
     public List<Book> filterByAuthorName(String part) {

@@ -32,7 +32,7 @@ public class Book {
         this.name = "";
         this.publishDate = new Date();
         this.authors = new ArrayList<>();
-        this.publisher = new Publisher();
+        this.publisher = new Publisher(0,"");
     }
 
     public int getId() {

@@ -1,16 +1,14 @@
 package com.books.storage.concrete;
 
 import com.books.BookApplication;
+import com.books.entities.Book;
 import com.books.entities.Person;
 import com.books.entities.Publisher;
-import com.books.services.AuthorService;
 import com.books.storage.abstracts.Repository;
-import com.books.entities.Book;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -37,13 +35,13 @@ public class BookRepository implements Repository<Book> {
         authors.add(new Person(2, "Sam", "Third"));
         authors.add(new Person(3, "Andrew", "Fourth"));
         books = new ArrayList<Book>();
-        books.add(new Book(0, "first book", date, new Publisher("Publisher1"),
+        books.add(new Book(0, "first book", date, new Publisher(0,"Publisher1"),
                 authors.get(0), authors.get(1)));
-        books.add(new Book(1, "Second book", date, new Publisher("Publisher2"),
+        books.add(new Book(1, "Second book", date, new Publisher(1,"Publisher2"),
                 authors.get(1)));
-        books.add(new Book(2, "Third book", date, new Publisher("Publisher3"),
+        books.add(new Book(2, "Third book", date, new Publisher(2,"Publisher3"),
                 authors.get(2)));
-        books.add(new Book(3, "Third book", date, new Publisher("Publisher4"),
+        books.add(new Book(3, "Third book", date, new Publisher(3,"Publisher4"),
                 authors.get(3)));
     }
 

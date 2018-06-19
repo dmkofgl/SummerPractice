@@ -3,7 +3,10 @@ package com.books;
 import com.books.entities.Book;
 import com.books.entities.Person;
 import com.books.entities.Publisher;
+import com.books.services.AuthorService;
 import com.books.services.BookService;
+import com.books.storage.abstracts.Repository;
+import com.books.storage.concrete.SQL.BookSQLRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,13 +31,13 @@ public class BookApplication {
         authors.add(new Person(3, "Andrew", "Fourth"));
 
         books = new ArrayList<Book>();
-        books.add(new Book(0, "first book", date, new Publisher("Publisher1"),
+        books.add(new Book(0, "first book", date, new Publisher(0, "Publisher1"),
                 authors.get(0), authors.get(1)));
-        books.add(new Book(1, "Second book", date, new Publisher("Publisher2"),
+        books.add(new Book(1, "Second book", date, new Publisher(1, "Publisher2"),
                 authors.get(1)));
-        books.add(new Book(2, "Third book", date, new Publisher("Publisher3"),
+        books.add(new Book(2, "Third book", date, new Publisher(2, "Publisher3"),
                 authors.get(2)));
-        books.add(new Book(3, "Third book", date, new Publisher("Publisher4"),
+        books.add(new Book(3, "Third book", date, new Publisher(3, "Publisher4"),
                 authors.get(3)));
 
         logger.info("View books");
@@ -46,6 +49,12 @@ public class BookApplication {
         List<Person> l = new ArrayList<>(b.getAuthors());
         Person r = l.remove(1);
         System.out.println(r);
+        Repository<Book> rep = BookSQLRepository.getInstance();
+        rep.remove(new Book(2));
+        rep.add(new Book(10, "new book", new Date(), new Publisher(1,"sds"), new AuthorService().getAuthorById(3)));
+         List<Book> books = rep.getCollection();
+        for(Book book :books )
+        logger.info(book.toString());
 
     }
 

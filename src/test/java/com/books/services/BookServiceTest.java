@@ -32,13 +32,13 @@ public class BookServiceTest {
                 new Person(4,"Дмитрий", "Fourth")
         };
         books = new Book[]{
-                new Book(0,"first book", date, new Publisher("Publisher1"),
+                new Book(0,"first book", date, new Publisher(0,"Publisher1"),
                         authors[0], authors[1]),
-                new Book(1,"Second book", date, new Publisher("Publisher2"),
+                new Book(1,"Second book", date, new Publisher(1,"Publisher2"),
                         authors[1]),
-                new Book(2,"Third book", date, new Publisher("Publisher3"),
+                new Book(2,"Third book", date, new Publisher(2,"Publisher3"),
                         authors[2]),
-                new Book(3,"Third book", date, new Publisher("Publisher4"),
+                new Book(3,"Third book", date, new Publisher(3,"Publisher4"),
                         authors[4])
         };
     }
@@ -59,4 +59,5 @@ public class BookServiceTest {
         testList.add(books[3]);
         Assert.assertEquals(testList.toString(), filter.filterByAuthorName(testList, "дмит").toString());
     }
+
 }

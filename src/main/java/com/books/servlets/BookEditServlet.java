@@ -34,7 +34,7 @@ public class BookEditServlet extends HttpServlet {
         Book book = null;
         RequestDispatcher dispatcher;
         String action = req.getPathInfo().substring(1);
-        String path = "/jsp/BookEdit.jsp";
+        String path = NavigateServletConstants.BOOK_EDIT_JSP_PATH;
         Integer bookId = -1;
         if (!(action == null && action.isEmpty())) {
             try {
