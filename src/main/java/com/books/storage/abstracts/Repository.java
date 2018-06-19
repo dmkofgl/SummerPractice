@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 public interface Repository<T> {
+
     // void or boolean?
     public void add(T item);
 
@@ -11,6 +12,7 @@ public interface Repository<T> {
 
     public List<T> getCollection();
 
-    public void setItem(int id,T item);
+    public void setItem(int id, T item);
+
 
 }

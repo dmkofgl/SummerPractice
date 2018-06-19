@@ -27,15 +27,10 @@ public class BookSQLRepository {
                 System.out.println(resultSet);
             }
             //insert data
-
             query = "RUNSCRIPT FROM 'persist_books.sql'";
-
-// executing SELECT query
             statement.executeUpdate(query);
-
-
         } catch (SQLException e) {
-            logger.info("db drop down:" + e.getMessage());
+            logger.info("db query drop down:" + e.getMessage());
         } finally {
             cp.dispose();
         }
