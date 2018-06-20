@@ -55,6 +55,11 @@ public class BookRepository implements Repository<Book> {
     public void remove(Book item) {
         books.remove(item);
     }
+//TODO fix
+    @Override
+    public Book remove(int id) {
+        return null;
+    }
 
     @Override
     public List<Book> getCollection() {

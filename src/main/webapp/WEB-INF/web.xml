@@ -48,5 +48,11 @@ http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
         <url-pattern>/books/new</url-pattern>
     </servlet-mapping>
 
+    <listener>
+        <listener-class>
+            com.books.config.CustomContextListener
+        </listener-class>
+    </listener>
+
 
 </web-app>

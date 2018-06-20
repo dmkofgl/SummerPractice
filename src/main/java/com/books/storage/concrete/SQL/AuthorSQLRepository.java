@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AuthorSQLRepository implements Repository<Person> {
-    private static final String AUTHOR_TABLE_NAME = "authors";
+    private static final String AUTHOR_TABLE_NAME = "bookapp.authors";
 
     private static final Logger logger = LoggerFactory.getLogger(AuthorSQLRepository.class);
     public static final AuthorSQLRepository INSTANCE = new AuthorSQLRepository();
@@ -54,7 +54,7 @@ public class AuthorSQLRepository implements Repository<Person> {
         remove(item.getId());
     }
 
-    public void remove(int id) {
+    public Person remove(int id) {
         String query = String.format("delete from %s where id = %s", AUTHOR_TABLE_NAME, id);
         try (Connection conn = connectionPool.getConnection()) {
             Statement statement = conn.createStatement();
@@ -62,6 +62,8 @@ public class AuthorSQLRepository implements Repository<Person> {
         } catch (SQLException e) {
             logger.info("db remove query drop down:" + e.getMessage());
         }
+        // TODO fix
+        return null;
     }
 
     @Override
@@ -86,8 +88,6 @@ public class AuthorSQLRepository implements Repository<Person> {
             }
         } catch (SQLException e) {
             logger.info("db remove query drop down:" + e.getMessage());
-        } finally {
-            connectionPool.dispose();
         }
         return result;
     }

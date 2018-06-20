@@ -15,8 +15,8 @@ public class BookService {
     private static Repository<Book> repository;
 
     static {
-      //  repository = new BookRepository();
-        repository =BookSQLRepository.getInstance();
+        //  repository = new BookRepository();
+        repository = BookSQLRepository.getInstance();
     }
 
     public List<Book> filterByAuthorName(String part) {
@@ -32,7 +32,12 @@ public class BookService {
     }
 
     public int generateId() {
-        return repository.getCollection().size();
+        List<Integer> booksId = repository.getCollection().stream().map(book -> book.getId()).collect(Collectors.toList());
+        int id = 0;
+        while (booksId.contains(id)) {
+            id++;
+        }
+        return id;
     }
 
     public List<Book> filterByAuthorName(Book[] books, String part) {
@@ -59,17 +64,28 @@ public class BookService {
         repository.add(book);
     }
 
-    public void setBook(int id, Book book) {
-        repository.setItem(id, book);
+    public void setBook(Book book) {
+        repository.setItem(book.getId(), book);
     }
+
     public void removeAuthorBook(int bookId, int authorId) {
         Book book = getBookById(bookId);
         book.removeAuthor(authorId);
+        setBook(book);
     }
+
+    public void removeBook(int bookId) {
+        repository.remove(bookId);
+    }
+
     public void addAuthorBook(int bookId, int authorId) {
         Book book = getBookById(bookId);
         AuthorService authorService = new AuthorService();
         Person author = authorService.getAuthorById(authorId);
-        book.getAuthors().add(author);
+        //TODO why it doesn't add? (doesn't save in DB)
+        // book.getAuthors().add(author);
+        book.addAuthor(author);
+        setBook(book);
+
     }
 }

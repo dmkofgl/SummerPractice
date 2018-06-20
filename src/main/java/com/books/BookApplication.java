@@ -7,9 +7,11 @@ import com.books.services.AuthorService;
 import com.books.services.BookService;
 import com.books.storage.abstracts.Repository;
 import com.books.storage.concrete.SQL.BookSQLRepository;
+import com.books.utils.DatabaseCreator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -49,13 +51,6 @@ public class BookApplication {
         List<Person> l = new ArrayList<>(b.getAuthors());
         Person r = l.remove(1);
         System.out.println(r);
-        Repository<Book> rep = BookSQLRepository.getInstance();
-        rep.remove(new Book(2));
-        rep.add(new Book(10, "new book", new Date(), new Publisher(1,"sds"), new AuthorService().getAuthorById(3)));
-         List<Book> books = rep.getCollection();
-        for(Book book :books )
-        logger.info(book.toString());
-
     }
 
     public static List<Book> getBooks() {

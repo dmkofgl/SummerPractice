@@ -67,6 +67,9 @@ public class Book {
     public void setAuthors(Collection<Person> authors) {
         this.authors = new ArrayList<>(authors);
     }
+    public void addAuthor(Person author) {
+        authors.add(author);
+    }
 
     public void setPublisher(Publisher publisher) {
         this.publisher = publisher;
@@ -77,8 +80,9 @@ public class Book {
     }
 
     public void removeAuthor(int authorId) {
-        AuthorService authorService = new AuthorService();
-        authors.remove(authorService.getAuthorById(authorId));
+       // AuthorService authorService = new AuthorService();
+        Person removedAuthor = authors.stream().filter(person -> person.getId()==authorId).findFirst().get();
+        authors.remove(removedAuthor);
     }
 
     @Override

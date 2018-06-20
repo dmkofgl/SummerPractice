@@ -3,6 +3,7 @@ package com.books.services;
 import com.books.entities.Person;
 import com.books.storage.abstracts.Repository;
 import com.books.storage.concrete.AuthorRepository;
+import com.books.storage.concrete.SQL.AuthorSQLRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,10 +12,11 @@ import java.util.NoSuchElementException;
 
 public class AuthorService {
     private static final Logger logger = LoggerFactory.getLogger(AuthorService.class);
-    private Repository<Person> repository;
+    //TODO realize middle interface
+    private AuthorSQLRepository repository;
 
     public AuthorService() {
-        repository = new AuthorRepository();
+        repository = AuthorSQLRepository.getInstance();
     }
 
     public void addAuthor(Person person) {

@@ -17,6 +17,11 @@ public class PublisherRepository implements Repository<Publisher> {
     public void remove(Publisher item) {
         publishers.remove(item);
     }
+// TODO fix
+    @Override
+    public Publisher remove(int id) {
+        return null;
+    }
 
     @Override
     public List<Publisher> getCollection() {

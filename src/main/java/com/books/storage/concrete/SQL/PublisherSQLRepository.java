@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PublisherSQLRepository implements Repository<Publisher> {
-    private static final String PUBLISHER_TABLE_NAME = "publishers";
+    private static final String PUBLISHER_TABLE_NAME = "bookapp.publishers";
     private static final Logger logger = LoggerFactory.getLogger(PublisherSQLRepository.class);
     public static final PublisherSQLRepository INSTANCE = new PublisherSQLRepository();
 
@@ -51,8 +51,8 @@ public class PublisherSQLRepository implements Repository<Publisher> {
     public void remove(Publisher item) {
         remove(item.getId());
     }
-
-    public void remove(int id) {
+    //TODO fix return
+    public Publisher remove(int id) {
         String query = String.format("delete from %s where id = %s", PUBLISHER_TABLE_NAME, id);
         try (Connection conn = connectionPool.getConnection()) {
             Statement statement = conn.createStatement();
@@ -60,6 +60,7 @@ public class PublisherSQLRepository implements Repository<Publisher> {
         } catch (SQLException e) {
             logger.info("db remove query drop down:" + e.getMessage());
         }
+        return  null;
     }
 
     @Override

@@ -10,7 +10,7 @@ public interface Repository<T> {
 
     public void remove(T item);
 
-    //public T remove(int id);
+    public T remove(int id);
 
     public List<T> getCollection();
 
