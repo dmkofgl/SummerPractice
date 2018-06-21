@@ -16,6 +16,6 @@
         <li>  <a href=/books/${book.id}>${book}</a></li>
       </c:forEach>
       </ul>
-      <a href=/books/new>add new book</a>
+      <a href=/books/list>to list</a>
 </body>
 </html>

@@ -8,10 +8,7 @@ import org.h2.jdbcx.JdbcConnectionPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +30,7 @@ public class AuthorSQLRepository implements Repository<Person> {
 
     @Override
     public void add(Person item) {
-        String addAuthorQuery = String.format("insert into %s (%s,%s,%s ) values(%s,'%s', '%s')",
+        String addAuthorQuery = String.format("insert into %s (%s,%s,%s ) values(?, ?, ?)",
                 AUTHOR_TABLE_NAME,
                 AuthorTableColomnName.ID.toString(),
                 AuthorTableColomnName.FIRST_NAME.toString(),
@@ -42,8 +39,11 @@ public class AuthorSQLRepository implements Repository<Person> {
                 item.getFirstName(),
                 item.getLastName());
         try (Connection conn = connectionPool.getConnection()) {
-            Statement statement = conn.createStatement();
-            statement.executeUpdate(addAuthorQuery);
+            PreparedStatement statement = conn.prepareStatement(addAuthorQuery);
+            statement.setInt(1, item.getId());
+            statement.setString(2, item.getFirstName());
+            statement.setString(3, item.getLastName());
+            statement.execute();
         } catch (SQLException e) {
             logger.info("db add query drop down:" + e.getMessage());
         }
@@ -55,15 +55,16 @@ public class AuthorSQLRepository implements Repository<Person> {
     }
 
     public Person remove(int id) {
-        String query = String.format("delete from %s where id = %s", AUTHOR_TABLE_NAME, id);
+        Person result = getAuthorById(id);
+        String query = String.format("delete from %s where %s = ?", AUTHOR_TABLE_NAME, AuthorTableColomnName.ID);
         try (Connection conn = connectionPool.getConnection()) {
-            Statement statement = conn.createStatement();
-            statement.executeUpdate(query);
+            PreparedStatement statement = conn.prepareStatement(query);
+            statement.setInt(1, id);
+            statement.execute();
         } catch (SQLException e) {
             logger.info("db remove query drop down:" + e.getMessage());
         }
-        // TODO fix
-        return null;
+        return result;
     }
 
     @Override
@@ -92,21 +93,36 @@ public class AuthorSQLRepository implements Repository<Person> {
         return result;
     }
 
+    //return Person before modification, or void?
     @Override
     public void setItem(int id, Person item) {
-
+        String setAuthorQuery = String.format("update %s set %s = ?,%s=?,%s=? where %s =?",
+                AUTHOR_TABLE_NAME,
+                AuthorTableColomnName.ID,
+                AuthorTableColomnName.FIRST_NAME,
+                AuthorTableColomnName.LAST_NAME,
+                AuthorTableColomnName.ID);
+        try (Connection conn = connectionPool.getConnection()) {
+            PreparedStatement statement = conn.prepareStatement(setAuthorQuery);
+            statement.setInt(1, item.getId());
+            statement.setString(2, item.getFirstName());
+            statement.setString(3, item.getLastName());
+            statement.setInt(4, id);
+            statement.execute();
+        } catch (SQLException e) {
+            logger.info("db add query drop down:" + e.getMessage());
+        }
     }
 
     public Person getAuthorById(int id) {
-        String getAuthorByIdQuery = String.format("select * from %s where id = %s", AUTHOR_TABLE_NAME, id);
-
-        ResultSet resultSetAuthors;
-        String firstName;
-        String lastName;
+        String getAuthorByIdQuery = String.format("select * from %s where %s = ?", AUTHOR_TABLE_NAME, AuthorTableColomnName.ID);
+        String firstName = "";
+        String lastName = "";
         try (Connection conn = connectionPool.getConnection()) {
-            Statement statement = conn.createStatement();
-            resultSetAuthors = statement.executeQuery(getAuthorByIdQuery);
-            //wtf
+            PreparedStatement statement = conn.prepareStatement(getAuthorByIdQuery);
+            statement.setInt(1, id);
+            ResultSet resultSetAuthors = statement.executeQuery();
+
             resultSetAuthors.next();
             firstName = resultSetAuthors.getString(AuthorTableColomnName.FIRST_NAME.toString());
             lastName = resultSetAuthors.getString(AuthorTableColomnName.LAST_NAME.toString());
@@ -114,7 +130,7 @@ public class AuthorSQLRepository implements Repository<Person> {
             logger.info("db add query drop down:" + e.getMessage());
             return null;
         }
-        Person author = new Person(id,firstName,lastName);
+        Person author = new Person(id, firstName, lastName);
         return author;
 
     }

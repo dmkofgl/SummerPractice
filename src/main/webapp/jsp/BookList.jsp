@@ -5,6 +5,7 @@
 <head>
 </head>
 <body>
+ <a href=/books/search>find book by author</a>
 <ul>
       <c:forEach items="${list}" var="book">
         <li>  <a href=/books/${book.id}>${book}</a></li>

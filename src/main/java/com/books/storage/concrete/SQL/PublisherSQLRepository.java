@@ -8,10 +8,7 @@ import org.h2.jdbcx.JdbcConnectionPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,21 +24,22 @@ public class PublisherSQLRepository implements Repository<Publisher> {
     }
 
     private PublisherSQLRepository() {
-        this.connectionPool = connectionPool = JdbcConnectionPool.create(Constants.DATABASE_URL,
+        connectionPool = JdbcConnectionPool.create(Constants.DATABASE_URL,
                 Constants.DATABASE_USER_NAME, Constants.DATABASE_USER_PASSWORD);
     }
 
     @Override
     public void add(Publisher item) {
-        String addAuthorQuery = String.format("insert into %s (%s,%s ) values(%s,'%s')",
+        String addAuthorQuery = String.format("insert into %s (%s,%s ) values(?,?)",
                 PUBLISHER_TABLE_NAME,
                 PublisherTableColumnName.ID.toString(),
-                PublisherTableColumnName.NAME.toString(),
-                item.getId(),
-                item.getName());
+                PublisherTableColumnName.NAME.toString());
+
         try (Connection conn = connectionPool.getConnection()) {
-            Statement statement = conn.createStatement();
-            statement.executeUpdate(addAuthorQuery);
+            PreparedStatement statement = conn.prepareStatement(addAuthorQuery);
+            statement.setInt(1, item.getId());
+            statement.setString(2, item.getName());
+            statement.execute();
         } catch (SQLException e) {
             logger.info("db add query drop down:" + e.getMessage());
         }
@@ -54,14 +52,16 @@ public class PublisherSQLRepository implements Repository<Publisher> {
 
     //TODO fix return
     public Publisher remove(int id) {
-        String query = String.format("delete from %s where id = %s", PUBLISHER_TABLE_NAME, id);
+        Publisher result = getPublisherById(id);
+        String query = String.format("delete from %s where id = ?", PUBLISHER_TABLE_NAME);
         try (Connection conn = connectionPool.getConnection()) {
-            Statement statement = conn.createStatement();
-            statement.executeUpdate(query);
+            PreparedStatement statement = conn.prepareStatement(query);
+            statement.setInt(1, id);
+            statement.execute();
         } catch (SQLException e) {
             logger.info("db remove query drop down:" + e.getMessage());
         }
-        return null;
+        return result;
     }
 
     @Override
@@ -91,13 +91,12 @@ public class PublisherSQLRepository implements Repository<Publisher> {
     }
 
     public Publisher getPublisherById(int id) {
-        String query = String.format("select * from %s where id = %s", PUBLISHER_TABLE_NAME, id);
-        ResultSet resultSetPublisher;
-        String name;
+        String query = String.format("select * from %s where id = ?", PUBLISHER_TABLE_NAME);
+        String name = "";
         try (Connection conn = connectionPool.getConnection()) {
-            Statement statement = conn.createStatement();
-            resultSetPublisher = statement.executeQuery(query);
-            //wtf?
+            PreparedStatement statement = conn.prepareStatement(query);
+            statement.setInt(1, id);
+            ResultSet resultSetPublisher = statement.executeQuery();
             resultSetPublisher.next();
             name = resultSetPublisher.getString(PublisherTableColumnName.NAME.toString());
         } catch (SQLException e) {
@@ -110,6 +109,19 @@ public class PublisherSQLRepository implements Repository<Publisher> {
 
     @Override
     public void setItem(int id, Publisher item) {
-
+        String setPublisherQuery = String.format("update %s set %s = ?,%s=? where %s =?",
+                PUBLISHER_TABLE_NAME,
+                PublisherTableColumnName.ID,
+                PublisherTableColumnName.NAME,
+                PublisherTableColumnName.ID);
+        try (Connection conn = connectionPool.getConnection()) {
+            PreparedStatement statement = conn.prepareStatement(setPublisherQuery);
+            statement.setInt(1, item.getId());
+            statement.setString(2, item.getName());
+            statement.setInt(3, id);
+            statement.execute();
+        } catch (SQLException e) {
+            logger.info("db add query drop down:" + e.getMessage());
+        }
     }
 }

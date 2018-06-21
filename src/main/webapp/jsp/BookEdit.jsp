@@ -37,8 +37,6 @@
  <input type="button" value="add" onclick="my_f('textid')"><br>
 	<div id="textid" style="display:none">
 	<%
-	AuthorService service = new AuthorService();
-
 	List<Person> authors =  (List<Person>)request.getAttribute("canAuthorsAdd");
 	out.print("<ul>");
 	for(Person author :authors){

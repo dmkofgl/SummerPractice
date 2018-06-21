@@ -22,7 +22,7 @@ public class BookServiceTest {
 
     @Before
     public void setUp() {
-        filter = new BookService();
+        filter = BookService.getInstance();
         Date date = new Date();
         authors = new Person[]{
                 new Person(0,"Ivan", "First"),

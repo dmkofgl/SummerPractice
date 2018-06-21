@@ -25,8 +25,8 @@ import java.util.stream.Collectors;
 
 public class BookEditServlet extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(BookEditServlet.class);
-    BookService bookService = new BookService();
-    AuthorService authorService = new AuthorService();
+    BookService bookService = BookService.getInstance();
+    AuthorService authorService = AuthorService.getInstance();
     PublisherService publisherService = PublisherService.getInstance();
 
 
@@ -42,6 +42,8 @@ public class BookEditServlet extends HttpServlet {
                 bookId = Integer.parseInt(action);
             } catch (NumberFormatException numberFormatException) {
                 path = NavigateServletConstants.NOT_FOND_JSP_PATH;
+                resp.sendRedirect(path);
+                return;
             }
         }
         try {
@@ -122,7 +124,7 @@ public class BookEditServlet extends HttpServlet {
             req.setAttribute(attribute.getKey(), attribute.getValue());
         }
         RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(
-                NavigateServletConstants.BOOK_EDIT_JSP_PATH);
+                forwardTo);
         dispatcher.forward(req, resp);
     }
 

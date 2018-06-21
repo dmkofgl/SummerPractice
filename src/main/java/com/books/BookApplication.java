@@ -23,7 +23,7 @@ public class BookApplication {
     static List<Book> books;
 
     public static void main(String[] args) {
-        BookService filter = new BookService();
+        BookService filter = BookService.getInstance();
         Date date = new Date();
         List<Person> authors = new ArrayList<>();
 

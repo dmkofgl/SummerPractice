@@ -12,7 +12,8 @@ import java.util.NoSuchElementException;
 public class PublisherService {
     private static final Logger logger = LoggerFactory.getLogger(AuthorService.class);
     public static final PublisherService INSTANCE = new PublisherService();
-    Repository<Publisher> repository;
+    //TODO change it
+    private PublisherSQLRepository repository;
 
     public static PublisherService getInstance() {
         return INSTANCE;
@@ -24,9 +25,9 @@ public class PublisherService {
 
     public Publisher getPublisherById(int id) throws IndexOutOfBoundsException {
         Publisher result = null;
+        //TODO change to getById()
         try {
-            result = repository.getCollection().stream()
-                    .filter(publisher -> publisher.getId() == id).findFirst().get();
+            result =repository.getPublisherById(id);
         } catch (NoSuchElementException e) {
             logger.info(String.format("no such element with id=%s in repository", id));
         }

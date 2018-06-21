@@ -12,9 +12,10 @@ import java.util.stream.Collectors;
 
 public class BookService {
     private static final Logger logger = LoggerFactory.getLogger(BookService.class);
-    //TODO change Repository<Book>
-    private static Repository<Book> repository;
+    //TODO change to intermediate
+    private static BookSQLRepository repository;
     public static final BookService INSTANCE = new BookService();
+    private AuthorService authorService = AuthorService.getInstance();
 
     private BookService() {
         repository = BookSQLRepository.getInstance();
@@ -59,8 +60,7 @@ public class BookService {
     public Book getBookById(int id) throws IndexOutOfBoundsException {
         Book result = null;
         try {
-            result = repository.getCollection().stream()
-                    .filter(book -> book.getId() == id).findFirst().get();
+            result = repository.getBookById(id);
         } catch (NoSuchElementException e) {
             logger.info(String.format("no such element with id=%s in repository", id));
 
@@ -94,7 +94,7 @@ public class BookService {
 
     public void addAuthorBook(int bookId, int authorId) {
         Book book = getBookById(bookId);
-        AuthorService authorService = new AuthorService();
+
         Person author = authorService.getAuthorById(authorId);
         //TODO why it doesn't add? (doesn't save in DB)
         // book.getAuthors().add(author);

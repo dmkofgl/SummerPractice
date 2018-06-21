@@ -17,8 +17,8 @@ import java.io.IOException;
 
 public class BookCreateServlet extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(BookCreateServlet.class);
-    BookService service =new BookService();
-    AuthorService authorService = new AuthorService();
+    BookService service = BookService.getInstance();
+    AuthorService authorService = AuthorService.getInstance();
     PublisherService publisherService = PublisherService.getInstance();
 
     @Override
@@ -38,7 +38,7 @@ public class BookCreateServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        getServletContext().getRequestDispatcher(NavigateServletConstants.BOOK_EDIT_SERVLET_PATH).forward(req,resp);
+        getServletContext().getRequestDispatcher(NavigateServletConstants.BOOK_EDIT_SERVLET_PATH).forward(req, resp);
 
 
     }

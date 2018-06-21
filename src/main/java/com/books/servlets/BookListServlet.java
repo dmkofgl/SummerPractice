@@ -19,10 +19,10 @@ import java.io.PrintWriter;
 
 public class BookListServlet extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(BookListServlet.class);
+    private BookService service = BookService.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        BookService service = new BookService();
         req.setAttribute("list", service.getAllBooks());
         RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(NavigateServletConstants.BOOK_LIST_JSP_PATH);
         dispatcher.forward(req, resp);
