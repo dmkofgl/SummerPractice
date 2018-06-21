@@ -19,6 +19,8 @@ public class BookService {
         repository = BookSQLRepository.getInstance();
     }
 
+    PublisherService publisherService = PublisherService.getInstance();
+
     public List<Book> filterByAuthorName(String part) {
         return filterByAuthorName(getAllBooks(), part);
     }
@@ -71,6 +73,12 @@ public class BookService {
     public void removeAuthorBook(int bookId, int authorId) {
         Book book = getBookById(bookId);
         book.removeAuthor(authorId);
+        setBook(book);
+    }
+
+    public void changePublisher(int bookId, int publisherId) {
+        Book book = getBookById(bookId);
+        book.setPublisher(publisherService.getPublisherById(publisherId));
         setBook(book);
     }
 

@@ -26,7 +26,7 @@ public class PublisherSQLRepository implements Repository<Publisher> {
         return INSTANCE;
     }
 
-    public PublisherSQLRepository() {
+    private PublisherSQLRepository() {
         this.connectionPool = connectionPool = JdbcConnectionPool.create(Constants.DATABASE_URL,
                 Constants.DATABASE_USER_NAME, Constants.DATABASE_USER_PASSWORD);
     }
@@ -51,6 +51,7 @@ public class PublisherSQLRepository implements Repository<Publisher> {
     public void remove(Publisher item) {
         remove(item.getId());
     }
+
     //TODO fix return
     public Publisher remove(int id) {
         String query = String.format("delete from %s where id = %s", PUBLISHER_TABLE_NAME, id);
@@ -60,7 +61,7 @@ public class PublisherSQLRepository implements Repository<Publisher> {
         } catch (SQLException e) {
             logger.info("db remove query drop down:" + e.getMessage());
         }
-        return  null;
+        return null;
     }
 
     @Override

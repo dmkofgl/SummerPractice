@@ -51,10 +51,14 @@ out.print(author);
 	%>
 	</div>
 <br>
-<label> publisher:
-<input type="text" value="${book.publisher}" name="publisher">
-
+<label> publisher:${book.publisher}
+ <input type="button" value="change" onclick="my_f('publishers')"><br>
 </label>
+<div id="publishers" style="display:none">
+<c:forEach items="${publishers}" var="publisher">
+ ${publisher} <button type="submit" name="changePublisher" value="${publisher.id}">change</button> <br>
+</c:forEach>
+</div>
 <br>
 <input type="submit" value="confirm changes" name="confirmChange">
 </form>

@@ -32,7 +32,7 @@ public class BookSQLRepository implements Repository<Book> {
     private JdbcConnectionPool connectionPool;
     // TODO Change Repository<Person>
     private Repository<Person> authorRepository;
-    // TODO PublisherSQLRepository
+    // TODO Change PublisherSQLRepository
     private PublisherSQLRepository publisherRepository;
 
     public static BookSQLRepository getInstance() {
@@ -97,7 +97,6 @@ public class BookSQLRepository implements Repository<Book> {
             ResultSet book = createStatement.executeQuery(querySelect);
             ResultSet bookAuthors = findAuthorsStatement.executeQuery(queryBookAuthors);
             book.next();
-            /* *************** */
             result = compileBookFromSet(book, bookAuthors);
             deleteStatement.executeUpdate(deleteBookAuthorQuery);
             deleteStatement.executeUpdate(queryDeleteBook);
@@ -153,10 +152,9 @@ public class BookSQLRepository implements Repository<Book> {
         return result;
     }
 
-    //TODO realize
     @Override
     public void setItem(int id, Book item) {
-       remove(id);
-       add(item);
+        remove(id);
+        add(item);
     }
 }

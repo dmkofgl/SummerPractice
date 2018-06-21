@@ -2,8 +2,10 @@ package com.books.servlets;
 
 import com.books.entities.Book;
 import com.books.entities.Person;
+import com.books.entities.Publisher;
 import com.books.services.AuthorService;
 import com.books.services.BookService;
+import com.books.services.PublisherService;
 import com.books.utils.NavigateServletConstants;
 import javafx.util.Pair;
 import org.slf4j.Logger;
@@ -26,6 +28,7 @@ public class BookEditServlet extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(BookEditServlet.class);
     BookService bookService = new BookService();
     AuthorService authorService = new AuthorService();
+    PublisherService publisherService = PublisherService.getInstance();
 
 
     @Override
@@ -50,7 +53,8 @@ public class BookEditServlet extends HttpServlet {
         }
         addAvailableAuthors(req, book.getAuthors());
         setAttributesAndForward(path, req, resp,
-                new Pair<String, Object>("book", book));
+                new Pair<>("book", book),
+                new Pair<>("publishers", publisherService.getAllPublishers()));
 
     }
 
@@ -58,10 +62,11 @@ public class BookEditServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String removeAuthor = req.getParameter("removeAuthor");
         String addAuthor = req.getParameter("addedAuthor");
+        String changePublisher = req.getParameter("changePublisher");
 
         int bookId = Integer.valueOf(req.getParameter("bookId"));
 
-       // SaveBook(req, book);
+        // SaveBook(req, book);
         if (removeAuthor != null) {
             Integer removedAuthorId = Integer.valueOf(removeAuthor);
             bookService.removeAuthorBook(bookId, removedAuthorId);
@@ -77,13 +82,20 @@ public class BookEditServlet extends HttpServlet {
             bookService.setBook(bookService.getBookById(bookId));
             return;
         }
+        if (changePublisher != null) {
+            Integer changePublisherId = Integer.valueOf(changePublisher);
+            bookService.changePublisher(bookId,changePublisherId);
+
+        }
         SaveBook(req);
         addAvailableAuthors(req, bookService.getBookById(bookId).getAuthors());
 
         setAttributesAndForward(NavigateServletConstants.BOOK_EDIT_JSP_PATH, req, resp,
-                new Pair<String, Object>("book", bookService.getBookById(bookId)));
+                new Pair<String, Object>("book", bookService.getBookById(bookId)),
+                new Pair<>("publishers", publisherService.getAllPublishers()));
     }
-//TODO bind with service
+
+    //TODO bind with service
     private void SaveBook(HttpServletRequest req) {
 
         int bookId = Integer.valueOf(req.getParameter("bookId"));
@@ -102,7 +114,8 @@ public class BookEditServlet extends HttpServlet {
         bookService.setBook(book);
 
     }
-//TODO hip pollution ...?
+
+    //TODO hip pollution ...?
     private void setAttributesAndForward(String forwardTo, HttpServletRequest req, HttpServletResponse resp,
                                          Pair<String, Object>... attributes) throws ServletException, IOException {
 
