@@ -12,12 +12,19 @@ import java.util.NoSuchElementException;
 
 public class AuthorService {
     private static final Logger logger = LoggerFactory.getLogger(AuthorService.class);
-    //TODO realize middle interface
+    //TODO realize intermediate interface
     private AuthorSQLRepository repository;
 
-    public AuthorService() {
+    public static final AuthorService INSTANCE = new AuthorService();
+
+    private AuthorService() {
         repository = AuthorSQLRepository.getInstance();
     }
+
+    public static AuthorService getInstance() {
+        return INSTANCE;
+    }
+
 
     public void addAuthor(Person person) {
         repository.add(person);

@@ -2,7 +2,6 @@ package com.books.servlets;
 
 import com.books.entities.Book;
 import com.books.entities.Person;
-import com.books.entities.Publisher;
 import com.books.services.AuthorService;
 import com.books.services.BookService;
 import com.books.services.PublisherService;
@@ -84,7 +83,7 @@ public class BookEditServlet extends HttpServlet {
         }
         if (changePublisher != null) {
             Integer changePublisherId = Integer.valueOf(changePublisher);
-            bookService.changePublisher(bookId,changePublisherId);
+            bookService.changePublisher(bookId, changePublisherId);
 
         }
         SaveBook(req);

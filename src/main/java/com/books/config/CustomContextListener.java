@@ -17,7 +17,7 @@ public class CustomContextListener implements ServletContextListener {
             new DatabaseCreator().drop("bookapp");
             new DatabaseCreator().create();
         } catch (FileNotFoundException e) {
-            logger.info("script files not founded. Scheme doesn't create falure");
+            logger.info("script files not founded. Scheme create failure");
             new DatabaseCreator().drop("bookapp");
         }
     }

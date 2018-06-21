@@ -12,11 +12,17 @@ import java.util.stream.Collectors;
 
 public class BookService {
     private static final Logger logger = LoggerFactory.getLogger(BookService.class);
+    //TODO change Repository<Book>
     private static Repository<Book> repository;
+    public static final BookService INSTANCE = new BookService();
 
-    static {
-        //  repository = new BookRepository();
+    private BookService() {
         repository = BookSQLRepository.getInstance();
+    }
+
+
+    public static BookService getInstance() {
+        return INSTANCE;
     }
 
     PublisherService publisherService = PublisherService.getInstance();
