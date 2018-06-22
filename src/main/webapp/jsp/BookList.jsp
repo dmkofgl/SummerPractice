@@ -1,10 +1,13 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page import="java.util.List" %>
 <%@ page import="com.books.entities.*" %>
+<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <html>
 <head>
 </head>
 <body>
+<t:wrapper>
+</t:wrapper>
  <a href=/books/search>find book by author</a>
 <ul>
       <c:forEach items="${list}" var="book">

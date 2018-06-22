@@ -1,6 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page import="com.books.entities.*,java.text.*,java.util.*,com.books.services.*" %>
-
+<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <html>
 <head>
 <script>
@@ -11,11 +11,9 @@
 	</script>
 </head>
 <body>
-<center><h1>${action}</h1></center>
-
+<t:wrapper>
+</t:wrapper>
 <form method="post">
-
-
 <label> name
 <input type="text" value="${book.name}" name="name">
 </label>
