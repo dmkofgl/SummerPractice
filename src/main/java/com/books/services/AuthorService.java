@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-public class AuthorService {
+public class AuthorService implements com.books.services.abstracts.AuthorService {
     private static final Logger logger = LoggerFactory.getLogger(AuthorService.class);
     //TODO realize intermediate interface
     private AuthorSQLRepository repository;
@@ -34,18 +34,12 @@ public class AuthorService {
 
 
     public List<Person> getAllAuthors() {
-        return repository.getCollection();
+        return repository.getList();
     }
 
-    public Person getAuthorById(int id) throws IndexOutOfBoundsException {
+    public Person getAuthorById(int id) {
         Person result = null;
-        try {
-            result = repository.getCollection().stream()
-                    .filter(author -> author.getId() == id).findFirst().get();
-        } catch (NoSuchElementException e) {
-            logger.info(String.format("no such element with id=%s in repository", id));
-
-        }
+        result = repository.getAuthorById(id);
         return result;
     }
 

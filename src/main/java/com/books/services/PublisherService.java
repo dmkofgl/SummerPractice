@@ -1,7 +1,6 @@
 package com.books.services;
 
 import com.books.entities.Publisher;
-import com.books.storage.abstracts.Repository;
 import com.books.storage.concrete.SQL.PublisherSQLRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +34,6 @@ public class PublisherService {
     }
 
     public List<Publisher> getAllPublishers() {
-        return repository.getCollection();
+        return repository.getList();
     }
 }

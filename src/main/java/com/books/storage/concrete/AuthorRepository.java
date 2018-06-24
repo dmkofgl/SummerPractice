@@ -34,7 +34,7 @@ public class AuthorRepository implements Repository<Person> {
     }
 
     @Override
-    public List<Person> getCollection() {
+    public List<Person> getList() {
         return authors;
     }
 
