@@ -34,6 +34,7 @@ public class DatabaseCreator {
         CreateTables += getFile(CREATE_DIRECTORY_PATH + "Authors.sql");
         CreateTables += getFile(CREATE_DIRECTORY_PATH + "Publishers.sql");
         CreateTables += getFile(CREATE_DIRECTORY_PATH + "Book_author.sql");
+        CreateTables += getFile(CREATE_DIRECTORY_PATH + "Create_clients.sql");
 
         String alterTables = getFile(ALTER_DIRECTORY_PATH + "books.sql");
 
@@ -41,6 +42,7 @@ public class DatabaseCreator {
         persistTables += getFile(PERSIST_DIRECTORY_PATH + "persist_publishers.sql");
         persistTables += getFile(PERSIST_DIRECTORY_PATH + "persist_books.sql");
         persistTables += getFile(PERSIST_DIRECTORY_PATH + "persist_book_author.sql");
+        persistTables += getFile(PERSIST_DIRECTORY_PATH + "persist_clients.sql");
 
         try (Connection conn = DriverManager.getConnection(Constants.DATABASE_URL, Constants.DATABASE_USER_NAME,
                 Constants.DATABASE_USER_PASSWORD)) {
@@ -49,9 +51,7 @@ public class DatabaseCreator {
             //TODO rename
             Statement s = conn.createStatement();
             s.executeUpdate(CreateTables);
-
             s.executeUpdate(alterTables);
-            //Statement s2 = conn.createStatement();
             s.executeUpdate(persistTables);
 
 

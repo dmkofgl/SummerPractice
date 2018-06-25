@@ -21,9 +21,11 @@ public class BookCreateServlet extends HttpServlet {
     AuthorService authorService = AuthorService.getInstance();
     PublisherService publisherService = PublisherService.getInstance();
 
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Book book;
+
         RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(
                 NavigateServletConstants.BOOK_EDIT_JSP_PATH);
         book = new Book(service.generateId());

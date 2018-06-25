@@ -25,21 +25,31 @@ public class AuthenticationFilter implements Filter {
 
         String uri = req.getRequestURI();
         this.context.log("Requested Resource::" + uri);
+        //TODO why?
+        if(uri.endsWith("css") )
+        {
+            chain.doFilter(request, response);
+        }
 
         HttpSession session = req.getSession(false);
+        Object user = null;
+        try {
+            user = session.getAttribute("user");
+        } catch (Exception e) {
 
-        if (session == null && !(uri.endsWith("html") || uri.endsWith("LoginServlet"))) {
+        }
+
+        if (user == null && !(uri.endsWith("loginPage") || uri.endsWith("LoginServlet"))) {
             this.context.log("Unauthorized access request");
-            res.getWriter().println("Sign in please");
-          //  RequestDispatcher dispatcher = req.getServletContext().getRequestDispatcher("/index.html");
-         //  dispatcher.include(req,res);
-           res.sendRedirect("/login.html");
+            res.sendRedirect("/loginPage?error=Sign in please");
         } else {
             // pass the request along the filter chain
             chain.doFilter(request, response);
         }
+
     }
 
+    @Override
     public void destroy() {
         //close any resources here
     }

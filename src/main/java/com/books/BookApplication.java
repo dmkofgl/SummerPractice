@@ -5,6 +5,7 @@ import com.books.entities.Person;
 import com.books.entities.Publisher;
 import com.books.services.AuthorService;
 import com.books.services.BookService;
+import com.books.services.EncryptService;
 import com.books.storage.abstracts.Repository;
 import com.books.storage.concrete.SQL.BookSQLRepository;
 import com.books.utils.DatabaseCreator;
@@ -51,6 +52,9 @@ public class BookApplication {
         List<Person> l = new ArrayList<>(b.getAuthors());
         Person r = l.remove(1);
         System.out.println(r);
+        System.out.println(EncryptService.md5Encrypt("admin"));
+        System.out.println(EncryptService.md5Encrypt("hello"));
+        System.out.println(EncryptService.md5Encrypt("hi"));
     }
 
     public static List<Book> getBooks() {
