@@ -22,6 +22,18 @@ public class BookListServlet extends HttpServlet {
     private BookService service = BookService.getInstance();
 
     @Override
+    public void init() throws ServletException {
+        super.init();
+        logger.info("init book list servlet");
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        logger.info("destroy book list servlet");
+    }
+
+    @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.setAttribute("list", service.getAllBooks());
         RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(NavigateServletConstants.BOOK_LIST_JSP_PATH);

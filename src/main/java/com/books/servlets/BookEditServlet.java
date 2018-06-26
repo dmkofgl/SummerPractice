@@ -29,6 +29,17 @@ public class BookEditServlet extends HttpServlet {
     AuthorService authorService = AuthorService.getInstance();
     PublisherService publisherService = PublisherService.getInstance();
 
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        logger.info("init book edit servlet");
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        logger.info("destroy book edit servlet");
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

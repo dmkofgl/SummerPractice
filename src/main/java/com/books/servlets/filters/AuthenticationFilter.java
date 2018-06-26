@@ -13,8 +13,8 @@ public class AuthenticationFilter implements Filter {
 
     private ServletContext context;
 
-    public void init(FilterConfig fConfig) throws ServletException {
-        this.context = fConfig.getServletContext();
+    public void init(FilterConfig filterConfig) throws ServletException {
+        this.context = filterConfig.getServletContext();
         this.context.log("AuthenticationFilter initialized");
     }
 
@@ -29,29 +29,29 @@ public class AuthenticationFilter implements Filter {
         if(uri.endsWith("css") )
         {
             chain.doFilter(request, response);
+            return;
         }
 
-        HttpSession session = req.getSession(false);
+        HttpSession session = req.getSession(true);
         Object user = null;
-        try {
-            user = session.getAttribute("user");
-        } catch (Exception e) {
 
-        }
+        user = session.getAttribute("user");
+
 
         if (user == null && !(uri.endsWith("loginPage") || uri.endsWith("LoginServlet"))) {
+            session.setAttribute("message","Sign in please");
             this.context.log("Unauthorized access request");
-            res.sendRedirect("/loginPage?error=Sign in please");
+            res.sendRedirect("/loginPage");
         } else {
             // pass the request along the filter chain
             chain.doFilter(request, response);
         }
-
     }
 
     @Override
     public void destroy() {
         //close any resources here
+        this.context.log("AuthenticationFilter destroyed");
     }
 
 }

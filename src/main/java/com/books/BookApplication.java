@@ -52,9 +52,6 @@ public class BookApplication {
         List<Person> l = new ArrayList<>(b.getAuthors());
         Person r = l.remove(1);
         System.out.println(r);
-        System.out.println(EncryptService.md5Encrypt("admin"));
-        System.out.println(EncryptService.md5Encrypt("hello"));
-        System.out.println(EncryptService.md5Encrypt("hi"));
     }
 
     public static List<Book> getBooks() {
