@@ -55,6 +55,7 @@ public class AuthorSQLRepository implements AuthorDAO {
         remove(item.getId());
     }
 
+    @Override
     public Person remove(int id) {
         Person result = getAuthorById(id);
         String query = String.format("delete from %s where %s = ?", AUTHOR_TABLE_NAME, AuthorTableColomnName.ID);

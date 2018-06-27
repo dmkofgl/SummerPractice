@@ -3,15 +3,10 @@ package com.books;
 import com.books.entities.Book;
 import com.books.entities.Person;
 import com.books.entities.Publisher;
-import com.books.services.AuthorService;
 import com.books.services.BookService;
-import com.books.storage.abstracts.Repository;
-import com.books.storage.concrete.SQL.BookSQLRepository;
-import com.books.utils.DatabaseCreator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -47,14 +42,6 @@ public class BookApplication {
         logger.info("View filtered by author name books that contains 'an'");
         logger.debug("{}", books);
         logger.debug("{}", filter.filterByAuthorName(books, "an"));
-        Book b = books.get(0);
-        List<Person> l = new ArrayList<>(b.getAuthors());
-        Person r = l.remove(1);
-        System.out.println(r);
-    }
-
-    public static List<Book> getBooks() {
-        return books;
     }
 
 

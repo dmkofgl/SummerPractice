@@ -27,10 +27,13 @@ public class AuthorRepository implements Repository<Person> {
     public void remove(Person item) {
         authors.remove(item);
     }
-//TODO fix
+
     @Override
     public Person remove(int id) {
-        return null;
+
+        Person result = authors.stream().filter(author -> author.getId() == id).findFirst().get();
+        authors.remove(result);
+        return result;
     }
 
     @Override

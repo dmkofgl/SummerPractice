@@ -3,6 +3,7 @@ package com.books.services;
 import com.books.entities.Book;
 import com.books.entities.Person;
 import com.books.entities.Publisher;
+import com.books.storage.abstracts.BookDAO;
 import com.books.storage.concrete.SQL.BookSQLRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,11 +12,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class BookService {
-    private static final Logger logger = LoggerFactory.getLogger(BookService.class);
-    //TODO change to intermediate
-    private static BookSQLRepository repository;
-    public static final BookService INSTANCE = new BookService();
+    private static final Logger LOGGER = LoggerFactory.getLogger(BookService.class);
+    private static final BookService INSTANCE = new BookService();
+
     private AuthorService authorService = AuthorService.getInstance();
+    private  BookDAO repository;
 
     private BookService() {
         repository = BookSQLRepository.getInstance();
@@ -61,7 +62,7 @@ public class BookService {
         try {
             result = repository.getBookById(id);
         } catch (NoSuchElementException e) {
-            logger.info(String.format("no such element with id=%s in repository", id));
+            LOGGER.info(String.format("no such element with id=%s in repository", id));
 
         }
         return result;

@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class BookFilterServlet extends HttpServlet {
-    BookService service = BookService.getInstance();
+    private BookService service = BookService.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
