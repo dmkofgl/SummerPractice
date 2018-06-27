@@ -1,45 +1,47 @@
 package com.books.services;
 
 import com.books.entities.Person;
+import com.books.services.abstracts.AuthorServiceable;
 import com.books.storage.abstracts.AuthorDAO;
-import com.books.storage.concrete.SQL.AuthorSQLRepository;
+import com.books.storage.concrete.SQL.AuthorSQLDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
-public class AuthorService implements com.books.services.abstracts.AuthorService {
+public class AuthorService implements AuthorServiceable {
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthorService.class);
     public static final AuthorService INSTANCE = new AuthorService();
 
-    private AuthorDAO repository;
+    private AuthorDAO storage;
 
     private AuthorService() {
-        repository = AuthorSQLRepository.getInstance();
+        storage = AuthorSQLDAO.getInstance();
     }
 
     public static AuthorService getInstance() {
         return INSTANCE;
     }
 
-
+    @Override
     public void addAuthor(Person person) {
-        repository.add(person);
+        storage.add(person);
     }
 
+    @Override
     public void setPerson(int id, Person person) {
-        repository.setItem(id, person);
+        storage.saveItem(id, person);
     }
 
-
+    @Override
     public List<Person> getAllAuthors() {
-        return repository.getList();
+        return storage.getList();
     }
 
+    @Override
     public Person getAuthorById(int id) {
         Person result = null;
-        result = repository.getAuthorById(id);
+        result = storage.getAuthorById(id);
         return result;
     }
 

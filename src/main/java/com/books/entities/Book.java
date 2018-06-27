@@ -1,7 +1,5 @@
 package com.books.entities;
 
-import com.books.services.AuthorService;
-
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -27,12 +25,10 @@ public class Book {
         this.publisher = publisher;
     }
 
-    public Book(int id) {
-        this.id = id;
+    public Book() {
         this.name = "";
         this.publishDate = new Date();
         this.authors = new ArrayList<>();
-        this.publisher = new Publisher(0,"");
     }
 
     public int getId() {
@@ -67,6 +63,7 @@ public class Book {
     public void setAuthors(Collection<Person> authors) {
         this.authors = new ArrayList<>(authors);
     }
+
     public void addAuthor(Person author) {
         authors.add(author);
     }
@@ -80,26 +77,31 @@ public class Book {
     }
 
     public void removeAuthor(int authorId) {
-       // AuthorService authorService = new AuthorService();
-        Person removedAuthor = authors.stream().filter(person -> person.getId()==authorId).findFirst().get();
+        Person removedAuthor = authors.stream().filter(person -> person.getId() == authorId).findFirst().get();
         authors.remove(removedAuthor);
+    }
+
+    public boolean equals(Book book) {
+
+        return id == book.id &&
+                Objects.equals(name, book.name) &&
+                Objects.equals(publishDate, book.publishDate) &&
+                Objects.equals(authors, book.authors) &&
+                Objects.equals(publisher, book.publisher);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Book book = (Book) o;
+        return equals(book);
+
     }
 
     @Override
     public int hashCode() {
-        int authorHash = authors.stream().mapToInt(author -> author.toString().hashCode()).sum();
-        return name.hashCode() + publishDate.hashCode() + publisher.getName().hashCode() + authorHash;
-    }
 
-    public boolean equals(Book otherBook) {
-
-        return
-                this.hashCode() == otherBook.hashCode();
-                /* name == otherBook.getName();
-                && publishDate == otherBook.publishDate
-                && publisher.getName() == otherBook.publisher.getName();
-               && authors.stream().allMatch(author -> otherBook.authors.contains(author))
-                && otherBook.authors.stream().allMatch(author -> authors.contains(author));*/
+        return Objects.hash(id, name, publishDate, authors, publisher);
     }
 
     @Override

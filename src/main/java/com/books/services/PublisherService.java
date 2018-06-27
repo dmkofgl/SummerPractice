@@ -1,39 +1,41 @@
 package com.books.services;
 
 import com.books.entities.Publisher;
-import com.books.storage.concrete.SQL.PublisherSQLRepository;
+import com.books.storage.abstracts.PublisherDAO;
+import com.books.storage.concrete.SQL.PublisherSQLDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 
-public class PublisherService {
+public class PublisherService implements com.books.services.abstracts.PublisherServiceable {
     private static final Logger logger = LoggerFactory.getLogger(AuthorService.class);
-    public static final PublisherService INSTANCE = new PublisherService();
-    //TODO change it
-    private PublisherSQLRepository repository;
+    private static final PublisherService INSTANCE = new PublisherService();
+
+    private PublisherDAO storage;
 
     public static PublisherService getInstance() {
         return INSTANCE;
     }
 
     public PublisherService() {
-        repository = PublisherSQLRepository.getInstance();
+        storage = PublisherSQLDAO.getInstance();
     }
 
+    @Override
     public Publisher getPublisherById(int id) throws IndexOutOfBoundsException {
         Publisher result = null;
-        //TODO change to getById()
         try {
-            result =repository.getPublisherById(id);
+            result = storage.getPublisherById(id);
         } catch (NoSuchElementException e) {
-            logger.info(String.format("no such element with id=%s in repository", id));
+            logger.info(String.format("no such element with id=%s in storage", id));
         }
         return result;
     }
 
+    @Override
     public List<Publisher> getAllPublishers() {
-        return repository.getList();
+        return storage.getList();
     }
 }

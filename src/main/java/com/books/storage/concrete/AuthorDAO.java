@@ -1,12 +1,12 @@
 package com.books.storage.concrete;
 
 import com.books.entities.Person;
-import com.books.storage.abstracts.Repository;
+import com.books.storage.abstracts.DAO;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AuthorRepository implements Repository<Person> {
+public class AuthorDAO implements DAO<Person> {
     private static List<Person> authors;
 
     static {
@@ -42,7 +42,7 @@ public class AuthorRepository implements Repository<Person> {
     }
 
     @Override
-    public void setItem(int id, Person item) {
+    public void saveItem(int id, Person item) {
         authors.set(id, item);
     }
 

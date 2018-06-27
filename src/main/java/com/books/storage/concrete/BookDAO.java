@@ -4,7 +4,7 @@ import com.books.BookApplication;
 import com.books.entities.Book;
 import com.books.entities.Person;
 import com.books.entities.Publisher;
-import com.books.storage.abstracts.Repository;
+import com.books.storage.abstracts.DAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,16 +12,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class BookRepository implements Repository<Book> {
+public class BookDAO implements DAO<Book> {
 
     private static List<Book> books;
     private static final Logger logger = LoggerFactory.getLogger(BookApplication.class);
 
-    public BookRepository(List<Book> books) {
+    public BookDAO(List<Book> books) {
         this.books = books;
     }
 
-    public BookRepository() {
+    public BookDAO() {
 
     }
 
@@ -35,13 +35,13 @@ public class BookRepository implements Repository<Book> {
         authors.add(new Person(2, "Sam", "Third"));
         authors.add(new Person(3, "Andrew", "Fourth"));
         books = new ArrayList<Book>();
-        books.add(new Book(0, "first book", date, new Publisher(0,"Publisher1"),
+        books.add(new Book(0, "first book", date, new Publisher(0, "Publisher1"),
                 authors.get(0), authors.get(1)));
-        books.add(new Book(1, "Second book", date, new Publisher(1,"Publisher2"),
+        books.add(new Book(1, "Second book", date, new Publisher(1, "Publisher2"),
                 authors.get(1)));
-        books.add(new Book(2, "Third book", date, new Publisher(2,"Publisher3"),
+        books.add(new Book(2, "Third book", date, new Publisher(2, "Publisher3"),
                 authors.get(2)));
-        books.add(new Book(3, "Third book", date, new Publisher(3,"Publisher4"),
+        books.add(new Book(3, "Third book", date, new Publisher(3, "Publisher4"),
                 authors.get(3)));
     }
 
@@ -55,7 +55,8 @@ public class BookRepository implements Repository<Book> {
     public void remove(Book item) {
         books.remove(item);
     }
-//TODO fix
+
+    //TODO fix
     @Override
     public Book remove(int id) {
         return null;
@@ -67,13 +68,13 @@ public class BookRepository implements Repository<Book> {
     }
 
     @Override
-    public void setItem(int id, Book item) {
+    public void saveItem(int id, Book item) {
 
         if (books.stream().anyMatch(book -> book.getId() == id)) {
-            logger.info("set item in BookRepository:" + item);
+            logger.info("set item in BookDAO:" + item);
             books.set(id, item);
         } else {
-            logger.info("add item in BookRepository:" + item);
+            logger.info("add item in BookDAO:" + item);
             books.add(item);
         }
     }

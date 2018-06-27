@@ -3,23 +3,24 @@ package com.books.services;
 import com.books.entities.Book;
 import com.books.entities.Person;
 import com.books.entities.Publisher;
+import com.books.services.abstracts.BookServiceable;
 import com.books.storage.abstracts.BookDAO;
-import com.books.storage.concrete.SQL.BookSQLRepository;
+import com.books.storage.concrete.SQL.BookSQLDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class BookService {
+public class BookService implements BookServiceable {
     private static final Logger LOGGER = LoggerFactory.getLogger(BookService.class);
     private static final BookService INSTANCE = new BookService();
 
     private AuthorService authorService = AuthorService.getInstance();
-    private  BookDAO repository;
+    private BookDAO storage;
 
     private BookService() {
-        repository = BookSQLRepository.getInstance();
+        storage = BookSQLDAO.getInstance();
     }
 
 
@@ -29,10 +30,12 @@ public class BookService {
 
     PublisherService publisherService = PublisherService.getInstance();
 
+    @Override
     public List<Book> filterByAuthorName(String part) {
         return filterByAuthorName(getAllBooks(), part);
     }
 
+    @Override
     public List<Book> filterByAuthorName(Collection<Book> books, String part) {
         return books.stream().filter((book -> book.getAuthors().stream()
                 .map(author -> author.getFirstName().toLowerCase() + " " + author.getLastName().toLowerCase())
@@ -40,65 +43,64 @@ public class BookService {
                 .collect(Collectors.toList());
     }
 
-    public int generateId() {
-        List<Integer> booksId = repository.getList().stream().map(book -> book.getId()).collect(Collectors.toList());
-        int id = 0;
-        while (booksId.contains(id)) {
-            id++;
-        }
-        return id;
-    }
-
-    public List<Book> filterByAuthorName(Book[] books, String part) {
-        return filterByAuthorName(Arrays.asList(books), part);
-    }
-
+    @Override
     public List<Book> getAllBooks() {
-        return repository.getList();
+        return storage.getList();
     }
 
+    @Override
     public Book getBookById(int id) {
         Book result = null;
         try {
-            result = repository.getBookById(id);
+            result = storage.getBookById(id);
         } catch (NoSuchElementException e) {
-            LOGGER.info(String.format("no such element with id=%s in repository", id));
+            LOGGER.info(String.format("no such element with id=%s in storage", id));
 
         }
         return result;
     }
 
+    @Override
     public void addBook(Book book) {
-        repository.add(book);
+        storage.add(book);
     }
 
-    public void setBook(Book book) {
-        repository.setItem(book.getId(), book);
+    @Override
+    public void saveBook(Book book) {
+        storage.saveItem(book.getId(), book);
     }
 
+    @Override
     public void removeAuthorBook(int bookId, int authorId) {
         Book book = getBookById(bookId);
         book.removeAuthor(authorId);
-        setBook(book);
+        saveBook(book);
     }
 
+    @Override
     public void changePublisher(int bookId, int publisherId) {
         Book book = getBookById(bookId);
         Publisher publisher = publisherService.getPublisherById(publisherId);
         book.setPublisher(publisher);
-        setBook(book);
+        saveBook(book);
     }
 
+    @Override
     public void removeBook(int bookId) {
-        repository.remove(bookId);
+        storage.remove(bookId);
     }
 
+    @Override
     public void addAuthorBook(int bookId, int authorId) {
         Book book = getBookById(bookId);
 
         Person author = authorService.getAuthorById(authorId);
         book.addAuthor(author);
-        setBook(book);
-
+        saveBook(book);
+    }
+    @Override
+    public void addBookWithoutPublisher(Book book)
+    {
+        storage.addWithoutPublisher(book);
     }
 }

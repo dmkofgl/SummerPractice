@@ -2,7 +2,6 @@ package com.books.storage.concrete.SQL;
 
 import com.books.entities.Person;
 import com.books.storage.abstracts.AuthorDAO;
-import com.books.storage.abstracts.Repository;
 import com.books.utils.AuthorTableColomnName;
 import com.books.utils.Constants;
 import org.h2.jdbcx.JdbcConnectionPool;
@@ -13,18 +12,18 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AuthorSQLRepository implements AuthorDAO {
+public class AuthorSQLDAO implements AuthorDAO {
     private static final String AUTHOR_TABLE_NAME = "bookapp.authors";
 
-    private static final Logger logger = LoggerFactory.getLogger(AuthorSQLRepository.class);
-    public static final AuthorSQLRepository INSTANCE = new AuthorSQLRepository();
+    private static final Logger logger = LoggerFactory.getLogger(AuthorSQLDAO.class);
+    public static final AuthorSQLDAO INSTANCE = new AuthorSQLDAO();
     private JdbcConnectionPool connectionPool;
 
-    public static AuthorSQLRepository getInstance() {
+    public static AuthorSQLDAO getInstance() {
         return INSTANCE;
     }
 
-    private AuthorSQLRepository() {
+    private AuthorSQLDAO() {
         connectionPool = JdbcConnectionPool.create(Constants.DATABASE_URL,
                 Constants.DATABASE_USER_NAME, Constants.DATABASE_USER_PASSWORD);
     }
@@ -95,9 +94,8 @@ public class AuthorSQLRepository implements AuthorDAO {
         return result;
     }
 
-    //return Person before modification, or void?
     @Override
-    public void setItem(int id, Person item) {
+    public void saveItem(int id, Person item) {
         String setAuthorQuery = String.format("update %s set %s = ?,%s=?,%s=? where %s =?",
                 AUTHOR_TABLE_NAME,
                 AuthorTableColomnName.ID,
@@ -116,6 +114,7 @@ public class AuthorSQLRepository implements AuthorDAO {
         }
     }
 
+    @Override
     public Person getAuthorById(int id) {
         String getAuthorByIdQuery = String.format("select * from %s where %s = ?", AUTHOR_TABLE_NAME, AuthorTableColomnName.ID);
         String firstName = "";

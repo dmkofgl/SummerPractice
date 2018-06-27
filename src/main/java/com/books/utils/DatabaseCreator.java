@@ -2,7 +2,6 @@ package com.books.utils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.sql.*;
 import java.util.Scanner;
 
@@ -12,7 +11,6 @@ public class DatabaseCreator {
     private static final String PERSIST_DIRECTORY_PATH = "dbScripts/Persist_tables/";
     private static final String SCHEME_NAME = "BOOKAPP";
 
-    //params?
     public void create() throws FileNotFoundException {
         try (Connection conn = DriverManager.getConnection(Constants.DATABASE_URL, Constants.DATABASE_USER_NAME, Constants.DATABASE_USER_PASSWORD)) {
             ResultSet resultSet = conn.getMetaData().getSchemas();

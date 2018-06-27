@@ -4,7 +4,7 @@ import com.books.entities.Person;
 
 import java.util.List;
 
-public interface AuthorService {
+public interface AuthorServiceable {
     void addAuthor(Person person);
 
     void setPerson(int id, Person person);

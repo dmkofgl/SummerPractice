@@ -1,9 +1,11 @@
 package com.books.entities;
 
+import java.util.Objects;
+
 public class Publisher {
 
 
-    private int id;
+    private Integer id;
     private String name;
 
     public Publisher(int id, String name) {
@@ -30,5 +32,20 @@ public class Publisher {
     @Override
     public String toString() {
         return name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Publisher publisher = (Publisher) o;
+        return id == publisher.id &&
+                Objects.equals(name, publisher.name);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, name);
     }
 }

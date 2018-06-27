@@ -2,7 +2,6 @@ package com.books.storage.concrete.SQL;
 
 import com.books.entities.Publisher;
 import com.books.storage.abstracts.PublisherDAO;
-import com.books.storage.abstracts.Repository;
 import com.books.utils.Constants;
 import com.books.utils.PublisherTableColumnName;
 import org.h2.jdbcx.JdbcConnectionPool;
@@ -13,18 +12,18 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PublisherSQLRepository implements PublisherDAO {
+public class PublisherSQLDAO implements PublisherDAO {
     private static final String PUBLISHER_TABLE_NAME = "bookapp.publishers";
-    private static final Logger logger = LoggerFactory.getLogger(PublisherSQLRepository.class);
-    public static final PublisherSQLRepository INSTANCE = new PublisherSQLRepository();
+    private static final Logger logger = LoggerFactory.getLogger(PublisherSQLDAO.class);
+    public static final PublisherSQLDAO INSTANCE = new PublisherSQLDAO();
 
     private JdbcConnectionPool connectionPool;
 
-    public static PublisherSQLRepository getInstance() {
+    public static PublisherSQLDAO getInstance() {
         return INSTANCE;
     }
 
-    private PublisherSQLRepository() {
+    private PublisherSQLDAO() {
         connectionPool = JdbcConnectionPool.create(Constants.DATABASE_URL,
                 Constants.DATABASE_USER_NAME, Constants.DATABASE_USER_PASSWORD);
     }
@@ -51,6 +50,7 @@ public class PublisherSQLRepository implements PublisherDAO {
         remove(item.getId());
     }
 
+    @Override
     public Publisher remove(int id) {
         Publisher result = getPublisherById(id);
         String query = String.format("delete from %s where id = ?", PUBLISHER_TABLE_NAME);
@@ -89,6 +89,7 @@ public class PublisherSQLRepository implements PublisherDAO {
         return result;
     }
 
+    @Override
     public Publisher getPublisherById(int id) {
         String query = String.format("select * from %s where %s = ?", PUBLISHER_TABLE_NAME, PublisherTableColumnName.ID);
         String name = "";
@@ -107,7 +108,7 @@ public class PublisherSQLRepository implements PublisherDAO {
     }
 
     @Override
-    public void setItem(int id, Publisher item) {
+    public void saveItem(int id, Publisher item) {
         String setPublisherQuery = String.format("update %s set %s = ?,%s=? where %s =?",
                 PUBLISHER_TABLE_NAME,
                 PublisherTableColumnName.ID,

@@ -6,7 +6,6 @@ import com.books.entities.Publisher;
 import com.books.storage.abstracts.AuthorDAO;
 import com.books.storage.abstracts.BookDAO;
 import com.books.storage.abstracts.PublisherDAO;
-import com.books.storage.abstracts.Repository;
 import com.books.utils.BookAuthorTableColumnName;
 import com.books.utils.BookTableColumnName;
 import com.books.utils.Constants;
@@ -15,39 +14,97 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-public class BookSQLRepository implements BookDAO {
+public class BookSQLDAO implements BookDAO {
     private static final String BOOK_TABLE_NAME = "bookapp.books";
     private static final String BOOK_AUTHORS_TABLE_NAME = "bookapp.book_author";
 
-    private static final Logger logger = LoggerFactory.getLogger(BookSQLRepository.class);
-    public static final BookSQLRepository INSTANCE = new BookSQLRepository();
+    private static final Logger logger = LoggerFactory.getLogger(BookSQLDAO.class);
+    public static final BookSQLDAO INSTANCE = new BookSQLDAO();
 
     private JdbcConnectionPool connectionPool;
     private AuthorDAO authorRepository;
     private PublisherDAO publisherRepository;
 
-    public static BookSQLRepository getInstance() {
+    public static BookSQLDAO getInstance() {
         return INSTANCE;
     }
 
-    private BookSQLRepository() {
+    private BookSQLDAO() {
         connectionPool = JdbcConnectionPool.create(Constants.DATABASE_URL, Constants.DATABASE_USER_NAME,
                 Constants.DATABASE_USER_PASSWORD);
-        authorRepository = AuthorSQLRepository.getInstance();
-        publisherRepository = PublisherSQLRepository.getInstance();
+        authorRepository = AuthorSQLDAO.getInstance();
+        publisherRepository = PublisherSQLDAO.getInstance();
+    }
+
+    @Override
+    public void addWithoutPublisher(Book item) {
+        String queryBook = String.format("insert into %s (%s,%s ) values(?,?)",
+                BOOK_TABLE_NAME,
+                BookTableColumnName.NAME.toString(),
+                BookTableColumnName.BOOKDATE.toString());
+
+        Collection<Person> authors = item.getAuthors();
+        String queryBookAuthor = "";
+        for (Person author : authors) {
+            queryBookAuthor += String.format("insert into %s (%s,%s ) values(%s, %s);",
+                    BOOK_AUTHORS_TABLE_NAME,
+                    BookAuthorTableColumnName.AUTHOR_ID.toString(),
+                    BookAuthorTableColumnName.BOOK_ID.toString(),
+                    author.getId(), item.getId());
+        }
+        try (Connection conn = connectionPool.getConnection()) {
+            PreparedStatement addBookStatement = conn.prepareStatement(queryBook);
+            addBookStatement.setString(1, item.getName());
+            addBookStatement.setDate(2, new java.sql.Date(item.getPublishDate().getTime()));
+            addBookStatement.execute();
+
+            Statement addBookAuthorsStatement = conn.createStatement();
+            addBookAuthorsStatement.execute(queryBookAuthor);
+        } catch (SQLException e) {
+            logger.info("db add query drop down:" + e.getMessage());
+        }
     }
 
     @Override
     public void add(Book item) {
+        String queryBook = String.format("insert into %s (%s,%s,%s ) values(?, ?,?)",
+                BOOK_TABLE_NAME,
+                BookTableColumnName.NAME.toString(),
+                BookTableColumnName.PUBLISHER_ID.toString(),
+                BookTableColumnName.BOOKDATE.toString());
+
+        Collection<Person> authors = item.getAuthors();
+        String queryBookAuthor = "";
+        for (Person author : authors) {
+            queryBookAuthor += String.format("insert into %s (%s,%s ) values(%s, %s);",
+                    BOOK_AUTHORS_TABLE_NAME,
+                    BookAuthorTableColumnName.AUTHOR_ID.toString(),
+                    BookAuthorTableColumnName.BOOK_ID.toString(),
+                    author.getId(), item.getId());
+        }
+        try (Connection conn = connectionPool.getConnection()) {
+            PreparedStatement addBookStatement = conn.prepareStatement(queryBook);
+            addBookStatement.setString(1, item.getName());
+            addBookStatement.setInt(2, item.getPublisher().getId());
+            addBookStatement.setDate(3, new java.sql.Date(item.getPublishDate().getTime()));
+            addBookStatement.execute();
+
+            Statement addBookAuthorsStatement = conn.createStatement();
+            addBookAuthorsStatement.execute(queryBookAuthor);
+        } catch (SQLException e) {
+            logger.info("db add query drop down:" + e.getMessage());
+        }
+    }
+
+    private void addWithId(Book item) {
         String queryBook = String.format("insert into %s (%s,%s,%s,%s ) values(?,?, ?,?)",
                 BOOK_TABLE_NAME,
-                BookTableColumnName.ID.toString(),
+                BookTableColumnName.ID,
                 BookTableColumnName.NAME.toString(),
                 BookTableColumnName.PUBLISHER_ID.toString(),
                 BookTableColumnName.BOOKDATE.toString());
@@ -81,6 +138,7 @@ public class BookSQLRepository implements BookDAO {
         remove(item.getId());
     }
 
+    @Override
     public Book remove(int id) {
         Book result = null;
         String queryDeleteBook = String.format("delete from %s where %s = ?; ", BOOK_TABLE_NAME, BookTableColumnName.ID);
@@ -120,7 +178,7 @@ public class BookSQLRepository implements BookDAO {
             while (resultSetBookAuthor.next()) {
                 Integer authorId = resultSetBookAuthor.getInt(BookAuthorTableColumnName.AUTHOR_ID.toString());
                 //TODO cast
-                authors.add( authorRepository.getAuthorById(authorId));
+                authors.add(authorRepository.getAuthorById(authorId));
             }
         }
         Book book = new Book(id, name, date, publisher, authors);
@@ -147,6 +205,7 @@ public class BookSQLRepository implements BookDAO {
         return result;
     }
 
+    @Override
     public Book getBookById(int id) {
         String queryBook = String.format("select * from %s where %s = ?",
                 BOOK_TABLE_NAME, BookTableColumnName.ID.toString());
@@ -167,8 +226,8 @@ public class BookSQLRepository implements BookDAO {
     }
 
     @Override
-    public void setItem(int id, Book item) {
+    public void saveItem(int id, Book item) {
         remove(id);
-        add(item);
+        addWithId(item);
     }
 }

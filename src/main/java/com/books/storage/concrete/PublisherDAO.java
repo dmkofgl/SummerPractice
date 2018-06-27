@@ -1,12 +1,12 @@
 package com.books.storage.concrete;
 
 import com.books.entities.Publisher;
-import com.books.storage.abstracts.Repository;
+import com.books.storage.abstracts.DAO;
 
 import java.util.List;
 
-public class PublisherRepository implements Repository<Publisher> {
-    static List<Publisher> publishers;
+public class PublisherDAO implements DAO<Publisher> {
+    private static List<Publisher> publishers;
 
     @Override
     public void add(Publisher item) {
@@ -17,10 +17,14 @@ public class PublisherRepository implements Repository<Publisher> {
     public void remove(Publisher item) {
         publishers.remove(item);
     }
-// TODO fix
+
+    // TODO fix
     @Override
     public Publisher remove(int id) {
-        return null;
+
+        Publisher publisher = publishers.stream().filter(publish -> publish.getId() == id).findFirst().get();
+        publishers.remove(publisher);
+        return publisher;
     }
 
     @Override
@@ -29,7 +33,7 @@ public class PublisherRepository implements Repository<Publisher> {
     }
 
     @Override
-    public void setItem(int id, Publisher item) {
+    public void saveItem(int id, Publisher item) {
         publishers.set(id, item);
     }
 }

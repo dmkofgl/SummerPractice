@@ -78,7 +78,6 @@ public class BookEditServlet extends HttpServlet {
 
         int bookId = Integer.valueOf(req.getParameter("bookId"));
 
-        // SaveBook(req, book);
         if (removeAuthor != null) {
             Integer removedAuthorId = Integer.valueOf(removeAuthor);
             bookService.removeAuthorBook(bookId, removedAuthorId);
@@ -91,7 +90,7 @@ public class BookEditServlet extends HttpServlet {
         if (req.getParameter("confirmChange") != null) {
             SaveBook(req);
             resp.sendRedirect(NavigateServletConstants.BOOK_LIST_SERVLET_PATH);
-            bookService.setBook(bookService.getBookById(bookId));
+            bookService.saveBook(bookService.getBookById(bookId));
             return;
         }
         if (changePublisher != null) {
@@ -103,17 +102,15 @@ public class BookEditServlet extends HttpServlet {
         addAvailableAuthors(req, bookService.getBookById(bookId).getAuthors());
 
         setAttributesAndForward(NavigateServletConstants.BOOK_EDIT_JSP_PATH, req, resp,
-                new Pair<String, Object>("book", bookService.getBookById(bookId)),
+                new Pair<>("book", bookService.getBookById(bookId)),
                 new Pair<>("publishers", publisherService.getAllPublishers()));
     }
 
     //TODO bind with service
     private void SaveBook(HttpServletRequest req) {
-
         int bookId = Integer.valueOf(req.getParameter("bookId"));
-
         Book book = bookService.getBookById(bookId);
-        book.setName(req.getParameter("name"));
+               book.setName(req.getParameter("name"));
         book.getPublisher().setName(req.getParameter("publisher"));
         String date = req.getParameter("publishDate");
         Date bookDate = new Date();
@@ -123,14 +120,12 @@ public class BookEditServlet extends HttpServlet {
             logger.info("incorrect date in book#" + bookId);
         }
         book.setPublishDate(bookDate);
-        bookService.setBook(book);
+        bookService.saveBook(book);
 
     }
 
-    //TODO hip pollution ...?
     private void setAttributesAndForward(String forwardTo, HttpServletRequest req, HttpServletResponse resp,
                                          Pair<String, Object>... attributes) throws ServletException, IOException {
-
         for (Pair<String, Object> attribute : attributes) {
             req.setAttribute(attribute.getKey(), attribute.getValue());
         }

@@ -3,18 +3,16 @@ package com.books.services;
 import com.books.entities.Book;
 import com.books.entities.Person;
 import com.books.entities.Publisher;
-import junit.framework.TestCase;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public class BookServiceTest {
+public class BookServiceableTest {
 
     private BookService filter;
     private Person[] authors;

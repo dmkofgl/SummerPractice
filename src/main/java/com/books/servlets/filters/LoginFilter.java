@@ -1,13 +1,11 @@
 package com.books.servlets.filters;
 
 import javax.servlet.*;
-import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-@WebFilter("/loginPage")
 public class LoginFilter implements Filter {
     private ServletContext context;
 
