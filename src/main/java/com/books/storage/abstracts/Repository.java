@@ -12,11 +12,10 @@ public interface Repository<T> {
 
     public T remove(int id);
 
-    public List<T> getCollection();
+    public List<T> getList();
 
     public void setItem(int id, T item);
 
-    //public void getItemById(int id);
 
 
 }

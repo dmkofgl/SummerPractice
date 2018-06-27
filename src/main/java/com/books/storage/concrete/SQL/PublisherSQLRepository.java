@@ -1,6 +1,7 @@
 package com.books.storage.concrete.SQL;
 
 import com.books.entities.Publisher;
+import com.books.storage.abstracts.PublisherDAO;
 import com.books.storage.abstracts.Repository;
 import com.books.utils.Constants;
 import com.books.utils.PublisherTableColumnName;
@@ -12,7 +13,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PublisherSQLRepository implements Repository<Publisher> {
+public class PublisherSQLRepository implements PublisherDAO {
     private static final String PUBLISHER_TABLE_NAME = "bookapp.publishers";
     private static final Logger logger = LoggerFactory.getLogger(PublisherSQLRepository.class);
     public static final PublisherSQLRepository INSTANCE = new PublisherSQLRepository();
@@ -50,7 +51,6 @@ public class PublisherSQLRepository implements Repository<Publisher> {
         remove(item.getId());
     }
 
-    //TODO fix return
     public Publisher remove(int id) {
         Publisher result = getPublisherById(id);
         String query = String.format("delete from %s where id = ?", PUBLISHER_TABLE_NAME);
@@ -65,7 +65,7 @@ public class PublisherSQLRepository implements Repository<Publisher> {
     }
 
     @Override
-    public List<Publisher> getCollection() {
+    public List<Publisher> getList() {
         String getAllPublishers = String.format("select * from %s ", PUBLISHER_TABLE_NAME);
 
         ResultSet resultSetPublisher;
@@ -85,13 +85,12 @@ public class PublisherSQLRepository implements Repository<Publisher> {
             }
         } catch (SQLException e) {
             logger.info("db view all query drop down:" + e.getMessage());
-        } finally {
         }
         return result;
     }
 
     public Publisher getPublisherById(int id) {
-        String query = String.format("select * from %s where id = ?", PUBLISHER_TABLE_NAME);
+        String query = String.format("select * from %s where %s = ?", PUBLISHER_TABLE_NAME, PublisherTableColumnName.ID);
         String name = "";
         try (Connection conn = connectionPool.getConnection()) {
             PreparedStatement statement = conn.prepareStatement(query);

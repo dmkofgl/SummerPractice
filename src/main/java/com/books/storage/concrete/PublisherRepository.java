@@ -24,7 +24,7 @@ public class PublisherRepository implements Repository<Publisher> {
     }
 
     @Override
-    public List<Publisher> getCollection() {
+    public List<Publisher> getList() {
         return publishers;
     }
 

@@ -62,7 +62,7 @@ public class BookRepository implements Repository<Book> {
     }
 
     @Override
-    public List<Book> getCollection() {
+    public List<Book> getList() {
         return books;
     }
 

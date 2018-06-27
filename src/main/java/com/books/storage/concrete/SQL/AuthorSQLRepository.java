@@ -1,6 +1,7 @@
 package com.books.storage.concrete.SQL;
 
 import com.books.entities.Person;
+import com.books.storage.abstracts.AuthorDAO;
 import com.books.storage.abstracts.Repository;
 import com.books.utils.AuthorTableColomnName;
 import com.books.utils.Constants;
@@ -12,7 +13,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AuthorSQLRepository implements Repository<Person> {
+public class AuthorSQLRepository implements AuthorDAO {
     private static final String AUTHOR_TABLE_NAME = "bookapp.authors";
 
     private static final Logger logger = LoggerFactory.getLogger(AuthorSQLRepository.class);
@@ -54,6 +55,7 @@ public class AuthorSQLRepository implements Repository<Person> {
         remove(item.getId());
     }
 
+    @Override
     public Person remove(int id) {
         Person result = getAuthorById(id);
         String query = String.format("delete from %s where %s = ?", AUTHOR_TABLE_NAME, AuthorTableColomnName.ID);
@@ -68,7 +70,7 @@ public class AuthorSQLRepository implements Repository<Person> {
     }
 
     @Override
-    public List<Person> getCollection() {
+    public List<Person> getList() {
         String getAllAuthors = String.format("select * from %s ", AUTHOR_TABLE_NAME);
 
         ResultSet resultSetAuthors;

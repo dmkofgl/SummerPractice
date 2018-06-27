@@ -2,7 +2,8 @@ package com.books.services;
 
 import com.books.entities.Book;
 import com.books.entities.Person;
-import com.books.storage.abstracts.Repository;
+import com.books.entities.Publisher;
+import com.books.storage.abstracts.BookDAO;
 import com.books.storage.concrete.SQL.BookSQLRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,11 +12,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class BookService {
-    private static final Logger logger = LoggerFactory.getLogger(BookService.class);
-    //TODO change to intermediate
-    private static BookSQLRepository repository;
-    public static final BookService INSTANCE = new BookService();
+    private static final Logger LOGGER = LoggerFactory.getLogger(BookService.class);
+    private static final BookService INSTANCE = new BookService();
+
     private AuthorService authorService = AuthorService.getInstance();
+    private  BookDAO repository;
 
     private BookService() {
         repository = BookSQLRepository.getInstance();
@@ -35,13 +36,12 @@ public class BookService {
     public List<Book> filterByAuthorName(Collection<Book> books, String part) {
         return books.stream().filter((book -> book.getAuthors().stream()
                 .map(author -> author.getFirstName().toLowerCase() + " " + author.getLastName().toLowerCase())
-                .anyMatch(
-                        authorInfo -> authorInfo.contains(part.toLowerCase()))))
+                .anyMatch(authorInfo -> authorInfo.contains(part.toLowerCase()))))
                 .collect(Collectors.toList());
     }
 
     public int generateId() {
-        List<Integer> booksId = repository.getCollection().stream().map(book -> book.getId()).collect(Collectors.toList());
+        List<Integer> booksId = repository.getList().stream().map(book -> book.getId()).collect(Collectors.toList());
         int id = 0;
         while (booksId.contains(id)) {
             id++;
@@ -54,15 +54,15 @@ public class BookService {
     }
 
     public List<Book> getAllBooks() {
-        return repository.getCollection();
+        return repository.getList();
     }
 
-    public Book getBookById(int id) throws IndexOutOfBoundsException {
+    public Book getBookById(int id) {
         Book result = null;
         try {
             result = repository.getBookById(id);
         } catch (NoSuchElementException e) {
-            logger.info(String.format("no such element with id=%s in repository", id));
+            LOGGER.info(String.format("no such element with id=%s in repository", id));
 
         }
         return result;
@@ -84,7 +84,8 @@ public class BookService {
 
     public void changePublisher(int bookId, int publisherId) {
         Book book = getBookById(bookId);
-        book.setPublisher(publisherService.getPublisherById(publisherId));
+        Publisher publisher = publisherService.getPublisherById(publisherId);
+        book.setPublisher(publisher);
         setBook(book);
     }
 
@@ -96,8 +97,6 @@ public class BookService {
         Book book = getBookById(bookId);
 
         Person author = authorService.getAuthorById(authorId);
-        //TODO why it doesn't add? (doesn't save in DB)
-        // book.getAuthors().add(author);
         book.addAuthor(author);
         setBook(book);
 
