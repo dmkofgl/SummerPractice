@@ -6,7 +6,7 @@ import com.books.storage.abstracts.DAO;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AuthorDAO implements DAO<Person> {
+public class AuthorDAOEmbedded implements DAO<Person> {
     private static List<Person> authors;
 
     static {

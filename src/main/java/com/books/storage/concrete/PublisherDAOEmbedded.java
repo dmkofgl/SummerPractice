@@ -5,7 +5,7 @@ import com.books.storage.abstracts.DAO;
 
 import java.util.List;
 
-public class PublisherDAO implements DAO<Publisher> {
+public class PublisherDAOEmbedded implements DAO<Publisher> {
     private static List<Publisher> publishers;
 
     @Override
@@ -18,7 +18,6 @@ public class PublisherDAO implements DAO<Publisher> {
         publishers.remove(item);
     }
 
-    // TODO fix
     @Override
     public Publisher remove(int id) {
 

@@ -4,6 +4,7 @@ import com.books.BookApplication;
 import com.books.entities.Book;
 import com.books.entities.Person;
 import com.books.entities.Publisher;
+import com.books.storage.abstracts.BookDAO;
 import com.books.storage.abstracts.DAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,23 +13,22 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class BookDAO implements DAO<Book> {
+public class BookDAOEmbedded implements BookDAO {
 
     private static List<Book> books;
     private static final Logger logger = LoggerFactory.getLogger(BookApplication.class);
 
-    public BookDAO(List<Book> books) {
+    public BookDAOEmbedded(List<Book> books) {
         this.books = books;
     }
 
-    public BookDAO() {
+    private BookDAOEmbedded() {
 
     }
 
     static {
         books = new ArrayList<>();
         final Date date = new Date();
-        //  AuthorService authorService = new AuthorService();
         List<Person> authors = new ArrayList<Person>();
         authors.add(new Person(0, "Ivan", "First"));
         authors.add(new Person(1, "Andrew", "Second"));
@@ -56,10 +56,11 @@ public class BookDAO implements DAO<Book> {
         books.remove(item);
     }
 
-    //TODO fix
     @Override
     public Book remove(int id) {
-        return null;
+        Book result = getBookById(id);
+        books.remove(result);
+        return result;
     }
 
     @Override
@@ -71,11 +72,16 @@ public class BookDAO implements DAO<Book> {
     public void saveItem(Integer id, Book item) {
 
         if (books.stream().anyMatch(book -> book.getId() == id)) {
-            logger.info("set item in BookDAO:" + item);
+            logger.info("set item in BookDAOEmbedded:" + item);
             books.set(id, item);
         } else {
-            logger.info("add item in BookDAO:" + item);
+            logger.info("add item in BookDAOEmbedded:" + item);
             books.add(item);
         }
+    }
+
+    @Override
+    public Book getBookById(int id) {
+        return books.stream().filter(book -> book.getId() == id).findFirst().get();
     }
 }

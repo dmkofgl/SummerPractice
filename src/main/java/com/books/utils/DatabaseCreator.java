@@ -46,11 +46,10 @@ public class DatabaseCreator {
                 Constants.DATABASE_USER_PASSWORD)) {
             Statement createSchemeStatement = conn.createStatement();
             createSchemeStatement.executeUpdate("create schema " + SCHEME_NAME.toString());
-            //TODO rename
-            Statement s = conn.createStatement();
-            s.executeUpdate(CreateTables);
-            s.executeUpdate(alterTables);
-            s.executeUpdate(persistTables);
+            Statement statement = conn.createStatement();
+            statement.executeUpdate(CreateTables);
+            statement.executeUpdate(alterTables);
+            statement.executeUpdate(persistTables);
 
 
         } catch (SQLException e) {
