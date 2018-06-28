@@ -1,6 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page import="com.books.entities.*,java.text.*,java.util.*,com.books.services.*" %>
-
+<%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
 <html>
 <head>
 <script>
@@ -11,13 +11,11 @@
 	</script>
 </head>
 <body>
-<center><h1>${action}</h1></center>
-
+<t:wrapper>
+</t:wrapper>
 <form method="post">
-
-
 <label> name
-<input type="text" value="${book.name}" name="name">
+<input type="text" value="${not empty book.name ?  book.name : ''}" name="name">
 </label>
 <br>
 <%
@@ -31,14 +29,13 @@
 <label> authors:</label>
 <c:forEach items="${book.authors}" var="author">
      <a href="#" > ${author}</a>
+<input type="hidden" value='${author.id}' name="authorsId">
       <button type="submit" name="removeAuthor" value="${author.id}">remove</button>
       <br>
 </c:forEach>
  <input type="button" value="add" onclick="my_f('textid')"><br>
 	<div id="textid" style="display:none">
 	<%
-	AuthorService service = new AuthorService();
-
 	List<Person> authors =  (List<Person>)request.getAttribute("canAuthorsAdd");
 	out.print("<ul>");
 	for(Person author :authors){
@@ -51,10 +48,15 @@ out.print(author);
 	%>
 	</div>
 <br>
-<label> publisher:
-<input type="text" value="${book.publisher}" name="publisher">
-
+<label> publisher:${book.publisher}
+<input type="hidden" value='${book.publisher.id}' name="publisherId">
+ <input type="button" value="change" onclick="my_f('publishers')"><br>
 </label>
+<div id="publishers" style="display:none">
+<c:forEach items="${publishers}" var="publisher">
+ ${publisher} <button type="submit" name="changePublisher" value="${publisher.id}">change</button> <br>
+</c:forEach>
+</div>
 <br>
 <input type="submit" value="confirm changes" name="confirmChange">
 </form>

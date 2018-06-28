@@ -2,9 +2,10 @@ package com.books.servlets;
 
 import com.books.entities.Book;
 import com.books.entities.Person;
+import com.books.entities.Publisher;
 import com.books.services.AuthorService;
 import com.books.services.BookService;
-import com.books.utils.Constants;
+import com.books.services.PublisherService;
 import com.books.utils.NavigateServletConstants;
 import javafx.util.Pair;
 import org.slf4j.Logger;
@@ -18,40 +19,52 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class BookEditServlet extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(BookEditServlet.class);
-    BookService bookService = new BookService();
-    AuthorService authorService = new AuthorService();
+    BookService bookService = BookService.getInstance();
+    AuthorService authorService = AuthorService.getInstance();
+    PublisherService publisherService = PublisherService.getInstance();
 
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        logger.info("init book edit servlet");
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        logger.info("destroy book edit servlet");
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Book book = null;
         RequestDispatcher dispatcher;
         String action = req.getPathInfo().substring(1);
-        String path = "/jsp/BookEdit.jsp";
+        String path = NavigateServletConstants.BOOK_EDIT_JSP_PATH;
         Integer bookId = -1;
         if (!(action == null && action.isEmpty())) {
             try {
                 bookId = Integer.parseInt(action);
             } catch (NumberFormatException numberFormatException) {
                 path = NavigateServletConstants.NOT_FOND_JSP_PATH;
+                resp.sendRedirect(path);
+                return;
             }
         }
         try {
             book = bookService.getBookById(bookId);
         } catch (IndexOutOfBoundsException indexOut) {
             logger.info("IndexOutOfBoundsException, can't found this book id" + bookId);
-            path = NavigateServletConstants.NOT_FOND_JSP_PATH;
         }
         addAvailableAuthors(req, book.getAuthors());
         setAttributesAndForward(path, req, resp,
-                new Pair<String, Object>("book", book));
+                new Pair<>("book", book),
+                new Pair<>("publishers", publisherService.getAllPublishers()));
 
     }
 
@@ -59,55 +72,75 @@ public class BookEditServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String removeAuthor = req.getParameter("removeAuthor");
         String addAuthor = req.getParameter("addedAuthor");
-        int bookId = Integer.valueOf(req.getParameter("bookId"));
+        String changePublisher = req.getParameter("changePublisher");
 
-        Book book = bookService.getBookById(bookId);
-        SaveBook(req, book);
+        Book book = SaveBook(req);
+
         if (removeAuthor != null) {
             Integer removedAuthorId = Integer.valueOf(removeAuthor);
-            bookService.removeAuthorBook(bookId, removedAuthorId);
+            book.removeAuthor(removedAuthorId);
         }
         if (addAuthor != null) {
             Integer addedAuthorId = Integer.valueOf(addAuthor);
-            bookService.addAuthorBook(bookId, addedAuthorId);
-
+            book.addAuthor(authorService.getAuthorById(addedAuthorId));
+        }
+        if (changePublisher != null) {
+            Integer changePublisherId = Integer.valueOf(changePublisher);
+            book.setPublisher(publisherService.getPublisherById(changePublisherId));
         }
         if (req.getParameter("confirmChange") != null) {
-            SaveBook(req, book);
             resp.sendRedirect(NavigateServletConstants.BOOK_LIST_SERVLET_PATH);
-            bookService.setBook(bookId, book);
+            bookService.saveBook(book);
             return;
         }
+
         addAvailableAuthors(req, book.getAuthors());
-        bookService.setBook(bookId, book);
+
         setAttributesAndForward(NavigateServletConstants.BOOK_EDIT_JSP_PATH, req, resp,
-                new Pair<String, Object>("book", book));
+                new Pair<>("book", book),
+                new Pair<>("publishers", publisherService.getAllPublishers()));
     }
 
-    private void SaveBook(HttpServletRequest req, Book book) {
+    private Book SaveBook(HttpServletRequest req) {
 
-        Integer bookId = Integer.valueOf(req.getParameter("bookId"));
+        Book book = new Book();
+
         book.setName(req.getParameter("name"));
-        book.getPublisher().setName(req.getParameter("publisher"));
+
+        if (!req.getParameter("bookId").isEmpty()) {
+            Integer bookId = Integer.valueOf(req.getParameter("bookId"));
+            book.setId(bookId);
+        }
+        if (!req.getParameter("publisherId").isEmpty()) {
+            Integer publisherId = Integer.valueOf(req.getParameter("publisherId"));
+            Publisher publisher = publisherService.getPublisherById(publisherId);
+            book.setPublisher(publisher);
+        }
+        if (req.getParameterValues("authorsId") != null) {
+            List<Person> authors = Arrays.stream(req.getParameterValues("authorsId"))
+                    .map(id -> authorService.getAuthorById(Integer.parseInt(id)))
+                    .collect(Collectors.toList());
+            book.setAuthors(authors);
+        }
         String date = req.getParameter("publishDate");
         Date bookDate = new Date();
         try {
             bookDate = new SimpleDateFormat("yyyy-MM-dd").parse(date);
         } catch (ParseException e) {
-            logger.info("incorrect date in book#" + bookId);
+            logger.info("incorrect date in book#" + book.getId());
         }
         book.setPublishDate(bookDate);
+        return book;
 
     }
 
     private void setAttributesAndForward(String forwardTo, HttpServletRequest req, HttpServletResponse resp,
                                          Pair<String, Object>... attributes) throws ServletException, IOException {
-
         for (Pair<String, Object> attribute : attributes) {
             req.setAttribute(attribute.getKey(), attribute.getValue());
         }
         RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(
-                NavigateServletConstants.BOOK_EDIT_JSP_PATH);
+                forwardTo);
         dispatcher.forward(req, resp);
     }
 

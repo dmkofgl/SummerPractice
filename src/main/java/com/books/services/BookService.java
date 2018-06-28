@@ -1,76 +1,102 @@
 package com.books.services;
 
-import com.books.BookApplication;
 import com.books.entities.Book;
 import com.books.entities.Person;
 import com.books.entities.Publisher;
-import com.books.storage.abstracts.Repository;
-import com.books.storage.concrete.BookRepository;
+import com.books.services.abstracts.BookServiceable;
+import com.books.storage.abstracts.BookDAO;
+import com.books.storage.concrete.SQL.BookSQLDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class BookService {
-    private static final Logger logger = LoggerFactory.getLogger(BookService.class);
-    private static Repository<Book> repository;
+public class BookService implements BookServiceable {
+    private static final Logger LOGGER = LoggerFactory.getLogger(BookService.class);
+    private static final BookService INSTANCE = new BookService();
 
-    static {
-        repository = new BookRepository();
+    private AuthorService authorService = AuthorService.getInstance();
+    private BookDAO storage;
+
+    private BookService() {
+        storage = BookSQLDAO.getInstance();
     }
 
+
+    public static BookService getInstance() {
+        return INSTANCE;
+    }
+
+    PublisherService publisherService = PublisherService.getInstance();
+
+    @Override
     public List<Book> filterByAuthorName(String part) {
         return filterByAuthorName(getAllBooks(), part);
     }
 
+    @Override
     public List<Book> filterByAuthorName(Collection<Book> books, String part) {
         return books.stream().filter((book -> book.getAuthors().stream()
                 .map(author -> author.getFirstName().toLowerCase() + " " + author.getLastName().toLowerCase())
-                .anyMatch(
-                        authorInfo -> authorInfo.contains(part.toLowerCase()))))
+                .anyMatch(authorInfo -> authorInfo.contains(part.toLowerCase()))))
                 .collect(Collectors.toList());
     }
 
-    public int generateId() {
-        return repository.getCollection().size();
-    }
-
-    public List<Book> filterByAuthorName(Book[] books, String part) {
-        return filterByAuthorName(Arrays.asList(books), part);
-    }
-
+    @Override
     public List<Book> getAllBooks() {
-        return repository.getCollection();
+        return storage.getList();
     }
 
-    public Book getBookById(int id) throws IndexOutOfBoundsException {
+    @Override
+    public Book getBookById(int id) {
         Book result = null;
         try {
-            result = repository.getCollection().stream()
-                    .filter(book -> book.getId() == id).findFirst().get();
+            result = storage.getBookById(id);
         } catch (NoSuchElementException e) {
-            logger.info(String.format("no such element with id=%s in repository", id));
+            LOGGER.info(String.format("no such element with id=%s in storage", id));
 
         }
         return result;
     }
 
+    @Override
     public void addBook(Book book) {
-        repository.add(book);
+        storage.add(book);
     }
 
-    public void setBook(int id, Book book) {
-        repository.setItem(id, book);
+    @Override
+    public void saveBook(Book book) {
+        storage.saveItem(book.getId(), book);
     }
+
+    @Override
     public void removeAuthorBook(int bookId, int authorId) {
         Book book = getBookById(bookId);
         book.removeAuthor(authorId);
+        saveBook(book);
     }
+
+    @Override
+    public void changePublisher(int bookId, int publisherId) {
+        Book book = getBookById(bookId);
+        Publisher publisher = publisherService.getPublisherById(publisherId);
+        book.setPublisher(publisher);
+        saveBook(book);
+    }
+
+    @Override
+    public void removeBook(int bookId) {
+        storage.remove(bookId);
+    }
+
+    @Override
     public void addAuthorBook(int bookId, int authorId) {
         Book book = getBookById(bookId);
-        AuthorService authorService = new AuthorService();
+
         Person author = authorService.getAuthorById(authorId);
-        book.getAuthors().add(author);
+        book.addAuthor(author);
+        saveBook(book);
     }
+
 }

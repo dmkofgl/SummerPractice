@@ -1,5 +1,6 @@
-<head>
-</head>
+<html>
+<title>temp</title>
 <body>
-<jsp:forward page="books/list"/>
-</body>
+template
+{ content.body }
+</body></html>

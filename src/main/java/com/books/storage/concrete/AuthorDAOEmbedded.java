@@ -1,12 +1,12 @@
 package com.books.storage.concrete;
 
 import com.books.entities.Person;
-import com.books.storage.abstracts.Repository;
+import com.books.storage.abstracts.DAO;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AuthorRepository implements Repository<Person> {
+public class AuthorDAOEmbedded implements DAO<Person> {
     private static List<Person> authors;
 
     static {
@@ -29,12 +29,20 @@ public class AuthorRepository implements Repository<Person> {
     }
 
     @Override
-    public List<Person> getCollection() {
+    public Person remove(int id) {
+
+        Person result = authors.stream().filter(author -> author.getId() == id).findFirst().get();
+        authors.remove(result);
+        return result;
+    }
+
+    @Override
+    public List<Person> getList() {
         return authors;
     }
 
     @Override
-    public void setItem(int id, Person item) {
+    public void saveItem(Integer id, Person item) {
         authors.set(id, item);
     }
 

@@ -1,0 +1,4 @@
+use bookapp;
+INSERT INTO client VALUES(0, 'admin','21232f297a57a5a743894a0e4a801fc3');
+INSERT INTO client VALUES(1, 'Andrew','48503dfd58720bd5ff35c102065a52d7');
+INSERT INTO client VALUES(2, 'DL','4bd699085d7a4dd0d8d87385727ea509');

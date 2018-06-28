@@ -1,44 +1,47 @@
 package com.books.services;
 
 import com.books.entities.Person;
-import com.books.storage.abstracts.Repository;
-import com.books.storage.concrete.AuthorRepository;
+import com.books.services.abstracts.AuthorServiceable;
+import com.books.storage.abstracts.AuthorDAO;
+import com.books.storage.concrete.SQL.AuthorSQLDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
-public class AuthorService {
-    private static final Logger logger = LoggerFactory.getLogger(AuthorService.class);
-    private Repository<Person> repository;
+public class AuthorService implements AuthorServiceable {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AuthorService.class);
+    public static final AuthorService INSTANCE = new AuthorService();
 
-    public AuthorService() {
-        repository = new AuthorRepository();
+    private AuthorDAO storage;
+
+    private AuthorService() {
+        storage = AuthorSQLDAO.getInstance();
     }
 
+    public static AuthorService getInstance() {
+        return INSTANCE;
+    }
+
+    @Override
     public void addAuthor(Person person) {
-        repository.add(person);
+        storage.add(person);
     }
 
+    @Override
     public void setPerson(int id, Person person) {
-        repository.setItem(id, person);
+        storage.saveItem(id, person);
     }
 
-
+    @Override
     public List<Person> getAllAuthors() {
-        return repository.getCollection();
+        return storage.getList();
     }
 
-    public Person getAuthorById(int id) throws IndexOutOfBoundsException {
+    @Override
+    public Person getAuthorById(int id) {
         Person result = null;
-        try {
-            result = repository.getCollection().stream()
-                    .filter(author -> author.getId() == id).findFirst().get();
-        } catch (NoSuchElementException e) {
-            logger.info(String.format("no such element with id=%s in repository", id));
-
-        }
+        result = storage.getAuthorById(id);
         return result;
     }
 

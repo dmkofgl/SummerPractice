@@ -1,0 +1,10 @@
+INSERT INTO bookapp.books(name,publisher_Id,bookdate) VALUES('CodeFirst',1,'1990-12-1');
+INSERT INTO bookapp.books(name,publisher_Id,bookdate) VALUES( 'CodeSecond',10,'1995-12-1');
+INSERT INTO bookapp.books(name,publisher_Id,bookdate) VALUES( 'CodeFirst:MySql',2,'1998-2-1');
+INSERT INTO bookapp.books(name,publisher_Id,bookdate) VALUES( 'CodeFirst:-1',3,'2002-1-20');
+INSERT INTO bookapp.books(name,publisher_Id,bookdate) VALUES( 'CodeFirst:0',4,'2002-1-25');
+INSERT INTO bookapp.books(name,publisher_Id,bookdate) VALUES( 'CodeFirst:$',5,'2012-1-20');
+INSERT INTO bookapp.books(name,publisher_Id,bookdate) VALUES( 'CodeFirst:#',7,'2012-1-20');
+INSERT INTO bookapp.books(name,publisher_Id,bookdate) VALUES( 'How to mouth cats',9,'2015-7-15');
+INSERT INTO bookapp.books(name,publisher_Id,bookdate) VALUES( 'AJAX',8,'2012-1-18');
+INSERT INTO bookapp.books(name,publisher_Id,bookdate) VALUES( 'REST',6,'2009-1-7');

@@ -3,18 +3,16 @@ package com.books.services;
 import com.books.entities.Book;
 import com.books.entities.Person;
 import com.books.entities.Publisher;
-import junit.framework.TestCase;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-public class BookServiceTest {
+public class BookServiceableTest {
 
     private BookService filter;
     private Person[] authors;
@@ -22,7 +20,7 @@ public class BookServiceTest {
 
     @Before
     public void setUp() {
-        filter = new BookService();
+        filter = BookService.getInstance();
         Date date = new Date();
         authors = new Person[]{
                 new Person(0,"Ivan", "First"),
@@ -32,13 +30,13 @@ public class BookServiceTest {
                 new Person(4,"Дмитрий", "Fourth")
         };
         books = new Book[]{
-                new Book(0,"first book", date, new Publisher("Publisher1"),
+                new Book(0,"first book", date, new Publisher(0,"Publisher1"),
                         authors[0], authors[1]),
-                new Book(1,"Second book", date, new Publisher("Publisher2"),
+                new Book(1,"Second book", date, new Publisher(1,"Publisher2"),
                         authors[1]),
-                new Book(2,"Third book", date, new Publisher("Publisher3"),
+                new Book(2,"Third book", date, new Publisher(2,"Publisher3"),
                         authors[2]),
-                new Book(3,"Third book", date, new Publisher("Publisher4"),
+                new Book(3,"Third book", date, new Publisher(3,"Publisher4"),
                         authors[4])
         };
     }
@@ -59,4 +57,5 @@ public class BookServiceTest {
         testList.add(books[3]);
         Assert.assertEquals(testList.toString(), filter.filterByAuthorName(testList, "дмит").toString());
     }
+
 }

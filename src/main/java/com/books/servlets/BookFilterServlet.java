@@ -11,11 +11,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class BookFilterServlet extends HttpServlet {
-    BookService service;
+    private BookService service = BookService.getInstance();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        service = new BookService();
+
         req.setAttribute("list", service.getAllBooks());
 
         RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(NavigateServletConstants.BOOK_FILTER_JSP_PATH);
@@ -24,7 +24,6 @@ public class BookFilterServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        service = new BookService();
         String query = req.getParameter("query");
         req.setAttribute("list", service.filterByAuthorName(query));
         RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(NavigateServletConstants.BOOK_FILTER_JSP_PATH);

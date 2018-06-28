@@ -3,7 +3,6 @@ package com.books.servlets;
 
 
 import com.books.services.BookService;
-import com.books.storage.concrete.BookRepository;
 import com.books.utils.NavigateServletConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,22 +18,27 @@ import java.io.PrintWriter;
 
 public class BookListServlet extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(BookListServlet.class);
+    private BookService service = BookService.getInstance();
+
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        logger.info("init book list servlet");
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        logger.info("destroy book list servlet");
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        BookService service = new BookService();
         req.setAttribute("list", service.getAllBooks());
         RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(NavigateServletConstants.BOOK_LIST_JSP_PATH);
         dispatcher.forward(req, resp);
 
 
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        PrintWriter writer = resp.getWriter();
-        writer.println("post");
-        writer.flush();
     }
 }
 
