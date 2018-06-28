@@ -29,15 +29,13 @@ public class PublisherSQLDAO implements PublisherDAO {
 
     @Override
     public void add(Publisher item) {
-        String addAuthorQuery = String.format("insert into %s (%s,%s ) values(?,?)",
+        String addAuthorQuery = String.format("insert into %s (%s ) values(?)",
                 PUBLISHER_TABLE_NAME,
-                PublisherTableColumnName.ID.toString(),
                 PublisherTableColumnName.NAME.toString());
 
         try (Connection conn = connectionPool.getConnection()) {
             PreparedStatement statement = conn.prepareStatement(addAuthorQuery);
-            statement.setInt(1, item.getId());
-            statement.setString(2, item.getName());
+            statement.setString(1, item.getName());
             statement.execute();
         } catch (SQLException e) {
             logger.info("db add query drop down:" + e.getMessage());

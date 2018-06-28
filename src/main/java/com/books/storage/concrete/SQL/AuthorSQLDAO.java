@@ -29,9 +29,8 @@ public class AuthorSQLDAO implements AuthorDAO {
 
     @Override
     public void add(Person item) {
-        String addAuthorQuery = String.format("insert into %s (%s,%s,%s ) values(?, ?, ?)",
+        String addAuthorQuery = String.format("insert into %s (%s,%s ) values( ?, ?)",
                 AUTHOR_TABLE_NAME,
-                AuthorTableColomnName.ID.toString(),
                 AuthorTableColomnName.FIRST_NAME.toString(),
                 AuthorTableColomnName.LAST_NAME.toString(),
                 item.getId(),
@@ -39,9 +38,8 @@ public class AuthorSQLDAO implements AuthorDAO {
                 item.getLastName());
         try (Connection conn = connectionPool.getConnection()) {
             PreparedStatement statement = conn.prepareStatement(addAuthorQuery);
-            statement.setInt(1, item.getId());
-            statement.setString(2, item.getFirstName());
-            statement.setString(3, item.getLastName());
+            statement.setString(1, item.getFirstName());
+            statement.setString(2, item.getLastName());
             statement.execute();
         } catch (SQLException e) {
             logger.info("db add query drop down:" + e.getMessage());

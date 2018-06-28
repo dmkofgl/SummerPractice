@@ -5,11 +5,15 @@ import java.util.Objects;
 public class Publisher {
 
 
-    private Integer id=null;
+    private Integer id = null;
     private String name;
 
     public Publisher(int id, String name) {
         this.id = id;
+        this.name = name;
+    }
+
+    public Publisher(String name) {
         this.name = name;
     }
 
