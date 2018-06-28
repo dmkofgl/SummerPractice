@@ -9,6 +9,7 @@ import com.books.storage.abstracts.PublisherDAO;
 import com.books.utils.BookAuthorTableColumnName;
 import com.books.utils.BookTableColumnName;
 import com.books.utils.Constants;
+import com.books.utils.DatabaseConnector;
 import org.h2.jdbcx.JdbcConnectionPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,39 +36,9 @@ public class BookSQLDAO implements BookDAO {
     }
 
     private BookSQLDAO() {
-        connectionPool = JdbcConnectionPool.create(Constants.DATABASE_URL, Constants.DATABASE_USER_NAME,
-                Constants.DATABASE_USER_PASSWORD);
+        connectionPool = DatabaseConnector.getInstance().getConnectionPool();
         authorRepository = AuthorSQLDAO.getInstance();
         publisherRepository = PublisherSQLDAO.getInstance();
-    }
-
-    @Override
-    public void addWithoutPublisher(Book item) {
-        String queryBook = String.format("insert into %s (%s,%s ) values(?,?)",
-                BOOK_TABLE_NAME,
-                BookTableColumnName.NAME.toString(),
-                BookTableColumnName.BOOKDATE.toString());
-
-        Collection<Person> authors = item.getAuthors();
-        String queryBookAuthor = "";
-        for (Person author : authors) {
-            queryBookAuthor += String.format("insert into %s (%s,%s ) values(%s, %s);",
-                    BOOK_AUTHORS_TABLE_NAME,
-                    BookAuthorTableColumnName.AUTHOR_ID.toString(),
-                    BookAuthorTableColumnName.BOOK_ID.toString(),
-                    author.getId(), item.getId());
-        }
-        try (Connection conn = connectionPool.getConnection()) {
-            PreparedStatement addBookStatement = conn.prepareStatement(queryBook);
-            addBookStatement.setString(1, item.getName());
-            addBookStatement.setDate(2, new java.sql.Date(item.getPublishDate().getTime()));
-            addBookStatement.execute();
-
-            Statement addBookAuthorsStatement = conn.createStatement();
-            addBookAuthorsStatement.execute(queryBookAuthor);
-        } catch (SQLException e) {
-            logger.info("db add query drop down:" + e.getMessage());
-        }
     }
 
     @Override
@@ -90,7 +61,12 @@ public class BookSQLDAO implements BookDAO {
         try (Connection conn = connectionPool.getConnection()) {
             PreparedStatement addBookStatement = conn.prepareStatement(queryBook);
             addBookStatement.setString(1, item.getName());
-            addBookStatement.setInt(2, item.getPublisher().getId());
+            try {
+                Integer publisherId = item.getPublisher().getId();
+                addBookStatement.setInt(2, publisherId);
+            } catch (NullPointerException e) {
+                addBookStatement.setNull(2, Types.INTEGER);
+            }
             addBookStatement.setDate(3, new java.sql.Date(item.getPublishDate().getTime()));
             addBookStatement.execute();
 
@@ -122,7 +98,12 @@ public class BookSQLDAO implements BookDAO {
             PreparedStatement addBookStatement = conn.prepareStatement(queryBook);
             addBookStatement.setInt(1, item.getId());
             addBookStatement.setString(2, item.getName());
-            addBookStatement.setInt(3, item.getPublisher().getId());
+            try {
+                Integer publisherId = item.getPublisher().getId();
+                addBookStatement.setInt(3, publisherId);
+            } catch (NullPointerException e) {
+                addBookStatement.setNull(3, Types.INTEGER);
+            }
             addBookStatement.setDate(4, new java.sql.Date(item.getPublishDate().getTime()));
             addBookStatement.execute();
 
@@ -135,7 +116,8 @@ public class BookSQLDAO implements BookDAO {
 
     @Override
     public void remove(Book item) {
-        remove(item.getId());
+        if (item.getId() != null)
+            remove(item.getId());
     }
 
     @Override
@@ -167,17 +149,19 @@ public class BookSQLDAO implements BookDAO {
         String queryBookAuthors = String.format("select * from %s where %s = ?",
                 BOOK_AUTHORS_TABLE_NAME,
                 BookAuthorTableColumnName.BOOK_ID.toString());
-
-        Publisher publisher = publisherRepository.getPublisherById(
-                bookSet.getInt(BookTableColumnName.PUBLISHER_ID.toString()));
-
+//In DB value is null, but there is 0
+        Integer publusherId = bookSet.getObject(BookTableColumnName.PUBLISHER_ID.toString(), Integer.class);
+        Publisher publisher = null;
+        if (publusherId != null) {
+            publisher = publisherRepository.getPublisherById(publusherId.intValue());
+        }
         try (Connection conn = connectionPool.getConnection()) {
             PreparedStatement statement = conn.prepareStatement(queryBookAuthors);
             statement.setInt(1, bookSet.getInt(BookTableColumnName.ID.toString()));
             ResultSet resultSetBookAuthor = statement.executeQuery();
             while (resultSetBookAuthor.next()) {
                 Integer authorId = resultSetBookAuthor.getInt(BookAuthorTableColumnName.AUTHOR_ID.toString());
-                //TODO cast
+
                 authors.add(authorRepository.getAuthorById(authorId));
             }
         }
@@ -226,8 +210,12 @@ public class BookSQLDAO implements BookDAO {
     }
 
     @Override
-    public void saveItem(int id, Book item) {
-        remove(id);
-        addWithId(item);
+    public void saveItem(Integer id, Book item) {
+        if (item.getId() == null) {
+            add(item);
+        } else {
+            remove(item);
+            addWithId(item);
+        }
     }
 }

@@ -26,5 +26,4 @@ public interface BookServiceable {
 
     void addAuthorBook(int bookId, int authorId);
 
-    void addBookWithoutPublisher(Book book);
 }

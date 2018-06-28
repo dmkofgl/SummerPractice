@@ -68,7 +68,7 @@ public class BookDAO implements DAO<Book> {
     }
 
     @Override
-    public void saveItem(int id, Book item) {
+    public void saveItem(Integer id, Book item) {
 
         if (books.stream().anyMatch(book -> book.getId() == id)) {
             logger.info("set item in BookDAO:" + item);

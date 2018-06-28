@@ -11,7 +11,7 @@ public interface DAO<T> {
 
     List<T> getList();
 
-    void saveItem(int id, T item);
+    void saveItem(Integer id, T item);
 
 
 }

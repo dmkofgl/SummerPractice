@@ -2,6 +2,7 @@ package com.books.servlets;
 
 import com.books.entities.Book;
 import com.books.entities.Person;
+import com.books.entities.Publisher;
 import com.books.services.AuthorService;
 import com.books.services.BookService;
 import com.books.services.PublisherService;
@@ -18,9 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class BookEditServlet extends HttpServlet {
@@ -61,7 +60,6 @@ public class BookEditServlet extends HttpServlet {
             book = bookService.getBookById(bookId);
         } catch (IndexOutOfBoundsException indexOut) {
             logger.info("IndexOutOfBoundsException, can't found this book id" + bookId);
-            path = NavigateServletConstants.NOT_FOND_JSP_PATH;
         }
         addAvailableAuthors(req, book.getAuthors());
         setAttributesAndForward(path, req, resp,
@@ -76,51 +74,63 @@ public class BookEditServlet extends HttpServlet {
         String addAuthor = req.getParameter("addedAuthor");
         String changePublisher = req.getParameter("changePublisher");
 
-        int bookId = Integer.valueOf(req.getParameter("bookId"));
+        Book book = SaveBook(req);
 
         if (removeAuthor != null) {
             Integer removedAuthorId = Integer.valueOf(removeAuthor);
-            bookService.removeAuthorBook(bookId, removedAuthorId);
+            book.removeAuthor(removedAuthorId);
         }
         if (addAuthor != null) {
             Integer addedAuthorId = Integer.valueOf(addAuthor);
-            bookService.addAuthorBook(bookId, addedAuthorId);
-
-        }
-        if (req.getParameter("confirmChange") != null) {
-            SaveBook(req);
-            resp.sendRedirect(NavigateServletConstants.BOOK_LIST_SERVLET_PATH);
-            bookService.saveBook(bookService.getBookById(bookId));
-            return;
+            book.addAuthor(authorService.getAuthorById(addedAuthorId));
         }
         if (changePublisher != null) {
             Integer changePublisherId = Integer.valueOf(changePublisher);
-            bookService.changePublisher(bookId, changePublisherId);
-
+            book.setPublisher(publisherService.getPublisherById(changePublisherId));
         }
-        SaveBook(req);
-        addAvailableAuthors(req, bookService.getBookById(bookId).getAuthors());
+        if (req.getParameter("confirmChange") != null) {
+            resp.sendRedirect(NavigateServletConstants.BOOK_LIST_SERVLET_PATH);
+            bookService.saveBook(book);
+            return;
+        }
+
+        addAvailableAuthors(req, book.getAuthors());
 
         setAttributesAndForward(NavigateServletConstants.BOOK_EDIT_JSP_PATH, req, resp,
-                new Pair<>("book", bookService.getBookById(bookId)),
+                new Pair<>("book", book),
                 new Pair<>("publishers", publisherService.getAllPublishers()));
     }
 
-    //TODO bind with service
-    private void SaveBook(HttpServletRequest req) {
-        int bookId = Integer.valueOf(req.getParameter("bookId"));
-        Book book = bookService.getBookById(bookId);
-               book.setName(req.getParameter("name"));
-        book.getPublisher().setName(req.getParameter("publisher"));
+    private Book SaveBook(HttpServletRequest req) {
+
+        Book book = new Book();
+
+        book.setName(req.getParameter("name"));
+
+        if (!req.getParameter("bookId").isEmpty()) {
+            Integer bookId = Integer.valueOf(req.getParameter("bookId"));
+            book.setId(bookId);
+        }
+        if (!req.getParameter("publisherId").isEmpty()) {
+            Integer publisherId = Integer.valueOf(req.getParameter("publisherId"));
+            Publisher publisher = publisherService.getPublisherById(publisherId);
+            book.setPublisher(publisher);
+        }
+        if (req.getParameterValues("authorsId") != null) {
+            List<Person> authors = Arrays.stream(req.getParameterValues("authorsId"))
+                    .map(id -> authorService.getAuthorById(Integer.parseInt(id)))
+                    .collect(Collectors.toList());
+            book.setAuthors(authors);
+        }
         String date = req.getParameter("publishDate");
         Date bookDate = new Date();
         try {
             bookDate = new SimpleDateFormat("yyyy-MM-dd").parse(date);
         } catch (ParseException e) {
-            logger.info("incorrect date in book#" + bookId);
+            logger.info("incorrect date in book#" + book.getId());
         }
         book.setPublishDate(bookDate);
-        bookService.saveBook(book);
+        return book;
 
     }
 

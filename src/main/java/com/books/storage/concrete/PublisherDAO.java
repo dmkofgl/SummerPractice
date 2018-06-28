@@ -33,7 +33,7 @@ public class PublisherDAO implements DAO<Publisher> {
     }
 
     @Override
-    public void saveItem(int id, Publisher item) {
+    public void saveItem(Integer id, Publisher item) {
         publishers.set(id, item);
     }
 }

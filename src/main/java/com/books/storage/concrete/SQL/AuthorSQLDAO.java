@@ -3,7 +3,7 @@ package com.books.storage.concrete.SQL;
 import com.books.entities.Person;
 import com.books.storage.abstracts.AuthorDAO;
 import com.books.utils.AuthorTableColomnName;
-import com.books.utils.Constants;
+import com.books.utils.DatabaseConnector;
 import org.h2.jdbcx.JdbcConnectionPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,8 +24,7 @@ public class AuthorSQLDAO implements AuthorDAO {
     }
 
     private AuthorSQLDAO() {
-        connectionPool = JdbcConnectionPool.create(Constants.DATABASE_URL,
-                Constants.DATABASE_USER_NAME, Constants.DATABASE_USER_PASSWORD);
+        connectionPool = DatabaseConnector.getInstance().getConnectionPool();
     }
 
     @Override
@@ -95,7 +94,7 @@ public class AuthorSQLDAO implements AuthorDAO {
     }
 
     @Override
-    public void saveItem(int id, Person item) {
+    public void saveItem(Integer id, Person item) {
         String setAuthorQuery = String.format("update %s set %s = ?,%s=?,%s=? where %s =?",
                 AUTHOR_TABLE_NAME,
                 AuthorTableColomnName.ID,

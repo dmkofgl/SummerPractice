@@ -5,7 +5,7 @@ import java.util.Objects;
 public class Publisher {
 
 
-    private Integer id;
+    private Integer id=null;
     private String name;
 
     public Publisher(int id, String name) {

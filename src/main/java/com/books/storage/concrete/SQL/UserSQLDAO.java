@@ -1,6 +1,7 @@
 package com.books.storage.concrete.SQL;
 
 import com.books.entities.User;
+import com.books.utils.DatabaseConnector;
 import com.books.utils.UserTableColumnName;
 import org.h2.jdbcx.JdbcConnectionPool;
 import com.books.storage.abstracts.UserDAO;
@@ -26,8 +27,7 @@ public class UserSQLDAO implements UserDAO {
     }
 
     public UserSQLDAO() {
-        connectionPool = JdbcConnectionPool.create(Constants.DATABASE_URL,
-                Constants.DATABASE_USER_NAME, Constants.DATABASE_USER_PASSWORD);
+        connectionPool = DatabaseConnector.getInstance().getConnectionPool();
     }
 
     @Override

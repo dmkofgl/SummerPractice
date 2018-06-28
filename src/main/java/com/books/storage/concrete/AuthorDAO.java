@@ -42,7 +42,7 @@ public class AuthorDAO implements DAO<Person> {
     }
 
     @Override
-    public void saveItem(int id, Person item) {
+    public void saveItem(Integer id, Person item) {
         authors.set(id, item);
     }
 

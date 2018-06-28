@@ -2,7 +2,7 @@ package com.books.storage.concrete.SQL;
 
 import com.books.entities.Publisher;
 import com.books.storage.abstracts.PublisherDAO;
-import com.books.utils.Constants;
+import com.books.utils.DatabaseConnector;
 import com.books.utils.PublisherTableColumnName;
 import org.h2.jdbcx.JdbcConnectionPool;
 import org.slf4j.Logger;
@@ -24,8 +24,7 @@ public class PublisherSQLDAO implements PublisherDAO {
     }
 
     private PublisherSQLDAO() {
-        connectionPool = JdbcConnectionPool.create(Constants.DATABASE_URL,
-                Constants.DATABASE_USER_NAME, Constants.DATABASE_USER_PASSWORD);
+        connectionPool = DatabaseConnector.getInstance().getConnectionPool();
     }
 
     @Override
@@ -108,7 +107,7 @@ public class PublisherSQLDAO implements PublisherDAO {
     }
 
     @Override
-    public void saveItem(int id, Publisher item) {
+    public void saveItem(Integer id, Publisher item) {
         String setPublisherQuery = String.format("update %s set %s = ?,%s=? where %s =?",
                 PUBLISHER_TABLE_NAME,
                 PublisherTableColumnName.ID,

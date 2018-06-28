@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 
 public class Book {
 
-    private int id;
+    private Integer id;
     private String name;
     private Date publishDate;
     private List<Person> authors;
@@ -31,7 +31,7 @@ public class Book {
         this.authors = new ArrayList<>();
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -106,10 +106,15 @@ public class Book {
 
     @Override
     public String toString() {
-        return name +
-                " " + publishDate +
-                ", by " + authors.stream().map(author -> author.getFirstName() + " " + author.getLastName())
-                .collect(Collectors.joining(", ")) +
-                ", published by " + publisher.getName();
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(name);
+        stringBuilder.append(" " + publishDate);
+        stringBuilder.append(", by ");
+        stringBuilder.append(authors.stream().map(author -> author.getFirstName() + " " + author.getLastName())
+                .collect(Collectors.joining(", ")));
+        stringBuilder.append(", published by ");
+        stringBuilder.append(publisher == null ? "" : publisher.getName());
+
+        return stringBuilder.toString();
     }
 }

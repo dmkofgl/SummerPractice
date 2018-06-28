@@ -15,7 +15,7 @@
 </t:wrapper>
 <form method="post">
 <label> name
-<input type="text" value="${book.name}" name="name">
+<input type="text" value="${not empty book.name ?  book.name : ''}" name="name">
 </label>
 <br>
 <%
@@ -29,6 +29,7 @@
 <label> authors:</label>
 <c:forEach items="${book.authors}" var="author">
      <a href="#" > ${author}</a>
+<input type="hidden" value='${author.id}' name="authorsId">
       <button type="submit" name="removeAuthor" value="${author.id}">remove</button>
       <br>
 </c:forEach>
@@ -48,6 +49,7 @@ out.print(author);
 	</div>
 <br>
 <label> publisher:${book.publisher}
+<input type="hidden" value='${book.publisher.id}' name="publisherId">
  <input type="button" value="change" onclick="my_f('publishers')"><br>
 </label>
 <div id="publishers" style="display:none">
