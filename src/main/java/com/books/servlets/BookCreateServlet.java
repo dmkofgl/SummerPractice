@@ -6,6 +6,8 @@ import com.books.services.abstracts.AuthorServiceable;
 import com.books.utils.NavigateServletConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -15,8 +17,14 @@ import java.io.IOException;
 
 public class BookCreateServlet extends HttpServlet {
     private static final Logger LOGGER = LoggerFactory.getLogger(BookCreateServlet.class);
-    private AuthorServiceable authorService = AuthorService.getInstance();
+    @Autowired
+    private AuthorServiceable authorService;
 
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

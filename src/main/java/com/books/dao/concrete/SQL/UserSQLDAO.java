@@ -1,33 +1,29 @@
-package com.books.storage.concrete.SQL;
+package com.books.dao.concrete.SQL;
 
 import com.books.entities.User;
 import com.books.utils.DatabaseConnector;
 import com.books.utils.UserTableColumnName;
 import org.h2.jdbcx.JdbcConnectionPool;
-import com.books.storage.abstracts.UserDAO;
-import com.books.utils.Constants;
+import com.books.dao.abstracts.UserDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
+@Component("UserSQLDAO")
 public class UserSQLDAO implements UserDAO {
     private static final String USER_TABLE_NAME = "bookapp.client";
     private static final Logger logger = LoggerFactory.getLogger(UserSQLDAO.class);
 
     private JdbcConnectionPool connectionPool;
 
-    public static final UserSQLDAO INSTANCE = new UserSQLDAO();
-
-    public static UserSQLDAO getInstance() {
-        return INSTANCE;
-    }
-
-    public UserSQLDAO() {
-        connectionPool = DatabaseConnector.getInstance().getConnectionPool();
+    @Autowired
+    public UserSQLDAO(DatabaseConnector connector) {
+        connectionPool = connector.getConnectionPool();
     }
 
     @Override

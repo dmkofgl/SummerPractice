@@ -1,30 +1,27 @@
-package com.books.storage.concrete.SQL;
+package com.books.dao.concrete.SQL;
 
+import com.books.dao.abstracts.AuthorDAO;
 import com.books.entities.Person;
-import com.books.storage.abstracts.AuthorDAO;
 import com.books.utils.AuthorTableColomnName;
 import com.books.utils.DatabaseConnector;
 import org.h2.jdbcx.JdbcConnectionPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
+@Component("AuthorSQLDAO")
 public class AuthorSQLDAO implements AuthorDAO {
     private static final String AUTHOR_TABLE_NAME = "bookapp.authors";
-
     private static final Logger logger = LoggerFactory.getLogger(AuthorSQLDAO.class);
-    public static final AuthorSQLDAO INSTANCE = new AuthorSQLDAO();
     private JdbcConnectionPool connectionPool;
 
-    public static AuthorSQLDAO getInstance() {
-        return INSTANCE;
-    }
-
-    private AuthorSQLDAO() {
-        connectionPool = DatabaseConnector.getInstance().getConnectionPool();
+    @Autowired
+    private AuthorSQLDAO(DatabaseConnector connector) {
+        connectionPool = connector.getConnectionPool();
     }
 
     @Override

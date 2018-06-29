@@ -1,11 +1,10 @@
-package com.books.storage.concrete;
+package com.books.dao.concrete;
 
 import com.books.BookApplication;
 import com.books.entities.Book;
 import com.books.entities.Person;
 import com.books.entities.Publisher;
-import com.books.storage.abstracts.BookDAO;
-import com.books.storage.abstracts.DAO;
+import com.books.dao.abstracts.BookDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

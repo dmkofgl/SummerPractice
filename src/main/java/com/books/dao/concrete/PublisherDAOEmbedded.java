@@ -1,7 +1,7 @@
-package com.books.storage.concrete;
+package com.books.dao.concrete;
 
 import com.books.entities.Publisher;
-import com.books.storage.abstracts.DAO;
+import com.books.dao.abstracts.DAO;
 
 import java.util.List;
 

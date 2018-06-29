@@ -1,7 +1,10 @@
 package com.books.servlets;
 
 import com.books.services.BookService;
+import com.books.services.abstracts.BookServiceable;
 import com.books.utils.NavigateServletConstants;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -11,7 +14,14 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class BookFilterServlet extends HttpServlet {
-    private BookService service = BookService.getInstance();
+    @Autowired
+    private BookServiceable service ;
+
+    @Override
+    public void init() throws ServletException {
+        super.init();
+       // SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

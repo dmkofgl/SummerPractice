@@ -3,32 +3,33 @@ package com.books.services;
 import com.books.entities.Book;
 import com.books.entities.Person;
 import com.books.entities.Publisher;
+import com.books.services.abstracts.AuthorServiceable;
 import com.books.services.abstracts.BookServiceable;
-import com.books.storage.abstracts.BookDAO;
-import com.books.storage.concrete.SQL.BookSQLDAO;
+import com.books.dao.abstracts.BookDAO;
+import com.books.dao.concrete.SQL.BookSQLDAO;
+import com.books.services.abstracts.PublisherServiceable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
+@Component("BookServices")
 public class BookService implements BookServiceable {
     private static final Logger LOGGER = LoggerFactory.getLogger(BookService.class);
-    private static final BookService INSTANCE = new BookService();
 
-    private AuthorService authorService = AuthorService.getInstance();
+    private AuthorServiceable authorService;
+    private PublisherServiceable publisherService;
     private BookDAO storage;
 
-    private BookService() {
-        storage = BookSQLDAO.getInstance();
+    @Autowired
+    private BookService(BookDAO bookDAO, AuthorServiceable authorServiceable, PublisherServiceable publisherService) {
+        storage = bookDAO;
+        authorService = authorServiceable;
+        this.publisherService = publisherService;
     }
 
-
-    public static BookService getInstance() {
-        return INSTANCE;
-    }
-
-    PublisherService publisherService = PublisherService.getInstance();
 
     @Override
     public List<Book> filterByAuthorName(String part) {
@@ -54,7 +55,7 @@ public class BookService implements BookServiceable {
         try {
             result = storage.getBookById(id);
         } catch (NoSuchElementException e) {
-            LOGGER.info(String.format("no such element with id=%s in storage", id));
+            LOGGER.info(String.format("no such element with id=%s in dao", id));
 
         }
         return result;

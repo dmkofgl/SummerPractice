@@ -6,10 +6,15 @@ import com.books.entities.Publisher;
 import com.books.services.AuthorService;
 import com.books.services.BookService;
 import com.books.services.PublisherService;
+import com.books.services.abstracts.AuthorServiceable;
+import com.books.services.abstracts.BookServiceable;
+import com.books.services.abstracts.PublisherServiceable;
 import com.books.utils.NavigateServletConstants;
 import javafx.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -24,14 +29,19 @@ import java.util.stream.Collectors;
 
 public class BookEditServlet extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(BookEditServlet.class);
-    BookService bookService = BookService.getInstance();
-    AuthorService authorService = AuthorService.getInstance();
-    PublisherService publisherService = PublisherService.getInstance();
+    @Autowired
+    BookServiceable bookService;
+    @Autowired
+    AuthorServiceable authorService;
+    @Autowired
+    PublisherServiceable publisherService;
 
     @Override
     public void init() throws ServletException {
         super.init();
         logger.info("init book edit servlet");
+
+    //    SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
     }
 
     @Override

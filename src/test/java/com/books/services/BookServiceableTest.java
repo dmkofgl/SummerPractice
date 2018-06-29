@@ -3,9 +3,11 @@ package com.books.services;
 import com.books.entities.Book;
 import com.books.entities.Person;
 import com.books.entities.Publisher;
+import com.books.services.abstracts.BookServiceable;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,13 +16,15 @@ import java.util.List;
 
 public class BookServiceableTest {
 
-    private BookService filter;
+    private BookServiceable filter;
     private Person[] authors;
     private Book[] books;
 
     @Before
     public void setUp() {
-        filter = BookService.getInstance();
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(ClassLoader.getSystemResource("applicationContext.xml").toString());
+
+        filter = context.getBean(BookService.class);
         Date date = new Date();
         authors = new Person[]{
                 new Person(0,"Ivan", "First"),

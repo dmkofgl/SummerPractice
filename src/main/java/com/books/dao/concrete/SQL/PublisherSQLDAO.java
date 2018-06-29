@@ -1,30 +1,28 @@
-package com.books.storage.concrete.SQL;
+package com.books.dao.concrete.SQL;
 
 import com.books.entities.Publisher;
-import com.books.storage.abstracts.PublisherDAO;
+import com.books.dao.abstracts.PublisherDAO;
 import com.books.utils.DatabaseConnector;
 import com.books.utils.PublisherTableColumnName;
 import org.h2.jdbcx.JdbcConnectionPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
+@Component("PublisherSQLDAO")
 public class PublisherSQLDAO implements PublisherDAO {
     private static final String PUBLISHER_TABLE_NAME = "bookapp.publishers";
     private static final Logger logger = LoggerFactory.getLogger(PublisherSQLDAO.class);
-    public static final PublisherSQLDAO INSTANCE = new PublisherSQLDAO();
 
     private JdbcConnectionPool connectionPool;
 
-    public static PublisherSQLDAO getInstance() {
-        return INSTANCE;
-    }
-
-    private PublisherSQLDAO() {
-        connectionPool = DatabaseConnector.getInstance().getConnectionPool();
+    @Autowired
+    public PublisherSQLDAO(DatabaseConnector connector) {
+        this.connectionPool = connector.getConnectionPool();
     }
 
     @Override

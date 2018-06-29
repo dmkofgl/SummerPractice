@@ -15,5 +15,6 @@
       </c:forEach>
       </ul>
       <a href=/books/new>add new book</a>
+
 </body>
 </html>

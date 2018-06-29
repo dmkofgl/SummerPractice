@@ -1,4 +1,4 @@
-package com.books.storage.abstracts;
+package com.books.dao.abstracts;
 
 import java.util.List;
 
