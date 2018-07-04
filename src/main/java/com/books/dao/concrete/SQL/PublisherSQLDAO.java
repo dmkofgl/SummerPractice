@@ -8,36 +8,32 @@ import org.h2.jdbcx.JdbcConnectionPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-@Component("PublisherSQLDAO")
+
 public class PublisherSQLDAO implements PublisherDAO {
     private static final String PUBLISHER_TABLE_NAME = "bookapp.publishers";
     private static final Logger logger = LoggerFactory.getLogger(PublisherSQLDAO.class);
 
-    private JdbcConnectionPool connectionPool;
+    private JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    public PublisherSQLDAO(DatabaseConnector connector) {
-        this.connectionPool = connector.getConnectionPool();
+
+    public PublisherSQLDAO(DataSource dataSource) {
+        jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
     @Override
     public void add(Publisher item) {
-        String addAuthorQuery = String.format("insert into %s (%s ) values(?)",
+        String addQuery = String.format("insert into %s (%s) values(?)",
                 PUBLISHER_TABLE_NAME,
                 PublisherTableColumnName.NAME.toString());
-
-        try (Connection conn = connectionPool.getConnection()) {
-            PreparedStatement statement = conn.prepareStatement(addAuthorQuery);
-            statement.setString(1, item.getName());
-            statement.execute();
-        } catch (SQLException e) {
-            logger.info("db add query drop down:" + e.getMessage());
-        }
+        jdbcTemplate.update(addQuery, new Object[]{item.getName()});
     }
 
     @Override
@@ -48,58 +44,36 @@ public class PublisherSQLDAO implements PublisherDAO {
     @Override
     public Publisher remove(int id) {
         Publisher result = getPublisherById(id);
-        String query = String.format("delete from %s where id = ?", PUBLISHER_TABLE_NAME);
-        try (Connection conn = connectionPool.getConnection()) {
-            PreparedStatement statement = conn.prepareStatement(query);
-            statement.setInt(1, id);
-            statement.execute();
-        } catch (SQLException e) {
-            logger.info("db remove query drop down:" + e.getMessage());
-        }
+        String removeQuery = String.format("delete from %s where id = ?", PUBLISHER_TABLE_NAME);
+        jdbcTemplate.update(removeQuery, new Object[]{id});
         return result;
+
     }
 
     @Override
     public List<Publisher> getList() {
         String getAllPublishers = String.format("select * from %s ", PUBLISHER_TABLE_NAME);
 
-        ResultSet resultSetPublisher;
-
-        List<Publisher> result = new ArrayList<>();
-
-        try (Connection conn = connectionPool.getConnection()) {
-            Statement statement = conn.createStatement();
-            resultSetPublisher = statement.executeQuery(getAllPublishers);
-
-            while (resultSetPublisher.next()) {
-                Integer id = resultSetPublisher.getInt(PublisherTableColumnName.ID.toString());
-                String name = resultSetPublisher.getString(PublisherTableColumnName.NAME.toString());
-
-                Publisher publisher = new Publisher(id, name);
-                result.add(publisher);
-            }
-        } catch (SQLException e) {
-            logger.info("db view all query drop down:" + e.getMessage());
-        }
-        return result;
+        return jdbcTemplate.query(getAllPublishers, (rs, rn) -> {
+            Publisher publisher = new Publisher();
+            Integer id = rs.getInt(PublisherTableColumnName.ID.toString());
+            publisher.setId(id);
+            String name = rs.getString(PublisherTableColumnName.NAME.toString());
+            publisher.setName(name);
+            return publisher;
+        });
     }
 
     @Override
     public Publisher getPublisherById(int id) {
         String query = String.format("select * from %s where %s = ?", PUBLISHER_TABLE_NAME, PublisherTableColumnName.ID);
-        String name = "";
-        try (Connection conn = connectionPool.getConnection()) {
-            PreparedStatement statement = conn.prepareStatement(query);
-            statement.setInt(1, id);
-            ResultSet resultSetPublisher = statement.executeQuery();
-            resultSetPublisher.next();
-            name = resultSetPublisher.getString(PublisherTableColumnName.NAME.toString());
-        } catch (SQLException e) {
-            logger.info("db add query drop down:" + e.getMessage());
-            return null;
-        }
-        Publisher publisher = new Publisher(id, name);
-        return publisher;
+        return jdbcTemplate.queryForObject(query, new Object[]{id}, (rs, rn) -> {
+            Publisher publisher = new Publisher();
+            publisher.setId(id);
+            String name = rs.getString(PublisherTableColumnName.NAME.toString());
+            publisher.setName(name);
+            return publisher;
+        });
     }
 
     @Override
@@ -109,14 +83,7 @@ public class PublisherSQLDAO implements PublisherDAO {
                 PublisherTableColumnName.ID,
                 PublisherTableColumnName.NAME,
                 PublisherTableColumnName.ID);
-        try (Connection conn = connectionPool.getConnection()) {
-            PreparedStatement statement = conn.prepareStatement(setPublisherQuery);
-            statement.setInt(1, item.getId());
-            statement.setString(2, item.getName());
-            statement.setInt(3, id);
-            statement.execute();
-        } catch (SQLException e) {
-            logger.info("db add query drop down:" + e.getMessage());
-        }
+
+        jdbcTemplate.update(setPublisherQuery, new Object[]{item.getId(), item.getName(), id});
     }
 }

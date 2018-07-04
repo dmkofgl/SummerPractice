@@ -1,11 +1,11 @@
 package com.books.dao.concrete.SQL;
 
-import com.books.entities.Book;
-import com.books.entities.Person;
-import com.books.entities.Publisher;
 import com.books.dao.abstracts.AuthorDAO;
 import com.books.dao.abstracts.BookDAO;
 import com.books.dao.abstracts.PublisherDAO;
+import com.books.entities.Book;
+import com.books.entities.Person;
+import com.books.entities.Publisher;
 import com.books.utils.BookAuthorTableColumnName;
 import com.books.utils.BookTableColumnName;
 import com.books.utils.DatabaseConnector;
@@ -13,14 +13,12 @@ import org.h2.jdbcx.JdbcConnectionPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-@Component("BookSQLDAO")
 public class BookSQLDAO implements BookDAO {
     private static final String BOOK_TABLE_NAME = "bookapp.books";
     private static final String BOOK_AUTHORS_TABLE_NAME = "bookapp.book_author";
@@ -32,7 +30,7 @@ public class BookSQLDAO implements BookDAO {
     private AuthorDAO authorRepository;
     private PublisherDAO publisherRepository;
 
-    @Autowired
+
     private BookSQLDAO(DatabaseConnector connector, AuthorDAO authorDAO, PublisherDAO publisherDAO) {
         connectionPool = connector.getConnectionPool();
         authorRepository = authorDAO;

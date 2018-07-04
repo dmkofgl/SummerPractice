@@ -1,21 +1,20 @@
 package com.books.services;
 
+import com.books.dao.abstracts.BookDAO;
 import com.books.entities.Book;
 import com.books.entities.Person;
 import com.books.entities.Publisher;
 import com.books.services.abstracts.AuthorServiceable;
 import com.books.services.abstracts.BookServiceable;
-import com.books.dao.abstracts.BookDAO;
-import com.books.dao.concrete.SQL.BookSQLDAO;
 import com.books.services.abstracts.PublisherServiceable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-@Component("BookServices")
+
 public class BookService implements BookServiceable {
     private static final Logger LOGGER = LoggerFactory.getLogger(BookService.class);
 
@@ -23,7 +22,6 @@ public class BookService implements BookServiceable {
     private PublisherServiceable publisherService;
     private BookDAO storage;
 
-    @Autowired
     private BookService(BookDAO bookDAO, AuthorServiceable authorServiceable, PublisherServiceable publisherService) {
         storage = bookDAO;
         authorService = authorServiceable;

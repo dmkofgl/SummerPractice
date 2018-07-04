@@ -8,13 +8,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component("AuthenticateService")
+
 public class AuthenticateService implements AuthenticateServiceable {
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthenticateService.class);
 
     private UserDAO storage;
 
-    @Autowired
+
     private AuthenticateService(UserDAO userDAO) {
         storage = userDAO;
     }

@@ -14,14 +14,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-@Component("UserSQLDAO")
+
 public class UserSQLDAO implements UserDAO {
     private static final String USER_TABLE_NAME = "bookapp.client";
     private static final Logger logger = LoggerFactory.getLogger(UserSQLDAO.class);
 
     private JdbcConnectionPool connectionPool;
 
-    @Autowired
+
     public UserSQLDAO(DatabaseConnector connector) {
         connectionPool = connector.getConnectionPool();
     }

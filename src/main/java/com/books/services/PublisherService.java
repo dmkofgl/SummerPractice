@@ -10,13 +10,13 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-@Component("PublisherService")
+
 public class PublisherService implements com.books.services.abstracts.PublisherServiceable {
     private static final Logger logger = LoggerFactory.getLogger(AuthorService.class);
 
     private PublisherDAO storage;
 
-    @Autowired
+
     public PublisherService(PublisherDAO publisherDAO) {
         storage = publisherDAO;
     }

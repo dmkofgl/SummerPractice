@@ -17,6 +17,9 @@ public class Publisher {
         this.name = name;
     }
 
+    public Publisher() {
+    }
+
     public String getName() {
         return name;
     }

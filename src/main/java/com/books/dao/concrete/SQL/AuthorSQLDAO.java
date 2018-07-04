@@ -8,18 +8,16 @@ import org.h2.jdbcx.JdbcConnectionPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-@Component("AuthorSQLDAO")
 public class AuthorSQLDAO implements AuthorDAO {
     private static final String AUTHOR_TABLE_NAME = "bookapp.authors";
     private static final Logger logger = LoggerFactory.getLogger(AuthorSQLDAO.class);
     private JdbcConnectionPool connectionPool;
 
-    @Autowired
+
     private AuthorSQLDAO(DatabaseConnector connector) {
         connectionPool = connector.getConnectionPool();
     }

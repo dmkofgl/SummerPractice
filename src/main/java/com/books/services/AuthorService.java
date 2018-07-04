@@ -10,13 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-@Component("AuthorService")
+
 public class AuthorService implements AuthorServiceable {
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthorService.class);
 
     private AuthorDAO storage;
 
-    @Autowired
     private AuthorService(AuthorDAO authorDAO) {
         storage = authorDAO;
     }
