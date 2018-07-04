@@ -1,29 +1,21 @@
 package com.books.dao.concrete.SQL;
 
-import com.books.entities.User;
-import com.books.utils.DatabaseConnector;
-import com.books.utils.UserTableColumnName;
-import org.h2.jdbcx.JdbcConnectionPool;
 import com.books.dao.abstracts.UserDAO;
+import com.books.entities.User;
+import com.books.utils.UserTableColumnName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 public class UserSQLDAO implements UserDAO {
     private static final String USER_TABLE_NAME = "bookapp.client";
     private static final Logger logger = LoggerFactory.getLogger(UserSQLDAO.class);
 
-    private JdbcConnectionPool connectionPool;
+    private JdbcTemplate jdbcTemplate;
 
 
-    public UserSQLDAO(DatabaseConnector connector) {
-        connectionPool = connector.getConnectionPool();
+    public UserSQLDAO(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
@@ -31,38 +23,18 @@ public class UserSQLDAO implements UserDAO {
 
         String query = String.format("select * from %s where %s = ? and %s = ?", USER_TABLE_NAME,
                 UserTableColumnName.LOGIN, UserTableColumnName.PASSWORD);
-        User user = null;
-        try (Connection conn = connectionPool.getConnection()) {
-            PreparedStatement statement = conn.prepareStatement(query);
-            statement.setString(1, login);
-            statement.setString(2, password);
-            ResultSet resultSetUser = statement.executeQuery();
-            if (resultSetUser.next()) {
-                int id = resultSetUser.getInt("id");
-                user = new User(id, login);
-            }
-
-        } catch (SQLException e) {
-            logger.info("db take query drop down:" + e.getMessage());
-        }
-        return user;
+        return jdbcTemplate.queryForObject(query, new Object[]{login, password}, (rs, rn) -> {
+            Integer id = rs.getInt(UserTableColumnName.ID.toString());
+            return new User(id, login);
+        });
     }
 
     @Override
     public boolean checkExistsUser(String login) {
-
         String query = String.format("select * from %s where %s = ? ", USER_TABLE_NAME,
                 UserTableColumnName.LOGIN);
-        Boolean result = false;
-        try (Connection conn = connectionPool.getConnection()) {
-            PreparedStatement statement = conn.prepareStatement(query);
-            statement.setString(1, login);
-            ResultSet resultSetUser = statement.executeQuery();
-            result = resultSetUser.next();
-
-        } catch (SQLException e) {
-            logger.info("db take query drop down:" + e.getMessage());
-        }
-        return result;
+        int count = jdbcTemplate.update(query, new Object[]{login});
+//TODO how to do it more pretty
+        return count > 0;
     }
 }

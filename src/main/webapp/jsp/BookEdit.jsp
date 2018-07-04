@@ -1,7 +1,9 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ page import="com.books.entities.*,java.text.*,java.util.*,com.books.services.*" %>
 <%@taglib prefix="t" tagdir="/WEB-INF/tags" %>
-<html>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
 <script>
 	function my_f(Id) {
@@ -13,17 +15,15 @@
 <body>
 <t:wrapper>
 </t:wrapper>
-<form method="post">
+<form method="post" th:object="${book}" th:action>
 <label> name
-<input type="text" value="${not empty book.name ?  book.name : ''}" name="name">
+<input type="text" value="${not empty book.name ?  book.name : ''}" name="name"  th:field="*{name}">
 </label>
 <br>
-<%
-  Book book = (Book) request.getAttribute("book");
-  %>
+
 <label> publish date:
-<input type="hidden" value='${book.id}' name="bookId">
-<input type="date" name="publishDate"  value='<%out.print(String.format("%tF",book.getPublishDate()));%>'>
+<input type="hidden" value='${book.id}' name="bookId" th:field="*{id}">
+<input type="date" name="publishDate"   value="${book.publishDate}" >
 </label>
 <br>
 <label> authors:</label>
@@ -34,18 +34,14 @@
       <br>
 </c:forEach>
  <input type="button" value="add" onclick="my_f('textid')"><br>
+
 	<div id="textid" style="display:none">
-	<%
-	List<Person> authors =  (List<Person>)request.getAttribute("canAuthorsAdd");
-	out.print("<ul>");
-	for(Person author :authors){
-	out.print("<li>");
-	out.print(String.format("<button type='submit' name='addedAuthor' value='%s'>add</button> ",author.getId()));
-out.print(author);
-	out.print("</li>");
-	}
-	out.print("</ul>");
-	%>
+	<ul>
+	<c:forEach items="${canAuthorsAdd}" var="author">
+	<li> <button type="submit" name="addedAuthor" value="${author.id}">add</button> ${author}</li>
+	</c:forEach>
+	</ul>
+
 	</div>
 <br>
 <label> publisher:${book.publisher}
@@ -54,11 +50,11 @@ out.print(author);
 </label>
 <div id="publishers" style="display:none">
 <c:forEach items="${publishers}" var="publisher">
- ${publisher} <button type="submit" name="changePublisher" value="${publisher.id}">change</button> <br>
+<li><button type="submit" name="changePublisher" value="${publisher.id}">change</button>  ${publisher} </li>
 </c:forEach>
 </div>
 <br>
-<input type="submit" value="confirm changes" name="confirmChange">
+<button type="submit" formAction="save">confirm changes</button>
 </form>
 </body>
 </html>

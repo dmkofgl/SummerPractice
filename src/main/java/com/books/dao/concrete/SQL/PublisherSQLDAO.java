@@ -1,20 +1,12 @@
 package com.books.dao.concrete.SQL;
 
-import com.books.entities.Publisher;
 import com.books.dao.abstracts.PublisherDAO;
-import com.books.utils.DatabaseConnector;
+import com.books.entities.Publisher;
 import com.books.utils.PublisherTableColumnName;
-import org.h2.jdbcx.JdbcConnectionPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.stereotype.Component;
 
-import javax.sql.DataSource;
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class PublisherSQLDAO implements PublisherDAO {
@@ -24,8 +16,8 @@ public class PublisherSQLDAO implements PublisherDAO {
     private JdbcTemplate jdbcTemplate;
 
 
-    public PublisherSQLDAO(DataSource dataSource) {
-        jdbcTemplate = new JdbcTemplate(dataSource);
+    public PublisherSQLDAO(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate =jdbcTemplate;
     }
 
     @Override

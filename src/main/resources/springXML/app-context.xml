@@ -6,11 +6,8 @@
     http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
     http://www.springframework.org/schema/context
     http://www.springframework.org/schema/context/spring-context-4.1.xsd">
-    <context:component-scan base-package="com.books"></context:component-scan>
-    <import resource="/springXML/daos.xml"/>
-    <import resource="/springXML/services.xml"/>
-    <import resource="/springXML/utils.xml"/>
-    <import resource="/springXML/database.xml"/>
-    <import resource="/springXML/app-context.xml"/>
+    <context:component-scan base-package="com.books.config"></context:component-scan>
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 
+    </bean>
 </beans>

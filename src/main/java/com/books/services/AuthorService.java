@@ -1,15 +1,14 @@
 package com.books.services;
 
+import com.books.dao.abstracts.AuthorDAO;
 import com.books.entities.Person;
 import com.books.services.abstracts.AuthorServiceable;
-import com.books.dao.abstracts.AuthorDAO;
-import com.books.dao.concrete.SQL.AuthorSQLDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class AuthorService implements AuthorServiceable {
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthorService.class);
@@ -33,6 +32,11 @@ public class AuthorService implements AuthorServiceable {
     @Override
     public List<Person> getAllAuthors() {
         return storage.getList();
+    }
+
+    @Override
+    public List<Person> getSomeAuthors(Collection<Person> without) {
+        return getAllAuthors().stream().filter(author -> !(without.contains(author))).collect(Collectors.toList());
     }
 
     @Override

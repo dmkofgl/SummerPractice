@@ -8,17 +8,16 @@ import com.books.entities.Person;
 import com.books.entities.Publisher;
 import com.books.utils.BookAuthorTableColumnName;
 import com.books.utils.BookTableColumnName;
-import com.books.utils.DatabaseConnector;
-import org.h2.jdbcx.JdbcConnectionPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+
 public class BookSQLDAO implements BookDAO {
     private static final String BOOK_TABLE_NAME = "bookapp.books";
     private static final String BOOK_AUTHORS_TABLE_NAME = "bookapp.book_author";
@@ -26,20 +25,20 @@ public class BookSQLDAO implements BookDAO {
     private static final Logger logger = LoggerFactory.getLogger(BookSQLDAO.class);
 
 
-    private JdbcConnectionPool connectionPool;
+    private JdbcTemplate jdbcTemplate;
     private AuthorDAO authorRepository;
     private PublisherDAO publisherRepository;
 
 
-    private BookSQLDAO(DatabaseConnector connector, AuthorDAO authorDAO, PublisherDAO publisherDAO) {
-        connectionPool = connector.getConnectionPool();
+    private BookSQLDAO(JdbcTemplate jdbcTemplate, AuthorDAO authorDAO, PublisherDAO publisherDAO) {
+        this.jdbcTemplate = jdbcTemplate;
         authorRepository = authorDAO;
         publisherRepository = publisherDAO;
     }
 
     @Override
     public void add(Book item) {
-        String queryBook = String.format("insert into %s (%s,%s,%s ) values(?, ?,?)",
+        String queryBook = String.format("insert into %s (%s, %s, %s ) values(?, ?, ?)",
                 BOOK_TABLE_NAME,
                 BookTableColumnName.NAME.toString(),
                 BookTableColumnName.PUBLISHER_ID.toString(),
@@ -48,29 +47,18 @@ public class BookSQLDAO implements BookDAO {
         Collection<Person> authors = item.getAuthors();
         String queryBookAuthor = "";
         for (Person author : authors) {
-            queryBookAuthor += String.format("insert into %s (%s,%s ) values(%s, %s);",
+            queryBookAuthor += String.format("insert into %s (%s, %s ) values(%s, %s);",
                     BOOK_AUTHORS_TABLE_NAME,
                     BookAuthorTableColumnName.AUTHOR_ID.toString(),
                     BookAuthorTableColumnName.BOOK_ID.toString(),
                     author.getId(), item.getId());
         }
-        try (Connection conn = connectionPool.getConnection()) {
-            PreparedStatement addBookStatement = conn.prepareStatement(queryBook);
-            addBookStatement.setString(1, item.getName());
-            try {
-                Integer publisherId = item.getPublisher().getId();
-                addBookStatement.setInt(2, publisherId);
-            } catch (NullPointerException e) {
-                addBookStatement.setNull(2, Types.INTEGER);
-            }
-            addBookStatement.setDate(3, new java.sql.Date(item.getPublishDate().getTime()));
-            addBookStatement.execute();
 
-            Statement addBookAuthorsStatement = conn.createStatement();
-            addBookAuthorsStatement.execute(queryBookAuthor);
-        } catch (SQLException e) {
-            logger.info("db add query drop down:" + e.getMessage());
-        }
+        jdbcTemplate.update(queryBook, new Object[]{
+                item.getName(),
+                item.getPublisher().getId(),
+                item.getPublishDate()});
+        jdbcTemplate.update(queryBookAuthor);
     }
 
     private void addWithId(Book item) {
@@ -90,24 +78,12 @@ public class BookSQLDAO implements BookDAO {
                     BookAuthorTableColumnName.BOOK_ID.toString(),
                     author.getId(), item.getId());
         }
-        try (Connection conn = connectionPool.getConnection()) {
-            PreparedStatement addBookStatement = conn.prepareStatement(queryBook);
-            addBookStatement.setInt(1, item.getId());
-            addBookStatement.setString(2, item.getName());
-            try {
-                Integer publisherId = item.getPublisher().getId();
-                addBookStatement.setInt(3, publisherId);
-            } catch (NullPointerException e) {
-                addBookStatement.setNull(3, Types.INTEGER);
-            }
-            addBookStatement.setDate(4, new java.sql.Date(item.getPublishDate().getTime()));
-            addBookStatement.execute();
-
-            Statement addBookAuthorsStatement = conn.createStatement();
-            addBookAuthorsStatement.execute(queryBookAuthor);
-        } catch (SQLException e) {
-            logger.info("db add query drop down:" + e.getMessage());
-        }
+        jdbcTemplate.update(queryBook, new Object[]{
+                item.getId(),
+                item.getName(),
+                item.getPublisher().getId(),
+                item.getPublishDate()});
+        jdbcTemplate.update(queryBookAuthor);
     }
 
     @Override
@@ -118,91 +94,27 @@ public class BookSQLDAO implements BookDAO {
 
     @Override
     public Book remove(int id) {
-        Book result = null;
+        Book result = getBookById(id);
         String queryDeleteBook = String.format("delete from %s where %s = ?; ", BOOK_TABLE_NAME, BookTableColumnName.ID);
         String deleteBookAuthorQuery = String.format("delete from %s where %s = ?", BOOK_AUTHORS_TABLE_NAME, BookAuthorTableColumnName.BOOK_ID);
-        try (Connection conn = connectionPool.getConnection()) {
-            result = getBookById(id);
-
-            PreparedStatement deleteAuthorsStatement = conn.prepareStatement(deleteBookAuthorQuery);
-            deleteAuthorsStatement.setInt(1, id);
-            deleteAuthorsStatement.execute();
-
-            PreparedStatement deleteBookStatement = conn.prepareStatement(queryDeleteBook);
-            deleteBookStatement.setInt(1, id);
-            deleteBookStatement.execute();
-        } catch (SQLException e) {
-            logger.info("db remove query drop down:" + e.getMessage());
-        }
+        jdbcTemplate.update(deleteBookAuthorQuery, new Object[]{id});
+        jdbcTemplate.update(queryDeleteBook, new Object[]{id});
         return result;
+
     }
 
-    private Book compileBookFromSet(ResultSet bookSet) throws SQLException {
-        Integer id = bookSet.getInt(BookTableColumnName.ID.toString());
-        String name = bookSet.getString(BookTableColumnName.NAME.toString());
-        Date date = bookSet.getDate(BookTableColumnName.BOOKDATE.toString());
-        List<Person> authors = new ArrayList<>();
-        String queryBookAuthors = String.format("select * from %s where %s = ?",
-                BOOK_AUTHORS_TABLE_NAME,
-                BookAuthorTableColumnName.BOOK_ID.toString());
-//In DB value is null, but there is 0
-        Integer publusherId = bookSet.getObject(BookTableColumnName.PUBLISHER_ID.toString(), Integer.class);
-        Publisher publisher = null;
-        if (publusherId != null) {
-            publisher = publisherRepository.getPublisherById(publusherId.intValue());
-        }
-        try (Connection conn = connectionPool.getConnection()) {
-            PreparedStatement statement = conn.prepareStatement(queryBookAuthors);
-            statement.setInt(1, bookSet.getInt(BookTableColumnName.ID.toString()));
-            ResultSet resultSetBookAuthor = statement.executeQuery();
-            while (resultSetBookAuthor.next()) {
-                Integer authorId = resultSetBookAuthor.getInt(BookAuthorTableColumnName.AUTHOR_ID.toString());
-
-                authors.add(authorRepository.getAuthorById(authorId));
-            }
-        }
-        Book book = new Book(id, name, date, publisher, authors);
-        return book;
-    }
 
     @Override
     public List<Book> getList() {
         String queryBook = String.format("select * from %s ", BOOK_TABLE_NAME);
-        ResultSet resultSetBooks;
-        List<Book> result = new ArrayList<>();
-
-        try (Connection conn = connectionPool.getConnection()) {
-            Statement statement = conn.createStatement();
-            resultSetBooks = statement.executeQuery(queryBook);
-            while (resultSetBooks.next()) {
-                Book book = compileBookFromSet(resultSetBooks);
-                result.add(book);
-            }
-        } catch (SQLException e) {
-            logger.info("db get_all query drop down:" + e.getMessage());
-        } finally {
-        }
-        return result;
+        return jdbcTemplate.query(queryBook, new BookMapper());
     }
 
     @Override
     public Book getBookById(int id) {
         String queryBook = String.format("select * from %s where %s = ?",
                 BOOK_TABLE_NAME, BookTableColumnName.ID.toString());
-        ResultSet resultSetBooks;
-        Book result = null;
-
-        try (Connection conn = connectionPool.getConnection()) {
-            PreparedStatement statement = conn.prepareStatement(queryBook);
-            statement.setInt(1, id);
-            resultSetBooks = statement.executeQuery();
-            //take only one
-            resultSetBooks.next();
-            result = compileBookFromSet(resultSetBooks);
-        } catch (SQLException e) {
-            logger.info("db get_all query drop down:" + e.getMessage());
-        }
-        return result;
+        return jdbcTemplate.queryForObject(queryBook, new Object[]{id}, new BookMapper());
     }
 
     @Override
@@ -212,6 +124,30 @@ public class BookSQLDAO implements BookDAO {
         } else {
             remove(item);
             addWithId(item);
+        }
+    }
+
+    private class BookMapper implements RowMapper<Book> {
+        @Override
+        public Book mapRow(ResultSet resultSet, int i) throws SQLException {
+            Integer id = resultSet.getInt(BookTableColumnName.ID.toString());
+            String name = resultSet.getString(BookTableColumnName.NAME.toString());
+            Date date = resultSet.getDate(BookTableColumnName.BOOKDATE.toString());
+
+            String queryBookAuthors = String.format("select * from %s where %s = ?",
+                    BOOK_AUTHORS_TABLE_NAME,
+                    BookAuthorTableColumnName.BOOK_ID.toString());
+            Integer publisherId = resultSet.getObject(BookTableColumnName.PUBLISHER_ID.toString(), Integer.class);
+            List<Person> authors = jdbcTemplate.query(queryBookAuthors, new Object[]{id}, (rs, rn) -> {
+                Integer authorId = rs.getInt(BookAuthorTableColumnName.AUTHOR_ID.toString());
+                return authorRepository.getAuthorById(authorId);
+            });
+            Publisher publisher = null;
+            if (publisherId != null) {
+                publisher = publisherRepository.getPublisherById(publisherId.intValue());
+            }
+            Book book = new Book(id, name, date, publisher, authors);
+            return book;
         }
     }
 }

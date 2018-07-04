@@ -2,6 +2,7 @@ package com.books;
 
 import com.books.config.CustomContextListener;
 import com.books.dao.abstracts.AuthorDAO;
+import com.books.dao.abstracts.BookDAO;
 import com.books.dao.abstracts.PublisherDAO;
 import com.books.dao.concrete.SQL.AuthorSQLDAO;
 import com.books.dao.concrete.SQL.PublisherSQLDAO;
@@ -30,32 +31,6 @@ public class BookApplication {
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(ClassLoader.getSystemResource("applicationContext.xml").toString());
 
         BookServiceable filter = context.getBean(BookService.class);
-      /*  System.out.println(filter.getAllBooks());
-        Date date = new Date();
-        List<Person> authors = new ArrayList<>();
-
-        authors.add(new Person(0, "Ivan", "First"));
-        authors.add(new Person(1, "Andrew", "Second"));
-        authors.add(new Person(2, "Sam", "Third"));
-        authors.add(new Person(3, "Andrew", "Fourth"));
-
-        books = new ArrayList<Book>();
-        books.add(new Book(0, "first book", date, new Publisher(0, "Publisher1"),
-                authors.get(0), authors.get(1)));
-        books.add(new Book(1, "Second book", date, new Publisher(1, "Publisher2"),
-                authors.get(1)));
-        books.add(new Book(2, "Third book", date, new Publisher(2, "Publisher3"),
-                authors.get(2)));
-        books.add(new Book(3, "Third book", date, new Publisher(3, "Publisher4"),
-                authors.get(3)));
-/*
-        logger.info("View books");
-        logger.debug("{}", books);
-        logger.info("View filtered by author name books that contains 'an'");
-        logger.debug("{}", books);
-        logger.debug("{}", filter.filterByAuthorName(books, "an"));
-        System.out.println(ClassLoader.getSystemResource("springXML/daos.xml"));
-        System.out.println(ClassLoader.getSystemResource("applicationContext.xml").toString());*/
 
         PublisherDAO publisherDAO =context.getBean(PublisherDAO.class);
         AuthorDAO authorDAO =context.getBean(AuthorSQLDAO.class);
@@ -67,6 +42,11 @@ public class BookApplication {
         System.out.println(publisherDAO.getPublisherById(1));
         System.out.println(authorDAO.getList());
         System.out.println(publisherDAO.getList());
+        BookDAO bookDAO =context.getBean(BookDAO.class);
+       Book b = bookDAO.getBookById(1);
+
+
+
     }
 
 

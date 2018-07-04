@@ -1,5 +1,9 @@
 package com.books.entities;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -7,6 +11,7 @@ public class Book {
 
     private Integer id;
     private String name;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private Date publishDate;
     private List<Person> authors;
     private Publisher publisher;
@@ -59,7 +64,6 @@ public class Book {
     public void setPublishDate(Date publishDate) {
         this.publishDate = publishDate;
     }
-
     public void setAuthors(Collection<Person> authors) {
         this.authors = new ArrayList<>(authors);
     }
