@@ -17,13 +17,12 @@
 </t:wrapper>
 <form method="post" th:object="${book}" th:action>
 <label> name
-<input type="text" value="${not empty book.name ?  book.name : ''}" name="name"  th:field="*{name}">
+<input type="text" name="name"  th:field="*{name}" th:text="${book}">
 </label>
 <br>
-
 <label> publish date:
 <input type="hidden" value='${book.id}' name="bookId" th:field="*{id}">
-<input type="date" name="publishDate"   value="${book.publishDate}" >
+<input type="date" name="publishDate"   th:field="*{publishDate}" >
 </label>
 <br>
 <label> authors:</label>

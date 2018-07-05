@@ -12,10 +12,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.beans.PropertyEditorSupport;
+import java.security.Principal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @RequestMapping("/books")
@@ -32,9 +38,19 @@ public class BookController {
 
     @GetMapping("/list")
     public String viewBookList(Model model) {
-        model.addAttribute("list", bookService.getAllBooks());
+        model.addAttribute("books", bookService.getAllBooks());
         //TODO make it more pretty
-        return NavigateServletConstants.BOOK_LIST_JSP_PATH;
+        return "list";
+    }
+    @GetMapping("/search")
+    public String search(Model model) {
+        model.addAttribute("books", bookService.getAllBooks());
+        return "search";
+    }
+    @PostMapping("/search")
+    public String filterByAuthor(String part, Model model) {
+        model.addAttribute("books", bookService.filterByAuthorName(part));
+        return "search";
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
@@ -45,21 +61,54 @@ public class BookController {
         model.addAttribute("publishers", publisherService.getAllPublishers());
         model.addAttribute("canAuthorsAdd", authors);
         model.addAttribute("book", book);
-        return NavigateServletConstants.BOOK_EDIT_JSP_PATH;
+        return "edit";
     }
 
     @RequestMapping(value = "/{bookId}", params = "form", method = RequestMethod.POST)
     public String update(@PathVariable("id") int id, Book book, BindingResult bindingResult,
                          Model uiModel, HttpServletRequest httpServletRequest) {
         System.out.println(uiModel);
-        return "redirect:/contacts/" + book.getId().toString();
+        return "list";
     }
 
     @RequestMapping(value = "/save")
     public String saveBook(Book book, BindingResult bindingResult) {
-        if(bindingResult.hasErrors())
-        {  return "list";}
+        if (bindingResult.hasErrors()) {
+            return "list";
+        }
         logger.info(book.toString());
         return "list";
     }
+
+    @RequestMapping(value = "/hello")
+    public String hello(Model model) {
+        model.addAttribute("book", bookService.getBookById(1));
+        return "hello";
+    }
+
+    @RequestMapping(value = "/hello", method = RequestMethod.POST)
+    public String save(@ModelAttribute Book book, Model model) {
+        model.addAttribute("book", bookService.getBookById(1));
+        logger.info(book.toString());
+        return "hello";
+    }
+
+    @InitBinder
+    public void initBinder(WebDataBinder dataBinder) {
+        dataBinder.setDisallowedFields("id");
+
+        dataBinder.registerCustomEditor(Date.class, new PropertyEditorSupport() {
+            @Override
+            public void setAsText(String value) {
+                try {
+                    setValue(new SimpleDateFormat("yyyy-MM-dd").parse(value));
+                } catch (ParseException e) {
+                    setValue(null);
+                    logger.error(e.getMessage());
+                }
+            }
+        });
+
+    }
+
 }

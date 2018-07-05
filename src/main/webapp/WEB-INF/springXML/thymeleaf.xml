@@ -5,7 +5,7 @@
         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <bean id="templateEngine"
-          class="org.thymeleaf.spring4.SpringTemplateEngine">
+          class="org.thymeleaf.spring5.SpringTemplateEngine">
         <property name="templateResolver" ref="templateResolver"/>
         <!-- Enabling the SpringEL compiler with Spring 4.2.4 or newer can speed up  -->
         <!-- execution in most scenarios, but might be incompatible with specific    -->
@@ -16,18 +16,18 @@
     </bean>
 
     <bean id="templateResolver"
-          class="org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver">
+          class="org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver">
         <property name="prefix" value="/WEB-INF/templates/" />
         <property name="suffix" value=".html" />
         <!-- HTML is the default value, added here for the sake of clarity.          -->
-        <property name="templateMode" value="HTML" />
+        <property name="templateMode" value="HTML5" />
         <!-- Template cache is true by default. Set to false if you want             -->
         <!-- templates to be automatically updated when modified.                    -->
         <property name="cacheable" value="true" />
     </bean>
 
 
-    <bean class="org.thymeleaf.spring4.view.ThymeleafViewResolver">
+    <bean class="org.thymeleaf.spring5.view.ThymeleafViewResolver">
         <property name="templateEngine" ref="templateEngine" />
     </bean>
 </beans>
