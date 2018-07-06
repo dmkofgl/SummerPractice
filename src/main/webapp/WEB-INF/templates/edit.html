@@ -1,39 +1,48 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>edit book</title>
 </head>
 <body>
 <form method="post" th:object="${book}">
-    <input type="hidden" value='${book.id}' name="bookId" th:field="*{id}">
-
+    <input type="hidden" th:field="*{id}">
     <label> name
         <input type="text" name="name" th:field="*{name}" th:value="*{name}">
     </label>
 
     <label> publish date:
         <input type="date" name="publishDate" th:field="*{publishDate}">
+
     </label>
 
     <label> authors:</label>
-    <ul>
-        <th:block th:each="author : ${book.authors}">
-            <li th:text="${author}">
-            </li>
-            <button type="submit" name="removeAuthor" th:value="${author.id}">remove</button>
-        </th:block>
-    </ul>
-    <div id="textid" style="display:none">
-        <ul>
-            <th:block th:each="author : ${canAuthorsAdd}">
-                <li>
-                    <button type="submit" name="addedAuthor" value="${author.id}">add</button>
-                    <span th:text=" ${author}"></span></span></li>
-            </th:block>
-        </ul>
 
-    </div>
-</form>
-</body>
-</html>
+    <ul>
+      <li  th:each="x,stat : *{authors}">
+          <span th:text="${x}"></span>
+        <input type="hidden" th:field="*{authors[__${stat.index}__].id}">
+        <input type="hidden" th:field="*{authors[__${stat.index}__].firstName}"></input>
+        <input type="hidden" th:field="*{authors[__${stat.index}__].lastName}"></input>
+
+         <button type="submit" name="removeAuthor" th:value="*{authors[__${stat.index}__].id}" >remove</button>
+         </li>
+     </ul>
+     <div id="textid" style="display:none">
+         <ul>
+             <th:block th:each="author : ${canAuthorsAdd}">
+                 <li>
+                     <button type="submit" name="addedAuthor" value="${author.id}">add</button>
+                     <span th:text=" ${author}"></span></span></li>
+             </th:block>
+         </ul>
+     </div>
+
+     <label> publisher:</label>
+     <input type="hidden" th:field="${book.publisher.id}">
+     <input type="hidden" th:field="${book.publisher.name}">
+     <span th:text="${book.publisher.name}">name</span>
+     <input type="submit" value="confirm" formaction="save">
+ </form>
+ </body>
+ </html>

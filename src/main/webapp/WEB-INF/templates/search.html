@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>search</title>
+</head>
+<body>
+<form method="post" th:object="${query}">
+    <label> Author name:
+        <input type="text" th:if="${query != null}"  th:value="${query}" id="query" name="query"  >
+
+    </label>
+    <input type="submit" value="filter">
+</form>
+<th:block th:each="book : ${books}">
+    <li th:text="${book}"></li>
+    <a href="#" th:href="${book.id}" th:text="edit"></a>
+</th:block>
+</body>
+</html>

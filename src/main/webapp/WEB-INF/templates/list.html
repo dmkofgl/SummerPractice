@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html  xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Book list</title>
@@ -9,6 +9,7 @@
 <ul>
     <th:block th:each="book : ${books}">
         <li th:text="${book}"></li>
+        <a href="#" th:href="${book.id}" th:text="edit"></a>
     </th:block>
 </ul>
 <a href=/books/new>add new book</a>
