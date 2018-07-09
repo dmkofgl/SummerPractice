@@ -2,7 +2,6 @@ package com.books.services;
 
 import com.books.services.abstracts.EncryptServiceable;
 import org.apache.commons.codec.digest.DigestUtils;
-import org.springframework.stereotype.Component;
 
 
 public class EncryptService implements EncryptServiceable {

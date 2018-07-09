@@ -12,8 +12,7 @@
     </label>
 
     <label> publish date:
-        <input type="date" name="publishDate" th:field="*{publishDate}">
-
+        <input type="date" name="publishDate"  th:value="${#dates.format(book.publishDate,'yyyy-MM-dd')}">
     </label>
 
     <label> authors:</label>
