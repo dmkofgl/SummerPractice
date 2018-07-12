@@ -44,17 +44,12 @@
 <div th:replace="fragments/header :: header"></div>
 <form method="post" th:object="${book}" class="form-horizontal">
     <fieldset>
+        <!--Book without id-->
         <legend>Book</legend>
-        <input type="hidden" th:field="*{id}">
-
         <div th:replace="fragments/edit :: name" ></div>
-
         <div th:replace="fragments/edit :: date" ></div>
-
         <div th:replace="fragments/edit :: authors" ></div>
-
         <div th:replace="fragments/edit :: addAuthor" ></div>
-
         <div th:replace="fragments/edit :: publisher" ></div>
 
         <div class=" text-center">

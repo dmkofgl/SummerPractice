@@ -21,20 +21,24 @@ public class UserSQLDAO implements UserDAO {
     @Override
     public User takeUser(String login, String password) {
 
-        String query = String.format("select * from %s where %s = ? and %s = ?", USER_TABLE_NAME,
+        String query = String.format("select %s from %s where %s = ? and %s = ?", UserTableColumnName.ID.toString(), USER_TABLE_NAME,
                 UserTableColumnName.LOGIN, UserTableColumnName.PASSWORD);
-        return jdbcTemplate.queryForObject(query, new Object[]{login, password}, (rs, rn) -> {
-            Integer id = rs.getInt(UserTableColumnName.ID.toString());
-            return new User(id, login);
-        });
+        Integer id = jdbcTemplate.queryForObject(query, new Object[]{login, password}, Integer.class);
+        return new User(id, login);
+
     }
 
     @Override
     public boolean checkExistsUser(String login) {
-        String query = String.format("select * from %s where %s = ? ", USER_TABLE_NAME,
+        String query = String.format("select %s from %s where %s = ? ", UserTableColumnName.ID.toString(), USER_TABLE_NAME,
                 UserTableColumnName.LOGIN);
-        int count = jdbcTemplate.update(query, new Object[]{login});
+        Integer result;
+        try {
+             result = jdbcTemplate.queryForObject(query, new Object[]{login}, Integer.class);
+        } catch (Exception e) {
+            result = null;
+        }
 //TODO how to do it more pretty
-        return count > 0;
+        return result != null;
     }
 }

@@ -3,16 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <title>Book list</title>
+    <link th:href="@{/styles/bootstrap.css}" rel="stylesheet">
 </head>
 <body>
-<a href=/books/search>find book by author</a>
-<ul>
-    <th:block th:each="book : ${books}">
-        <li th:text="${book}"></li>
-        <a href="#" th:href="${book.id}" th:text="edit"></a>
-    </th:block>
-</ul>
-<a href=/books/new>add new book</a>
+<div th:replace="fragments/header :: header" ></div>
+<div th:replace="fragments/bookList :: bookList"></div>
+<a href="#" th:href="new" class="btn btn-outline-success my-2 my-sm-0">add new book</a>
 
 </body>
 </html>

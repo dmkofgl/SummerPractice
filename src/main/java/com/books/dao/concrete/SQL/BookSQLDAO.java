@@ -11,7 +11,9 @@ import com.books.utils.BookTableColumnName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 
 import java.sql.*;
 import java.util.Collection;
@@ -45,19 +47,26 @@ public class BookSQLDAO implements BookDAO {
                 BookTableColumnName.BOOKDATE.toString());
 
         Collection<Person> authors = item.getAuthors();
+        GeneratedKeyHolder holder = new GeneratedKeyHolder();
+        jdbcTemplate.update(new PreparedStatementCreator() {
+            @Override
+            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
+                PreparedStatement statement = con.prepareStatement(queryBook, Statement.RETURN_GENERATED_KEYS);
+                statement.setString(1, item.getName());
+                statement.setInt(2, item.getPublisher().getId());
+                statement.setDate(3, new java.sql.Date(item.getPublishDate().getTime()));
+                return statement;
+            }
+        }, holder);
+        Long id = holder.getKey().longValue();
         String queryBookAuthor = "";
         for (Person author : authors) {
             queryBookAuthor += String.format("insert into %s (%s, %s ) values(%s, %s);",
                     BOOK_AUTHORS_TABLE_NAME,
                     BookAuthorTableColumnName.AUTHOR_ID.toString(),
                     BookAuthorTableColumnName.BOOK_ID.toString(),
-                    author.getId(), item.getId());
+                    author.getId(), id);
         }
-
-        jdbcTemplate.update(queryBook, new Object[]{
-                item.getName(),
-                item.getPublisher().getId(),
-                item.getPublishDate()});
         jdbcTemplate.update(queryBookAuthor);
     }
 

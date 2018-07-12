@@ -11,7 +11,7 @@ public interface AuthorServiceable {
     void setPerson(int id, Person person);
 
     List<Person> getAllAuthors();
-    List<Person> getSomeAuthors(Collection<Person> without);
+    List<Person> getReducedAuthors(Collection<Person> without);
 
     Person getAuthorById(int id);
 

@@ -35,7 +35,7 @@ public class AuthorService implements AuthorServiceable {
     }
 
     @Override
-    public List<Person> getSomeAuthors(Collection<Person> without) {
+    public List<Person> getReducedAuthors(Collection<Person> without) {
         return getAllAuthors().stream().filter(author -> !(without.contains(author))).collect(Collectors.toList());
     }
 

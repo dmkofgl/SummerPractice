@@ -17,7 +17,6 @@ import javax.servlet.http.*;
 import java.applet.AppletContext;
 import java.io.IOException;
 
-@WebServlet("/LoginServlet")
 public class LoginServlet extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(LoginServlet.class);
     @Autowired
@@ -29,7 +28,6 @@ public class LoginServlet extends HttpServlet {
     public void init() throws ServletException {
         super.init();
         logger.info("init login servlet");
-        SpringBeanAutowiringSupport.processInjectionBasedOnCurrentContext(this);
 
     }
 
