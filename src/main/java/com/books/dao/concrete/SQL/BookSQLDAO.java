@@ -16,9 +16,11 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BookSQLDAO implements BookDAO {
     private static final String BOOK_TABLE_NAME = "bookapp.books";
@@ -45,13 +47,17 @@ public class BookSQLDAO implements BookDAO {
                 BookTableColumnName.NAME.toString(),
                 BookTableColumnName.PUBLISHER_ID.toString(),
                 BookTableColumnName.BOOKDATE.toString());
+        String queryBookAuthor = String.format("insert into %s (%s, %s ) values(?, ?);",
+                BOOK_AUTHORS_TABLE_NAME,
+                BookAuthorTableColumnName.AUTHOR_ID.toString(),
+                BookAuthorTableColumnName.BOOK_ID.toString());
 
         Collection<Person> authors = item.getAuthors();
         GeneratedKeyHolder holder = new GeneratedKeyHolder();
         jdbcTemplate.update(new PreparedStatementCreator() {
             @Override
-            public PreparedStatement createPreparedStatement(Connection con) throws SQLException {
-                PreparedStatement statement = con.prepareStatement(queryBook, Statement.RETURN_GENERATED_KEYS);
+            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+                PreparedStatement statement = connection.prepareStatement(queryBook, Statement.RETURN_GENERATED_KEYS);
                 statement.setString(1, item.getName());
                 statement.setInt(2, item.getPublisher().getId());
                 statement.setDate(3, new java.sql.Date(item.getPublishDate().getTime()));
@@ -59,15 +65,8 @@ public class BookSQLDAO implements BookDAO {
             }
         }, holder);
         Long id = holder.getKey().longValue();
-        String queryBookAuthor = "";
-        for (Person author : authors) {
-            queryBookAuthor += String.format("insert into %s (%s, %s ) values(%s, %s);",
-                    BOOK_AUTHORS_TABLE_NAME,
-                    BookAuthorTableColumnName.AUTHOR_ID.toString(),
-                    BookAuthorTableColumnName.BOOK_ID.toString(),
-                    author.getId(), id);
-        }
-        jdbcTemplate.update(queryBookAuthor);
+        List batch = authors.stream().map(author -> new Object[]{author.getId(), id}).collect(Collectors.toList());
+        jdbcTemplate.batchUpdate(queryBookAuthor, batch);
     }
 
     private void addWithId(Book item) {
@@ -77,22 +76,20 @@ public class BookSQLDAO implements BookDAO {
                 BookTableColumnName.NAME.toString(),
                 BookTableColumnName.PUBLISHER_ID.toString(),
                 BookTableColumnName.BOOKDATE.toString());
+        String queryBookAuthor = String.format("insert into %s (%s, %s ) values(?, ?);",
+                BOOK_AUTHORS_TABLE_NAME,
+                BookAuthorTableColumnName.AUTHOR_ID.toString(),
+                BookAuthorTableColumnName.BOOK_ID.toString());
 
         Collection<Person> authors = item.getAuthors();
-        String queryBookAuthor = "";
-        for (Person author : authors) {
-            queryBookAuthor += String.format("insert into %s (%s,%s ) values(%s, %s);",
-                    BOOK_AUTHORS_TABLE_NAME,
-                    BookAuthorTableColumnName.AUTHOR_ID.toString(),
-                    BookAuthorTableColumnName.BOOK_ID.toString(),
-                    author.getId(), item.getId());
-        }
-        jdbcTemplate.update(queryBook, new Object[]{
-                item.getId(),
+
+        jdbcTemplate.update(queryBook, item.getId(),
                 item.getName(),
                 item.getPublisher().getId(),
-                item.getPublishDate()});
-        jdbcTemplate.update(queryBookAuthor);
+                item.getPublishDate());
+        List batch = authors.stream().map(author -> new Object[]{author.getId(), item.getId()}).collect(Collectors.toList());
+        jdbcTemplate.batchUpdate(queryBookAuthor, batch);
+
     }
 
     @Override
@@ -106,8 +103,8 @@ public class BookSQLDAO implements BookDAO {
         Book result = getBookById(id);
         String queryDeleteBook = String.format("delete from %s where %s = ?; ", BOOK_TABLE_NAME, BookTableColumnName.ID);
         String deleteBookAuthorQuery = String.format("delete from %s where %s = ?", BOOK_AUTHORS_TABLE_NAME, BookAuthorTableColumnName.BOOK_ID);
-        jdbcTemplate.update(deleteBookAuthorQuery, new Object[]{id});
-        jdbcTemplate.update(queryDeleteBook, new Object[]{id});
+        jdbcTemplate.update(deleteBookAuthorQuery, id);
+        jdbcTemplate.update(queryDeleteBook, id);
         return result;
 
     }
