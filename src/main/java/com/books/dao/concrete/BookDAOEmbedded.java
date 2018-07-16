@@ -1,6 +1,5 @@
 package com.books.dao.concrete;
 
-import com.books.BookApplication;
 import com.books.entities.Book;
 import com.books.entities.Person;
 import com.books.entities.Publisher;
@@ -15,7 +14,7 @@ import java.util.List;
 public class BookDAOEmbedded implements BookDAO {
 
     private static List<Book> books;
-    private static final Logger logger = LoggerFactory.getLogger(BookApplication.class);
+    private static final Logger logger = LoggerFactory.getLogger(BookDAOEmbedded.class);
 
     public BookDAOEmbedded(List<Book> books) {
         this.books = books;
