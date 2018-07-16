@@ -9,14 +9,5 @@ import javax.servlet.http.HttpSession;
 
 @Controller
 public class AuthenticateController {
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String loginPage(HttpServletRequest request) {
-        HttpSession httpSession = request.getSession();
-        if (httpSession.getAttribute("username") == null) {
-            return "login";
-        }
-        return "books/list";
-    }
-
 
 }

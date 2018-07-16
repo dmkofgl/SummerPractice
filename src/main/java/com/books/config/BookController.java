@@ -108,7 +108,7 @@ public class BookController {
     }
 
     private void putDataInModel(Book book, Model model) {
-        List<Person> authors = authorService.getReducedAuthors(book.getAuthors());
+        List<Person> authors = authorService.getResidualAuthors(book.getAuthors());
         model.addAttribute("publishers", publisherService.getAllPublishers());
         model.addAttribute("canAuthorsAdd", authors);
         model.addAttribute("book", book);
