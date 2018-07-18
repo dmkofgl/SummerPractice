@@ -1,10 +1,10 @@
 package com.books.services;
 
-import com.books.services.abstracts.EncryptServiceable;
+import com.books.services.abstracts.EncryptService;
 import org.apache.commons.codec.digest.DigestUtils;
 
 
-public class EncryptService implements EncryptServiceable {
+public class EncryptServiceImpl implements EncryptService {
 
     @Override
     public String md5Encrypt(String source) {

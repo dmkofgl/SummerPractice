@@ -5,7 +5,7 @@ import com.books.entities.Book;
 import java.util.Collection;
 import java.util.List;
 
-public interface BookServiceable {
+public interface BookService {
     List<Book> filterByAuthorName(String part);
 
     List<Book> filterByAuthorName(Collection<Book> books, String part);

@@ -11,15 +11,13 @@ import com.books.utils.BookTableColumnName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class BookSQLDAO implements BookDAO {
@@ -27,7 +25,6 @@ public class BookSQLDAO implements BookDAO {
     private static final String BOOK_AUTHORS_TABLE_NAME = "bookapp.book_author";
 
     private static final Logger logger = LoggerFactory.getLogger(BookSQLDAO.class);
-
 
     private JdbcTemplate jdbcTemplate;
     private AuthorDAO authorRepository;
@@ -54,15 +51,17 @@ public class BookSQLDAO implements BookDAO {
 
         Collection<Person> authors = item.getAuthors();
         GeneratedKeyHolder holder = new GeneratedKeyHolder();
-        jdbcTemplate.update(new PreparedStatementCreator() {
-            @Override
-            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
-                PreparedStatement statement = connection.prepareStatement(queryBook, Statement.RETURN_GENERATED_KEYS);
-                statement.setString(1, item.getName());
+        jdbcTemplate.update(connection -> {
+            PreparedStatement statement = connection.prepareStatement(queryBook, Statement.RETURN_GENERATED_KEYS);
+            statement.setString(1, item.getName());
+            Optional<Publisher> publisher = Optional.ofNullable(item.getPublisher());
+            if (publisher.isPresent()) {
                 statement.setInt(2, item.getPublisher().getId());
-                statement.setDate(3, new java.sql.Date(item.getPublishDate().getTime()));
-                return statement;
+            } else {
+                statement.setNull(2, Types.INTEGER);
             }
+            statement.setDate(3, new Date(item.getPublishDate().getTime()));
+            return statement;
         }, holder);
         Long id = holder.getKey().longValue();
         List batch = authors.stream().map(author -> new Object[]{author.getId(), id}).collect(Collectors.toList());
@@ -109,18 +108,36 @@ public class BookSQLDAO implements BookDAO {
 
     }
 
-
     @Override
     public List<Book> getList() {
         String queryBook = String.format("select * from %s ", BOOK_TABLE_NAME);
-        return jdbcTemplate.query(queryBook, new BookMapper());
+        String queryBookAuthors = String.format("select * from %s where %s = ?",
+                BOOK_AUTHORS_TABLE_NAME,
+                BookAuthorTableColumnName.BOOK_ID);
+        List<Book> result = jdbcTemplate.query(queryBook, new BookMapper());
+        result.forEach(book -> book.setAuthors(
+                jdbcTemplate.query(queryBookAuthors, new Object[]{book.getId()}, (rs, rn) -> {
+                    Integer authorId = rs.getInt(BookAuthorTableColumnName.AUTHOR_ID.toString());
+                    return authorRepository.getAuthorById(authorId);
+                })));
+        return result;
     }
 
     @Override
     public Book getBookById(int id) {
         String queryBook = String.format("select * from %s where %s = ?",
                 BOOK_TABLE_NAME, BookTableColumnName.ID.toString());
-        return jdbcTemplate.queryForObject(queryBook, new Object[]{id}, new BookMapper());
+        String queryBookAuthors = String.format("select * from %s where %s = ?",
+                BOOK_AUTHORS_TABLE_NAME,
+                BookAuthorTableColumnName.BOOK_ID);
+
+        Book result = jdbcTemplate.queryForObject(queryBook, new Object[]{id}, new BookMapper());
+        result.setAuthors(
+                jdbcTemplate.query(queryBookAuthors, new Object[]{result.getId()}, (rs, rn) -> {
+                    Integer authorId = rs.getInt(BookAuthorTableColumnName.AUTHOR_ID.toString());
+                    return authorRepository.getAuthorById(authorId);
+                }));
+        return result;
     }
 
     @Override
@@ -138,22 +155,13 @@ public class BookSQLDAO implements BookDAO {
         public Book mapRow(ResultSet resultSet, int i) throws SQLException {
             Integer id = resultSet.getInt(BookTableColumnName.ID.toString());
             String name = resultSet.getString(BookTableColumnName.NAME.toString());
-            Date date = resultSet.getDate(BookTableColumnName.BOOKDATE.toString());
-
-            String queryBookAuthors = String.format("select * from %s where %s = ?",
-                    BOOK_AUTHORS_TABLE_NAME,
-                    BookAuthorTableColumnName.BOOK_ID.toString());
+            java.util.Date date = resultSet.getDate(BookTableColumnName.BOOKDATE.toString());
             Integer publisherId = resultSet.getObject(BookTableColumnName.PUBLISHER_ID.toString(), Integer.class);
-            List<Person> authors = jdbcTemplate.query(queryBookAuthors, new Object[]{id}, (rs, rn) -> {
-                Integer authorId = rs.getInt(BookAuthorTableColumnName.AUTHOR_ID.toString());
-                return authorRepository.getAuthorById(authorId);
-            });
-            Publisher publisher = null;
-            if (publisherId != null) {
-                publisher = publisherRepository.getPublisherById(publisherId.intValue());
-            }
-            Book book = new Book(id, name, date, publisher, authors);
+            Publisher publisher = publisherRepository.getPublisherById(publisherId).orElse(null);
+            Book book = new Book(id, name, date, publisher);
             return book;
         }
     }
+
+
 }

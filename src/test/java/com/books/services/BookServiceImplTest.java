@@ -3,13 +3,12 @@ package com.books.services;
 import com.books.entities.Book;
 import com.books.entities.Person;
 import com.books.entities.Publisher;
-import com.books.services.abstracts.BookServiceable;
+import com.books.services.abstracts.BookService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -22,9 +21,9 @@ import java.util.List;
 @WebAppConfiguration
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("file:src/main/webapp/WEB-INF/applicationContext.xml")
-public class BookServiceableTest {
+public class BookServiceImplTest {
     @Autowired
-    private BookServiceable filter;
+    private BookService filter;
     private Person[] authors;
     private Book[] books;
 

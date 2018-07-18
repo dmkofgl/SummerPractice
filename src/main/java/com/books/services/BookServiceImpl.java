@@ -4,27 +4,28 @@ import com.books.dao.abstracts.BookDAO;
 import com.books.entities.Book;
 import com.books.entities.Person;
 import com.books.entities.Publisher;
-import com.books.services.abstracts.AuthorServiceable;
-import com.books.services.abstracts.BookServiceable;
-import com.books.services.abstracts.PublisherServiceable;
+import com.books.services.abstracts.AuthorService;
+import com.books.services.abstracts.BookService;
+import com.books.services.abstracts.PublisherService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class BookService implements BookServiceable {
-    private static final Logger LOGGER = LoggerFactory.getLogger(BookService.class);
+public class BookServiceImpl implements BookService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(BookServiceImpl.class);
 
-    private AuthorServiceable authorService;
-    private PublisherServiceable publisherService;
-    private BookDAO storage;
+    private AuthorService authorService;
+    private PublisherService publisherService;
+    private BookDAO bookDAO;
 
-    private BookService(BookDAO bookDAO, AuthorServiceable authorServiceable, PublisherServiceable publisherService) {
-        storage = bookDAO;
-        authorService = authorServiceable;
+    private BookServiceImpl(BookDAO bookDAO, AuthorService authorService, PublisherService publisherService) {
+        this.bookDAO = bookDAO;
+        this.authorService = authorService;
         this.publisherService = publisherService;
     }
 
@@ -44,14 +45,14 @@ public class BookService implements BookServiceable {
 
     @Override
     public List<Book> getAllBooks() {
-        return storage.getList();
+        return bookDAO.getList();
     }
 
     @Override
     public Book getBookById(int id) {
         Book result = null;
         try {
-            result = storage.getBookById(id);
+            result = bookDAO.getBookById(id);
         } catch (NoSuchElementException e) {
             LOGGER.info(String.format("no such element with id=%s in dao", id));
 
@@ -61,12 +62,12 @@ public class BookService implements BookServiceable {
 
     @Override
     public void addBook(Book book) {
-        storage.add(book);
+        bookDAO.add(book);
     }
 
     @Override
     public void saveBook(Book book) {
-        storage.saveItem(book.getId(), book);
+        bookDAO.saveItem(book.getId(), book);
     }
 
     @Override
@@ -79,14 +80,15 @@ public class BookService implements BookServiceable {
     @Override
     public void changePublisher(int bookId, int publisherId) {
         Book book = getBookById(bookId);
-        Publisher publisher = publisherService.getPublisherById(publisherId);
-        book.setPublisher(publisher);
+
+        Optional<Publisher> publisher = publisherService.getPublisherById(publisherId);
+        publisher.ifPresent(publisher1 -> book.setPublisher(publisher1));
         saveBook(book);
     }
 
     @Override
     public void removeBook(int bookId) {
-        storage.remove(bookId);
+        bookDAO.remove(bookId);
     }
 
     @Override

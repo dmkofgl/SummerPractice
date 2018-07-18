@@ -1,8 +1,8 @@
 package com.books.config;
 
 import com.books.entities.User;
-import com.books.services.abstracts.AuthenticateServiceable;
-import com.books.services.abstracts.EncryptServiceable;
+import com.books.services.abstracts.AuthenticateService;
+import com.books.services.abstracts.EncryptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,9 +15,9 @@ import java.util.ArrayList;
 @Component
 public class CustomAuthenticateProvider implements AuthenticationProvider {
     @Autowired
-    private AuthenticateServiceable authenticateService;
+    private AuthenticateService authenticateService;
     @Autowired
-    private EncryptServiceable encryptService;
+    private EncryptService encryptService;
 
     @Override
     public Authentication authenticate(Authentication authentication)

@@ -20,7 +20,7 @@ public class UserSQLDAO implements UserDAO {
 
     @Override
     public User takeUser(String login, String password) {
-
+        logger.info("Try to take user with login:" + login);
         String query = String.format("select %s from %s where %s = ? and %s = ?", UserTableColumnName.ID.toString(), USER_TABLE_NAME,
                 UserTableColumnName.LOGIN, UserTableColumnName.PASSWORD);
         Integer id = jdbcTemplate.queryForObject(query, new Object[]{login, password}, Integer.class);
@@ -30,15 +30,11 @@ public class UserSQLDAO implements UserDAO {
 
     @Override
     public boolean checkExistsUser(String login) {
-        String query = String.format("select %s from %s where %s = ? ", UserTableColumnName.ID.toString(), USER_TABLE_NAME,
+        String query = String.format("select count(*) from %s where %s = ? ", USER_TABLE_NAME,
                 UserTableColumnName.LOGIN);
-        Integer result;
-        try {
-             result = jdbcTemplate.queryForObject(query, new Object[]{login}, Integer.class);
-        } catch (Exception e) {
-            result = null;
-        }
-//TODO how to do it more pretty
-        return result != null;
+        int rowCount;
+        rowCount = this.jdbcTemplate.queryForObject(query, new Object[]{login}, Integer.class);
+        logger.info("Check exists user with login:" + login);
+        return rowCount != 0;
     }
 }

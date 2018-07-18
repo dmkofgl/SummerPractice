@@ -6,11 +6,13 @@
 ">
 
     <http use-expressions="true">
+        <intercept-url pattern="/login" access="permitAll"/>
         <intercept-url pattern="/styles/**" access="permitAll"/>
         <intercept-url pattern="/js/**" access="permitAll"/>
         <intercept-url pattern="/books/**" access="isAuthenticated()"/>
         <form-login
                 default-target-url="/books/list"
+                login-page="/login"
                 authentication-failure-url="/login?error=true"
                 username-parameter="username"
                 password-parameter="password"
@@ -21,10 +23,7 @@
     </http>
     <authentication-manager>
         <authentication-provider
-        ref="CustomAuthenticateProvider" />
-        <!--<authentication-provider>-->
-            <!--<jdbc-user-service data-source-ref="dataSource"/>-->
-        <!--</authentication-provider>-->
+                ref="CustomAuthenticateProvider"/>
     </authentication-manager>
 
     <b:bean class=" com.books.config.CustomAuthenticateProvider" id="CustomAuthenticateProvider"/>

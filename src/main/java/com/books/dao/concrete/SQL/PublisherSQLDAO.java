@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.List;
+import java.util.Optional;
 
 public class PublisherSQLDAO implements PublisherDAO {
     private static final String PUBLISHER_TABLE_NAME = "bookapp.publishers";
@@ -15,9 +16,8 @@ public class PublisherSQLDAO implements PublisherDAO {
 
     private JdbcTemplate jdbcTemplate;
 
-
     public PublisherSQLDAO(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate =jdbcTemplate;
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Override
@@ -35,7 +35,7 @@ public class PublisherSQLDAO implements PublisherDAO {
 
     @Override
     public Publisher remove(int id) {
-        Publisher result = getPublisherById(id);
+        Publisher result = getPublisherById(id).get();
         String removeQuery = String.format("delete from %s where id = ?", PUBLISHER_TABLE_NAME);
         jdbcTemplate.update(removeQuery, new Object[]{id});
         return result;
@@ -45,8 +45,8 @@ public class PublisherSQLDAO implements PublisherDAO {
     @Override
     public List<Publisher> getList() {
         String getAllPublishers = String.format("select * from %s ", PUBLISHER_TABLE_NAME);
-
-        return jdbcTemplate.query(getAllPublishers, (rs, rn) -> {
+        List<Publisher> list;
+        list = jdbcTemplate.query(getAllPublishers, (rs, rn) -> {
             Publisher publisher = new Publisher();
             Integer id = rs.getInt(PublisherTableColumnName.ID.toString());
             publisher.setId(id);
@@ -54,17 +54,21 @@ public class PublisherSQLDAO implements PublisherDAO {
             publisher.setName(name);
             return publisher;
         });
+        return list;
     }
 
     @Override
-    public Publisher getPublisherById(int id) {
+    public Optional<Publisher> getPublisherById(Integer id) {
+        if (id == null) {
+            return Optional.empty();
+        }
         String query = String.format("select * from %s where %s = ?", PUBLISHER_TABLE_NAME, PublisherTableColumnName.ID);
         return jdbcTemplate.queryForObject(query, new Object[]{id}, (rs, rn) -> {
             Publisher publisher = new Publisher();
             publisher.setId(id);
             String name = rs.getString(PublisherTableColumnName.NAME.toString());
             publisher.setName(name);
-            return publisher;
+            return Optional.ofNullable(publisher);
         });
     }
 
@@ -76,6 +80,6 @@ public class PublisherSQLDAO implements PublisherDAO {
                 PublisherTableColumnName.NAME,
                 PublisherTableColumnName.ID);
 
-        jdbcTemplate.update(setPublisherQuery, new Object[]{item.getId(), item.getName(), id});
+        jdbcTemplate.update(setPublisherQuery, item.getId(), item.getName(), id);
     }
 }

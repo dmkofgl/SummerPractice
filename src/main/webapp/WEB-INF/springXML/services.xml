@@ -6,21 +6,21 @@
 
 
 
-    <bean id="AuthenticateService" class="com.books.services.AuthenticateService">
+    <bean id="AuthenticateService" class="com.books.services.AuthenticateServiceImpl">
         <constructor-arg ref="UserSQLDAO"></constructor-arg>
     </bean>
 
-    <bean id="encryptService" class="com.books.services.EncryptService"></bean>
+    <bean id="encryptService" class="com.books.services.EncryptServiceImpl"></bean>
 
-    <bean id="AuthorService" class="com.books.services.AuthorService">
+    <bean id="AuthorService" class="com.books.services.AuthorServiceImpl">
         <constructor-arg ref="AuthorSQLDAO"></constructor-arg>
     </bean>
 
-    <bean id="publisherService" class="com.books.services.PublisherService">
+    <bean id="publisherService" class="com.books.services.PublisherServiceImpl">
         <constructor-arg ref="PublisherSQLDAO"></constructor-arg>
     </bean>
 
-    <bean id="BookService" class="com.books.services.BookService">
+    <bean id="BookService" class="com.books.services.BookServiceImpl">
         <constructor-arg ref="AuthorService"></constructor-arg>
         <constructor-arg ref="publisherService"></constructor-arg>
         <constructor-arg ref="BookSQLDAO"></constructor-arg>

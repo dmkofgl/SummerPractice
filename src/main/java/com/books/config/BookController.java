@@ -3,9 +3,9 @@ package com.books.config;
 import com.books.entities.Book;
 import com.books.entities.Person;
 import com.books.entities.Publisher;
-import com.books.services.abstracts.AuthorServiceable;
-import com.books.services.abstracts.BookServiceable;
-import com.books.services.abstracts.PublisherServiceable;
+import com.books.services.abstracts.AuthorService;
+import com.books.services.abstracts.BookService;
+import com.books.services.abstracts.PublisherService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,17 +14,18 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RequestMapping("/books")
 @Controller
 public class BookController {
     private static final Logger logger = LoggerFactory.getLogger(BookController.class);
     @Autowired
-    private BookServiceable bookService;
+    private BookService bookService;
     @Autowired
-    private AuthorServiceable authorService;
+    private AuthorService authorService;
     @Autowired
-    private PublisherServiceable publisherService;
+    private PublisherService publisherService;
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     public String viewBookList(Model model) {
@@ -72,8 +73,8 @@ public class BookController {
 
     @RequestMapping(value = {"/{bookId}"}, method = RequestMethod.POST, params = "changePublisher")
     public String changePublisher(@RequestParam("changePublisherId") Integer publisherId, @ModelAttribute("book") Book book, Model model) {
-        Publisher publisher = publisherService.getPublisherById(publisherId);
-        book.setPublisher(publisher);
+        Optional<Publisher> publisher = publisherService.getPublisherById(publisherId);
+        publisher.ifPresent(book::setPublisher);
         putDataInModel(book, model);
         return "edit";
     }
@@ -101,8 +102,8 @@ public class BookController {
 
     @RequestMapping(value = {"/new"}, method = RequestMethod.POST, params = "changePublisher")
     public String changePublisherToNew(@RequestParam("changePublisherId") Integer publisherId, @ModelAttribute("book") Book book, Model model) {
-        Publisher publisher = publisherService.getPublisherById(publisherId);
-        book.setPublisher(publisher);
+        Optional<Publisher> publisher = publisherService.getPublisherById(publisherId);
+        publisher.ifPresent(book::setPublisher);
         putDataInModel(book, model);
         return "new";
     }
