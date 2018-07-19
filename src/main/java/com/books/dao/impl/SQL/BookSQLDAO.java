@@ -1,4 +1,4 @@
-package com.books.dao.concrete.SQL;
+package com.books.dao.impl.SQL;
 
 import com.books.dao.abstracts.AuthorDAO;
 import com.books.dao.abstracts.BookDAO;
@@ -8,8 +8,6 @@ import com.books.entities.Person;
 import com.books.entities.Publisher;
 import com.books.utils.BookAuthorTableColumnName;
 import com.books.utils.BookTableColumnName;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -24,12 +22,9 @@ public class BookSQLDAO implements BookDAO {
     private static final String BOOK_TABLE_NAME = "bookapp.books";
     private static final String BOOK_AUTHORS_TABLE_NAME = "bookapp.book_author";
 
-    private static final Logger logger = LoggerFactory.getLogger(BookSQLDAO.class);
-
     private JdbcTemplate jdbcTemplate;
     private AuthorDAO authorRepository;
     private PublisherDAO publisherRepository;
-
 
     private BookSQLDAO(JdbcTemplate jdbcTemplate, AuthorDAO authorDAO, PublisherDAO publisherDAO) {
         this.jdbcTemplate = jdbcTemplate;

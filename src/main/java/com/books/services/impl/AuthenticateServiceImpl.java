@@ -1,9 +1,8 @@
-package com.books.services;
+package com.books.services.impl;
 
 import com.books.dao.abstracts.UserDAO;
 import com.books.entities.User;
 import com.books.services.abstracts.AuthenticateService;
-
 
 public class AuthenticateServiceImpl implements AuthenticateService {
     private UserDAO userDAO;

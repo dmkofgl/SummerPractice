@@ -1,4 +1,4 @@
-package com.books.services;
+package com.books.services.impl;
 
 import com.books.dao.abstracts.BookDAO;
 import com.books.entities.Book;
@@ -82,7 +82,7 @@ public class BookServiceImpl implements BookService {
         Book book = getBookById(bookId);
 
         Optional<Publisher> publisher = publisherService.getPublisherById(publisherId);
-        publisher.ifPresent(publisher1 -> book.setPublisher(publisher1));
+        publisher.ifPresent(book::setPublisher);
         saveBook(book);
     }
 

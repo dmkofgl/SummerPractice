@@ -1,18 +1,18 @@
-package com.books.dao.concrete.SQL;
+package com.books.dao.impl.SQL;
 
 import com.books.dao.abstracts.PublisherDAO;
 import com.books.entities.Publisher;
 import com.books.utils.PublisherTableColumnName;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
 public class PublisherSQLDAO implements PublisherDAO {
     private static final String PUBLISHER_TABLE_NAME = "bookapp.publishers";
-    private static final Logger logger = LoggerFactory.getLogger(PublisherSQLDAO.class);
 
     private JdbcTemplate jdbcTemplate;
 
@@ -37,7 +37,7 @@ public class PublisherSQLDAO implements PublisherDAO {
     public Publisher remove(int id) {
         Publisher result = getPublisherById(id).get();
         String removeQuery = String.format("delete from %s where id = ?", PUBLISHER_TABLE_NAME);
-        jdbcTemplate.update(removeQuery, new Object[]{id});
+        jdbcTemplate.update(removeQuery, id);
         return result;
 
     }
@@ -46,14 +46,7 @@ public class PublisherSQLDAO implements PublisherDAO {
     public List<Publisher> getList() {
         String getAllPublishers = String.format("select * from %s ", PUBLISHER_TABLE_NAME);
         List<Publisher> list;
-        list = jdbcTemplate.query(getAllPublishers, (rs, rn) -> {
-            Publisher publisher = new Publisher();
-            Integer id = rs.getInt(PublisherTableColumnName.ID.toString());
-            publisher.setId(id);
-            String name = rs.getString(PublisherTableColumnName.NAME.toString());
-            publisher.setName(name);
-            return publisher;
-        });
+        list = jdbcTemplate.query(getAllPublishers, new PublisherMapper());
         return list;
     }
 
@@ -63,13 +56,8 @@ public class PublisherSQLDAO implements PublisherDAO {
             return Optional.empty();
         }
         String query = String.format("select * from %s where %s = ?", PUBLISHER_TABLE_NAME, PublisherTableColumnName.ID);
-        return jdbcTemplate.queryForObject(query, new Object[]{id}, (rs, rn) -> {
-            Publisher publisher = new Publisher();
-            publisher.setId(id);
-            String name = rs.getString(PublisherTableColumnName.NAME.toString());
-            publisher.setName(name);
-            return Optional.ofNullable(publisher);
-        });
+        Publisher publisher = jdbcTemplate.queryForObject(query, new Object[]{id}, new PublisherMapper());
+        return Optional.ofNullable(publisher);
     }
 
     @Override
@@ -81,5 +69,17 @@ public class PublisherSQLDAO implements PublisherDAO {
                 PublisherTableColumnName.ID);
 
         jdbcTemplate.update(setPublisherQuery, item.getId(), item.getName(), id);
+    }
+
+    private class PublisherMapper implements RowMapper<Publisher> {
+        @Override
+        public Publisher mapRow(ResultSet resultSet, int i) throws SQLException {
+            Publisher publisher = new Publisher();
+            Integer id = resultSet.getInt(PublisherTableColumnName.ID.toString());
+            publisher.setId(id);
+            String name = resultSet.getString(PublisherTableColumnName.NAME.toString());
+            publisher.setName(name);
+            return publisher;
+        }
     }
 }

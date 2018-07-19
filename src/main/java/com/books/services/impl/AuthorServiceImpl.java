@@ -1,17 +1,14 @@
-package com.books.services;
+package com.books.services.impl;
 
 import com.books.dao.abstracts.AuthorDAO;
 import com.books.entities.Person;
 import com.books.services.abstracts.AuthorService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class AuthorServiceImpl implements AuthorService {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AuthorServiceImpl.class);
 
     private AuthorDAO authorDAO;
 
@@ -41,7 +38,7 @@ public class AuthorServiceImpl implements AuthorService {
 
     @Override
     public Person getAuthorById(int id) {
-        Person result = null;
+        Person result;
         result = authorDAO.getAuthorById(id);
         return result;
     }

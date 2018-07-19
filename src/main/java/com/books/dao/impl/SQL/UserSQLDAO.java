@@ -1,4 +1,4 @@
-package com.books.dao.concrete.SQL;
+package com.books.dao.impl.SQL;
 
 import com.books.dao.abstracts.UserDAO;
 import com.books.entities.User;

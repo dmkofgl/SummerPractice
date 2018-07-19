@@ -4,19 +4,18 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="UserSQLDAO" class="com.books.dao.concrete.SQL.UserSQLDAO">
-        <constructor-arg ref="jdbcTemplate"></constructor-arg>
+    <bean id="UserSQLDAO" class="com.books.dao.impl.SQL.UserSQLDAO">
+        <constructor-arg ref="jdbcTemplate"/>
     </bean>
-    <bean id="PublisherSQLDAO" class="com.books.dao.concrete.SQL.PublisherSQLDAO">
-        <constructor-arg ref="jdbcTemplate"></constructor-arg>
+    <bean id="PublisherSQLDAO" class="com.books.dao.impl.SQL.PublisherSQLDAO">
+        <constructor-arg ref="jdbcTemplate"/>
     </bean>
-    <bean id="AuthorSQLDAO" class="com.books.dao.concrete.SQL.AuthorSQLDAO">
-        <constructor-arg ref="jdbcTemplate"></constructor-arg>
+    <bean id="AuthorSQLDAO" class="com.books.dao.impl.SQL.AuthorSQLDAO">
+        <constructor-arg ref="jdbcTemplate"/>
     </bean>
-    <bean id="BookSQLDAO" class="com.books.dao.concrete.SQL.BookSQLDAO">
-        <constructor-arg ref="jdbcTemplate"></constructor-arg>
-        <constructor-arg ref="PublisherSQLDAO"></constructor-arg>
-        <constructor-arg ref="AuthorSQLDAO"></constructor-arg>
+    <bean id="BookSQLDAO" class="com.books.dao.impl.SQL.BookSQLDAO">
+        <constructor-arg ref="jdbcTemplate"/>
+        <constructor-arg ref="PublisherSQLDAO"/>
+        <constructor-arg ref="AuthorSQLDAO"/>
     </bean>
-
 </beans>
