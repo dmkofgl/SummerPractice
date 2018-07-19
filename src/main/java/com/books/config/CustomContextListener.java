@@ -3,27 +3,27 @@ package com.books.config;
 import com.books.utils.DatabaseCreator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import javax.servlet.ServletContextEvent;
-import javax.servlet.ServletContextListener;
 import java.io.FileNotFoundException;
 
-public class CustomContextListener implements ServletContextListener {
+@Component
+public class CustomContextListener implements InitializingBean {
     private static final Logger logger = LoggerFactory.getLogger(CustomContextListener.class);
 
+    @Autowired
+    private DatabaseCreator databaseCreator;
+
     @Override
-    public void contextInitialized(ServletContextEvent sce) {
+    public void afterPropertiesSet() throws Exception {
         try {
-            new DatabaseCreator().drop("bookapp");
-            new DatabaseCreator().create();
+            databaseCreator.drop("bookapp");
+            databaseCreator.create();
         } catch (FileNotFoundException e) {
             logger.info("script files not founded. Scheme create failure");
-            new DatabaseCreator().drop("bookapp");
+            databaseCreator.drop("bookapp");
         }
-    }
-
-    @Override
-    public void contextDestroyed(ServletContextEvent sce) {
-
     }
 }

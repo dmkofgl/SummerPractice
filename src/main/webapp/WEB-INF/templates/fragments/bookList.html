@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+</head>
+<body>
+<div th:fragment="bookList" >
+    <ul class="list-inline container" >
+        <th:block th:each="book : ${books}">
+            <div>
+            <li th:text="${book}" style="display:inline" ></li>
+            <a href="#" th:href="${book.id}" th:text="edit" class="btn btn-outline-success my-2 my-sm-0"></a>
+            </div>
+        </th:block>
+    </ul>
+</div>
+
+</body>
+</html>

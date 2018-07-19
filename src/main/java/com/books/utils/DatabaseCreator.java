@@ -1,5 +1,6 @@
 package com.books.utils;
 
+import javax.sql.DataSource;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.*;
@@ -10,9 +11,14 @@ public class DatabaseCreator {
     private static final String ALTER_DIRECTORY_PATH = "dbScripts/Alter_tables/";
     private static final String PERSIST_DIRECTORY_PATH = "dbScripts/Persist_tables/";
     private static final String SCHEME_NAME = "BOOKAPP";
+    DataSource dataSource;
+
+    public DatabaseCreator(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     public void create() throws FileNotFoundException {
-        try (Connection conn = DriverManager.getConnection(Constants.DATABASE_URL, Constants.DATABASE_USER_NAME, Constants.DATABASE_USER_PASSWORD)) {
+        try (Connection conn = dataSource.getConnection()) {
             ResultSet resultSet = conn.getMetaData().getSchemas();
             while (resultSet.next()) {
                 String schemaName = resultSet.getString(1).toLowerCase();
@@ -42,8 +48,7 @@ public class DatabaseCreator {
         persistTables += getFile(PERSIST_DIRECTORY_PATH + "persist_book_author.sql");
         persistTables += getFile(PERSIST_DIRECTORY_PATH + "persist_clients.sql");
 
-        try (Connection conn = DriverManager.getConnection(Constants.DATABASE_URL, Constants.DATABASE_USER_NAME,
-                Constants.DATABASE_USER_PASSWORD)) {
+        try (Connection conn = dataSource.getConnection()) {
             Statement createSchemeStatement = conn.createStatement();
             createSchemeStatement.executeUpdate("create schema " + SCHEME_NAME.toString());
             Statement statement = conn.createStatement();
@@ -81,7 +86,7 @@ public class DatabaseCreator {
     public void drop(String schemaName) {
         String dropSchema = "drop schema if exists " + schemaName;
 
-        try (Connection conn = DriverManager.getConnection(Constants.DATABASE_URL, Constants.DATABASE_USER_NAME, Constants.DATABASE_USER_PASSWORD)) {
+        try (Connection conn = dataSource.getConnection()) {
             Statement s = conn.createStatement();
             s.executeUpdate(dropSchema);
 

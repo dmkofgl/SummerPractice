@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="UserSQLDAO" class="com.books.dao.impl.SQL.UserSQLDAO">
+        <constructor-arg ref="jdbcTemplate"/>
+    </bean>
+    <bean id="PublisherSQLDAO" class="com.books.dao.impl.SQL.PublisherSQLDAO">
+        <constructor-arg ref="jdbcTemplate"/>
+    </bean>
+    <bean id="AuthorSQLDAO" class="com.books.dao.impl.SQL.AuthorSQLDAO">
+        <constructor-arg ref="jdbcTemplate"/>
+    </bean>
+    <bean id="BookSQLDAO" class="com.books.dao.impl.SQL.BookSQLDAO">
+        <constructor-arg ref="jdbcTemplate"/>
+        <constructor-arg ref="PublisherSQLDAO"/>
+        <constructor-arg ref="AuthorSQLDAO"/>
+    </bean>
+</beans>

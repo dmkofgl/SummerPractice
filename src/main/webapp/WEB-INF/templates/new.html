@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>edit book</title>
+    <link th:href="@{/styles/bootstrap.css}" rel="stylesheet">
+    <script>
+	function my_f(Id) {
+	    var o=document.getElementById(Id)
+	    o.style.display = (o.style.display == 'none')? 'inline-block': 'none'
+	}
+	function my_hideAndView(hideId,viewId) {
+	  var hide=document.getElementById(hideId)
+	    var view=document.getElementById(viewId)
+	    hide.style.display = (hide.style.display == 'none')? 'inline-block': 'none'
+	    view.style.display = (view.style.display == 'none')? 'inline-block': 'none'
+	}
+
+
+
+
+
+
+    </script>
+    <style>
+        li{
+         list-style-type: none;
+         }
+         .form-control{
+         display:inline-block;
+         }
+
+
+
+
+
+
+
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div th:replace="fragments/header :: header"></div>
+<form method="post" th:object="${book}" class="form-horizontal">
+    <fieldset>
+        <!--Book without id-->
+        <legend>Book</legend>
+        <div th:replace="fragments/edit :: name" ></div>
+        <div th:replace="fragments/edit :: date" ></div>
+        <div th:replace="fragments/edit :: authors" ></div>
+        <div th:replace="fragments/edit :: addAuthor" ></div>
+        <div th:replace="fragments/edit :: publisher" ></div>
+
+        <div class=" text-center">
+            <input type="submit" value="confirm" formaction="save" class="btn btn-primary my-2 my-sm-0 ">
+        </div>
+    </fieldset>
+</form>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:fragment="name">
+    <div class="form-group">
+        <label class="col-md-4 control-label" th:for="name">Name</label>
+        <input type="text" name="name" th:field="*{name}" th:value="*{name}" class="form-control input-md col-md-4">
+    </div>
+</div>
+
+<div th:fragment="date">
+    <div class="form-group">
+        <label class="col-md-4 control-label" th:for="publishDate">Date</label>
+        <input type="date" name="publishDate" th:value="${#dates.format(book.publishDate,'yyyy-MM-dd')}"
+               class="form-control col-md-4">
+    </div>
+</div>
+
+<div th:fragment="authors">
+    <div class="form-group">
+        <label class="col-md-4 control-label"> authors:</label>
+        <ul class="d-inline-block col-md-4">
+            <li th:each="x,stat : *{authors}">
+                <span th:text="${x}" class="col-md-4 "></span>
+                <input type="hidden" th:field="*{authors[__${stat.index}__].id}">
+                <input type="hidden" th:field="*{authors[__${stat.index}__].firstName}">
+                <input type="hidden" th:field="*{authors[__${stat.index}__].lastName}">
+                <button type="submit" name="removeAuthor" th:value="*{authors[__${stat.index}__].id}"
+                        class="btn btn-outline-success my-2 my-sm-0">remove
+                </button>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div th:fragment="addAuthor">
+    <div class="form-group container text-center">
+        <input type="button" value="add author" onclick="my_f('textid')"
+               class="btn btn-outline-success my-2 my-sm-0 col-md-4 ">
+        <div id="textid" style="display:none" class="col-md-4 ">
+            <select class="form-control col-md-5" th:name="addAuthorId">
+                <th:block th:each="author: ${canAuthorsAdd}">
+                    <option th:text=" ${author}" th:value="${author.id}"></option>
+                </th:block>
+            </select>
+            <button type="submit" name="addedAuthor"
+                    class="btn btn-outline-success my-2 my-sm-0 col-md-4" title="add">
+                add
+            </button>
+        </div>
+    </div>
+</div>
+
+<div th:fragment="publisher">
+    <div class="form-group">
+        <label class="col-md-4"> Publisher</label>
+        <span th:if="*{publisher !=null}">
+                <input type="hidden" th:field="${book.publisher.id}">
+                <input type="hidden" th:field="${book.publisher.name}">
+
+                <span class="col-md-4" th:text="${book.publisher.name}" th:id="publisherName"
+                      style="display:inline-block">name</span>
+            </span>
+        <span th:if="*{publisher ==null}">
+                 <span class="col-md-4" th:text="undef" th:id="publisherName"
+                       style="display:inline-block">name</span>
+            </span>
+        <div id="publishers" style="display:none" class="col-md-4">
+            <select class="form-control" th:name="changePublisherId">
+                <div th:if="*{publisher ==null}">
+                    <th:block th:each="publisher: ${publishers}">
+                        <option th:text=" ${publisher}" th:value="${publisher.id}"></option>
+                    </th:block>
+                </div>
+                <div th:if="*{publisher !=null}">
+                    <th:block th:each="publisher: ${publishers}">
+                        <option th:text=" ${publisher}" th:value="${publisher.id}"
+                                th:if="${publisher.id} ==${book.publisher.id}" selected>
+                        <option th:text=" ${publisher}" th:value="${publisher.id}"
+                                th:unless="${publisher.id} ==${book.publisher.id}">
+                        </option>
+                    </th:block>
+                </div>
+            </select>
+            <button type="submit" name="changePublisher"
+                    class="btn btn-outline-success my-2 my-sm-0">confirm
+            </button>
+        </div>
+        <input type="button" onclick="my_hideAndView('publisherName','publishers')"
+               class="btn btn-outline-success my-2 my-sm-0"
+               value="change">
+    </div>
+</div>
+</body>
+</html>

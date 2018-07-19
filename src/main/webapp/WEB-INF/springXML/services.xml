@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+
+    <bean id="AuthenticateService" class="com.books.services.impl.AuthenticateServiceImpl">
+        <constructor-arg ref="UserSQLDAO"/>
+    </bean>
+
+    <bean id="encryptService" class="com.books.services.impl.EncryptServiceImpl"/>
+
+    <bean id="AuthorService" class="com.books.services.impl.AuthorServiceImpl">
+        <constructor-arg ref="AuthorSQLDAO"/>
+    </bean>
+
+    <bean id="publisherService" class="com.books.services.impl.PublisherServiceImpl">
+        <constructor-arg ref="PublisherSQLDAO"/>
+    </bean>
+
+    <bean id="BookService" class="com.books.services.impl.BookServiceImpl">
+        <constructor-arg ref="AuthorService"/>
+        <constructor-arg ref="publisherService"/>
+        <constructor-arg ref="BookSQLDAO"/>
+    </bean>
+
+</beans>

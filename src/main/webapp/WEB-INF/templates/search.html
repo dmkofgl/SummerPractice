@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>search</title>
+    <link th:href="@{/styles/bootstrap.css}" rel="stylesheet">
+</head>
+<body>
+
+<div th:replace="fragments/header :: header"></div>
+<form method="post" th:object="${query}">
+    <label> Author name:
+        <input type="text" th:if="${query != null}"  th:value="${query}" id="query" name="query" class="form-control" >
+
+    </label>
+    <input type="submit" value="filter" class="btn btn-primary my-2 my-sm-0">
+</form>
+
+<div th:replace="fragments/bookList :: bookList"></div>
+</body>
+</html>

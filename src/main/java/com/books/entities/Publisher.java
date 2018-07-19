@@ -17,11 +17,14 @@ public class Publisher {
         this.name = name;
     }
 
+    public Publisher() {
+    }
+
     public String getName() {
         return name;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 

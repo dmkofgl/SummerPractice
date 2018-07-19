@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="US-ASCII">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Login Page</title>
+    <link th:href="@{/styles/signin.css}" href="/styles/signin.css" rel="stylesheet">
+    <link th:href="@{/styles/bootstrap.css}" href="/styles/bootstrap.css" rel="stylesheet">
+
+    <script th:scr="@{/js/bootstrap.js}"></script>
+
+</head>
+<body>
+<form method="post" class="form-signin" action="/login">
+    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+
+    <div th:if="${param.error}" class="alert alert-error">
+        Invalid username or password.
+    </div>
+    <div th:if="${param.logout}" class="alert alert-success">
+        You have been logged out.
+    </div>
+    <input class="form-control" placeholder="Login" required="" type="text" id="username" name="username">
+    <input class="form-control" placeholder="Password" required="" type="password" id="password" name="password">
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+
+    <!--<input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
+</form>
+</body>
+</html>
