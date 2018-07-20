@@ -3,11 +3,13 @@ package com.books.dao.impl.SQL;
 import com.books.dao.abstracts.AuthorDAO;
 import com.books.dao.abstracts.BookDAO;
 import com.books.dao.abstracts.PublisherDAO;
+import com.books.exceptions.UncorrectedQueryException;
 import com.books.entities.Book;
 import com.books.entities.Person;
 import com.books.entities.Publisher;
 import com.books.utils.BookAuthorTableColumnName;
 import com.books.utils.BookTableColumnName;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -16,6 +18,7 @@ import java.sql.*;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 public class BookSQLDAO implements BookDAO {
@@ -87,13 +90,13 @@ public class BookSQLDAO implements BookDAO {
     }
 
     @Override
-    public void remove(Book item) {
+    public void remove(Book item) throws UncorrectedQueryException {
         if (item.getId() != null)
             remove(item.getId());
     }
 
     @Override
-    public Book remove(int id) {
+    public Book remove(int id) throws UncorrectedQueryException {
         Book result = getBookById(id);
         String queryDeleteBook = String.format("delete from %s where %s = ?; ", BOOK_TABLE_NAME, BookTableColumnName.ID);
         String deleteBookAuthorQuery = String.format("delete from %s where %s = ?", BOOK_AUTHORS_TABLE_NAME, BookAuthorTableColumnName.BOOK_ID);
@@ -119,31 +122,37 @@ public class BookSQLDAO implements BookDAO {
     }
 
     @Override
-    public Book getBookById(int id) {
+    public Book getBookById(int id) throws UncorrectedQueryException {
         String queryBook = String.format("select * from %s where %s = ?",
                 BOOK_TABLE_NAME, BookTableColumnName.ID.toString());
         String queryBookAuthors = String.format("select * from %s where %s = ?",
                 BOOK_AUTHORS_TABLE_NAME,
                 BookAuthorTableColumnName.BOOK_ID);
+        Book result = null;
 
-        Book result = jdbcTemplate.queryForObject(queryBook, new Object[]{id}, new BookMapper());
-        result.setAuthors(
-                jdbcTemplate.query(queryBookAuthors, new Object[]{result.getId()}, (rs, rn) -> {
-                    Integer authorId = rs.getInt(BookAuthorTableColumnName.AUTHOR_ID.toString());
-                    return authorRepository.getAuthorById(authorId);
-                }));
+        try {
+            result = jdbcTemplate.queryForObject(queryBook, new Object[]{id}, new BookMapper());
+            result.setAuthors(
+                    jdbcTemplate.query(queryBookAuthors, new Object[]{result.getId()}, (rs, rn) -> {
+                        Integer authorId = rs.getInt(BookAuthorTableColumnName.AUTHOR_ID.toString());
+                        return authorRepository.getAuthorById(authorId);
+                    }));
+        } catch (EmptyResultDataAccessException emptyResultExcept) {
+            throw new UncorrectedQueryException(emptyResultExcept.getMessage());
+        }
         return result;
     }
 
     @Override
     public void saveItem(Integer id, Book item) {
-        if (item.getId() == null) {
-            add(item);
-        } else {
+        try {
             remove(item);
-            addWithId(item);
+        } catch (UncorrectedQueryException e) {
+
         }
+        addWithId(item);
     }
+
 
     private class BookMapper implements RowMapper<Book> {
         @Override

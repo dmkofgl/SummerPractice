@@ -3,13 +3,17 @@ package com.books.config;
 import com.books.entities.Book;
 import com.books.entities.Person;
 import com.books.entities.Publisher;
+import com.books.exceptions.UncorrectedQueryException;
 import com.books.services.abstracts.AuthorService;
 import com.books.services.abstracts.BookService;
 import com.books.services.abstracts.PublisherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -45,8 +49,12 @@ public class BookRestController {
      */
     @RequestMapping(value = "/books/{id}", method = RequestMethod.GET)
     public ResponseEntity<Book> getBook(@PathVariable("id") int id) {
-        Book book = bookService.getBookById(id);
-        //TODO if not ok
+        Book book = null;
+        try {
+            book = bookService.getBookById(id);
+        } catch (UncorrectedQueryException e) {
+            return new ResponseEntity<>(book, HttpStatus.NOT_FOUND);
+        }
         return new ResponseEntity<>(book, HttpStatus.OK);
     }
 
@@ -88,8 +96,11 @@ public class BookRestController {
      */
     @RequestMapping(value = "/books/{id}", method = RequestMethod.DELETE)
     public HttpStatus deletetBook(@PathVariable("id") Integer bookId) {
-        bookService.removeBook(bookId);
-        //TODO if not ok
+        try {
+            bookService.removeBook(bookId);
+        } catch (UncorrectedQueryException e) {
+            return HttpStatus.NOT_FOUND;
+        }
         return HttpStatus.OK;
     }
 

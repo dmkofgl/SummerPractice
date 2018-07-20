@@ -1,6 +1,7 @@
 package com.books.services.abstracts;
 
 import com.books.entities.Book;
+import com.books.exceptions.UncorrectedQueryException;
 
 import java.util.Collection;
 import java.util.List;
@@ -12,18 +13,18 @@ public interface BookService {
 
     List<Book> getAllBooks();
 
-    Book getBookById(int id);
+    Book getBookById(int id) throws UncorrectedQueryException;
 
     void addBook(Book book);
 
     void saveBook(Book book);
 
-    void removeAuthorBook(int bookId, int authorId);
+    void removeAuthorBook(int bookId, int authorId) throws UncorrectedQueryException;
 
     void changePublisher(int bookId, int publisherId);
 
-    void removeBook(int bookId);
+    void removeBook(int bookId) throws UncorrectedQueryException;
 
-    void addAuthorBook(int bookId, int authorId);
+    void addAuthorBook(int bookId, int authorId) throws UncorrectedQueryException;
 
 }

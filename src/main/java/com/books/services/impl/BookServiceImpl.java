@@ -4,6 +4,7 @@ import com.books.dao.abstracts.BookDAO;
 import com.books.entities.Book;
 import com.books.entities.Person;
 import com.books.entities.Publisher;
+import com.books.exceptions.UncorrectedQueryException;
 import com.books.services.abstracts.AuthorService;
 import com.books.services.abstracts.BookService;
 import com.books.services.abstracts.PublisherService;
@@ -49,12 +50,14 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Book getBookById(int id) {
+    public Book getBookById(int id) throws UncorrectedQueryException {
         Book result = null;
         try {
             result = bookDAO.getBookById(id);
-        } catch (NoSuchElementException e) {
+        } catch (UncorrectedQueryException e) {
+            LOGGER.error(e.getMessage());
             LOGGER.info(String.format("no such element with id=%s in dao", id));
+            throw e;
 
         }
         return result;
@@ -71,7 +74,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void removeAuthorBook(int bookId, int authorId) {
+    public void removeAuthorBook(int bookId, int authorId) throws UncorrectedQueryException {
         Book book = getBookById(bookId);
         book.removeAuthor(authorId);
         saveBook(book);
@@ -79,21 +82,28 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void changePublisher(int bookId, int publisherId) {
-        Book book = getBookById(bookId);
-
+        Book book;
+        try {
+            book = getBookById(bookId);
+        } catch (UncorrectedQueryException e) {
+            return;
+        }
         Optional<Publisher> publisher = publisherService.getPublisherById(publisherId);
         publisher.ifPresent(book::setPublisher);
         saveBook(book);
     }
 
     @Override
-    public void removeBook(int bookId) {
+    public void removeBook(int bookId) throws UncorrectedQueryException {
         bookDAO.remove(bookId);
     }
 
     @Override
-    public void addAuthorBook(int bookId, int authorId) {
-        Book book = getBookById(bookId);
+    public void addAuthorBook(int bookId, int authorId)throws UncorrectedQueryException {
+        Book book = null;
+
+            book = getBookById(bookId);
+
 
         Person author = authorService.getAuthorById(authorId);
         book.addAuthor(author);

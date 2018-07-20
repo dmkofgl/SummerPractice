@@ -3,6 +3,7 @@ package com.books.config;
 import com.books.entities.Book;
 import com.books.entities.Person;
 import com.books.entities.Publisher;
+import com.books.exceptions.UncorrectedQueryException;
 import com.books.services.abstracts.AuthorService;
 import com.books.services.abstracts.BookService;
 import com.books.services.abstracts.PublisherService;
@@ -50,7 +51,11 @@ public class BookController {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public String viewBook(@PathVariable("id") int id, Model model) {
-        Book book = bookService.getBookById(id);
+        Book book = null;
+        try {
+            book = bookService.getBookById(id);
+        } catch (UncorrectedQueryException e) {
+        }
         putDataInModel(book, model);
         return "edit";
     }
