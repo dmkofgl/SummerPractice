@@ -17,9 +17,11 @@ import java.util.List;
 @RequestMapping("/rest")
 public class BookRestController {
     @Autowired
-    BookService bookService;
-    PublisherService publisherService;
-    AuthorService authorService;
+    private BookService bookService;
+    @Autowired
+    private PublisherService publisherService;
+    @Autowired
+    private AuthorService authorService;
 
     /**
      * Book
