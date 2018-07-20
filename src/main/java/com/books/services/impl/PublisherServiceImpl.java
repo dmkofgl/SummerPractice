@@ -23,6 +23,26 @@ public class PublisherServiceImpl implements PublisherService {
     }
 
     @Override
+    public void savePublisher(int publisherId, Publisher publisher) {
+        publisherDAO.saveItem(publisherId, publisher);
+    }
+
+    @Override
+    public void savePublisher(Publisher publisher) {
+        savePublisher(publisher.getId(), publisher);
+    }
+
+    @Override
+    public void addPublisher(Publisher publisher) {
+        publisherDAO.add(publisher);
+    }
+
+    @Override
+    public void removePublisher(int publisherId) {
+        publisherDAO.remove(publisherId);
+    }
+
+    @Override
     public List<Publisher> getAllPublishers() {
         return publisherDAO.getList();
     }
