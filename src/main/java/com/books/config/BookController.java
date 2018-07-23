@@ -60,7 +60,6 @@ public class BookController {
         return "edit";
     }
 
-
     @RequestMapping(value = {"/{bookId}"}, method = RequestMethod.POST, params = "removeAuthor")
     public String removeAuthor(@RequestParam("removeAuthor") Integer authorId, @ModelAttribute("book") Book book, Model model) {
         book.removeAuthor(authorId);

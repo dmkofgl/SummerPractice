@@ -3,10 +3,10 @@ package com.books.dao.impl.SQL;
 import com.books.dao.abstracts.AuthorDAO;
 import com.books.dao.abstracts.BookDAO;
 import com.books.dao.abstracts.PublisherDAO;
-import com.books.exceptions.UncorrectedQueryException;
 import com.books.entities.Book;
 import com.books.entities.Person;
 import com.books.entities.Publisher;
+import com.books.exceptions.UncorrectedQueryException;
 import com.books.utils.BookAuthorTableColumnName;
 import com.books.utils.BookTableColumnName;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -18,7 +18,6 @@ import java.sql.*;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 public class BookSQLDAO implements BookDAO {
