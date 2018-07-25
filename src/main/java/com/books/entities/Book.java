@@ -9,7 +9,6 @@ public class Book {
 
     private Integer id;
 
-
     private String name;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date publishDate;

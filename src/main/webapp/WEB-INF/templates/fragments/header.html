@@ -5,26 +5,26 @@
 <body>
 <div th:fragment="header">
     <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarsExample03" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarsExample03" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" th:href="list">Book list</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="search">Search book</a>
-                    </li>
-                </ul>
-                <form class="form-inline my-2 my-lg-0" action="/logout">
-                    <button th:text="${session.SPRING_SECURITY_CONTEXT.authentication.principal}"
-                            th:unless="${session == null}" class="btn btn-outline-success my-2 my-sm-0"
-                            title="logout" data-hover="CLICK ME">
-                        Logout
-                    </button>
-                </form>
-            </div>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="list">Book list</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="search">Search book</a>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0" action="/logout">
+                <button th:text="${session.SPRING_SECURITY_CONTEXT.authentication.principal}"
+                        th:unless="${session == null}" class="btn btn-outline-success my-2 my-sm-0"
+                        title="logout" data-hover="CLICK ME">
+                    Logout
+                </button>
+            </form>
         </div>
     </nav>
 </div>

@@ -144,12 +144,17 @@ public class BookSQLDAO implements BookDAO {
 
     @Override
     public void saveItem(Integer id, Book item) {
+        Book book =null;
         try {
-            remove(item);
+            book = getBookById(id);
+            remove(id);
+            //TODO create some exception?
         } catch (UncorrectedQueryException e) {
-
+            addWithId(book);
+            return;
         }
         addWithId(item);
+
     }
 
 

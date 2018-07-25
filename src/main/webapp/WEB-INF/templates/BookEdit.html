@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit book</title>
+    <link href="/styles/bootstrap.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="/js/BookEdit.js"></script>
+    <script src="/js/preloader.js"></script>
+    <style>
+      .preloader {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 999999;
+    background: url(https://kyivstore.com/wp-content/uploads/2016/09/loading.gif) center no-repeat #fff;
+    text-align: center;
+}
+}
+    </style>
+</head>
+<body onload=" getBook()">
+
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarsExample03" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link">Book list</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="search">Search book</a>
+            </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0" action="/logout">
+            <button>Logout</button>
+        </form>
+    </div>
+</nav>
+<div class="preloader"></div>
+<div id="editBook">
+    <div class="form-group row">
+        <label class="col-md-2 control-label">Name</label>
+        <input type="text" name="name" class="form-control input-md col-md-4">
+    </div>
+    <div class="form-group row">
+        <label class="col-md-2 control-label">Date</label>
+        <input type="date" name="publishDate" class="form-control col-md-4">
+    </div>
+    <div class="form-group row">
+        <label class="col-md-2"> Publisher</label>
+        <select class="form-control col-md-4" name="publishers" id="publishers"> </select>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-md-2 control-label"> authors:</label>
+        <ul class="d-inline-block col-md-4" id="authors"></ul>
+        <div id="otherAuthorsContainer" class="form-group row col-md-4">
+            <select class="form-control col-md-8" id="otherAuthors"></select>
+           <span class="col-md-4">
+            <button class=" btn btn-outline-success btn-default" title="add" onclick="addAuthor()"> add</button>
+           </span>
+        </div>
+    </div>
+    <div class="col-md-12 text-center ">
+        <Button onclick="setPublish()" class="btn btn-outline-success my-2 my-sm-0">publ</Button>
+    <Button onclick="confirm()" class="btn btn-outline-success my-2 my-sm-0">confirm</Button>
+    </div>
+</div>
+</body>
+</html>

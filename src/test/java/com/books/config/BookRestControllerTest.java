@@ -59,7 +59,7 @@ public class BookRestControllerTest {
     public void addBook() {
         MockMvcRequestSpecification request = RestAssuredMockMvc.given();
         Book testBook = new Book();
-        Person p = new Person(1,"1","2");
+        Person p = new Person(1, "1", "2");
         testBook.setName("test");
         request.body(p);
         request.contentType("application/json");

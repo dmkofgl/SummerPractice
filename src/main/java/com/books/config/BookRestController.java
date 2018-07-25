@@ -50,15 +50,15 @@ public class BookRestController {
 
 
     @RequestMapping(value = "/books/{id}", method = RequestMethod.PUT)
-    public ResponseEntity setBook(Book book) {
+    public ResponseEntity setBook(@RequestBody Book book) {
         HttpStatus status = HttpStatus.OK;
         try {
             bookService.saveBook(book);
         } catch (Exception e) {
-            return new ResponseEntity(HttpStatus.FORBIDDEN);
+            status =HttpStatus.FORBIDDEN;
         }
         //TODO if not ok
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity(status);
     }
 
 
