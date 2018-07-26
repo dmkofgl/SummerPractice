@@ -17,6 +17,6 @@ public interface BookDAO {
 
     List<Book> getList();
 
-    void saveItem(Integer id, Book item);
+    void saveItem(Integer id, Book item)  throws UncorrectedQueryException;
 
 }

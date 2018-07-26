@@ -2,7 +2,9 @@ package com.books.dao.impl.SQL;
 
 import com.books.dao.abstracts.PublisherDAO;
 import com.books.entities.Publisher;
+import com.books.exceptions.UncorrectedQueryException;
 import com.books.utils.PublisherTableColumnName;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -29,12 +31,12 @@ public class PublisherSQLDAO implements PublisherDAO {
     }
 
     @Override
-    public void remove(Publisher item) {
+    public void remove(Publisher item) throws UncorrectedQueryException {
         remove(item.getId());
     }
 
     @Override
-    public Publisher remove(int id) {
+    public Publisher remove(int id) throws UncorrectedQueryException {
         Publisher result = getPublisherById(id).get();
         String removeQuery = String.format("delete from %s where id = ?", PUBLISHER_TABLE_NAME);
         jdbcTemplate.update(removeQuery, id);
@@ -51,23 +53,28 @@ public class PublisherSQLDAO implements PublisherDAO {
     }
 
     @Override
-    public Optional<Publisher> getPublisherById(Integer id) {
+    public Optional<Publisher> getPublisherById(Integer id) throws UncorrectedQueryException {
         if (id == null) {
             return Optional.empty();
         }
         String query = String.format("select * from %s where %s = ?", PUBLISHER_TABLE_NAME, PublisherTableColumnName.ID);
-        Publisher publisher = jdbcTemplate.queryForObject(query, new Object[]{id}, new PublisherMapper());
+        Publisher publisher;
+        try {
+            publisher = jdbcTemplate.queryForObject(query, new Object[]{id}, new PublisherMapper());
+        } catch (EmptyResultDataAccessException e) {
+            throw new UncorrectedQueryException(e.getMessage());
+        }
         return Optional.ofNullable(publisher);
     }
 
     @Override
-    public void saveItem(Integer id, Publisher item) {
+    public void saveItem(Integer id, Publisher item) throws UncorrectedQueryException {
         String setPublisherQuery = String.format("update %s set %s = ?,%s=? where %s =?",
                 PUBLISHER_TABLE_NAME,
                 PublisherTableColumnName.ID,
                 PublisherTableColumnName.NAME,
                 PublisherTableColumnName.ID);
-
+        Publisher publisher = getPublisherById(id).get();
         jdbcTemplate.update(setPublisherQuery, item.getId(), item.getName(), id);
     }
 

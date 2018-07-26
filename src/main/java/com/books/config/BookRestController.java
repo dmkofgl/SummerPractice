@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/rest")
@@ -40,12 +41,13 @@ public class BookRestController {
     @RequestMapping(value = "/books/{id}", method = RequestMethod.GET)
     public ResponseEntity<Book> getBook(@PathVariable("id") int id) {
         Book book = null;
+        HttpStatus status =HttpStatus.OK;
         try {
             book = bookService.getBookById(id);
         } catch (UncorrectedQueryException e) {
-            return new ResponseEntity<>(book, HttpStatus.NOT_FOUND);
+            status=HttpStatus.NOT_FOUND;
         }
-        return new ResponseEntity<>(book, HttpStatus.OK);
+        return new ResponseEntity<>(book, status);
     }
 
 
@@ -54,10 +56,9 @@ public class BookRestController {
         HttpStatus status = HttpStatus.OK;
         try {
             bookService.saveBook(book);
-        } catch (Exception e) {
-            status =HttpStatus.FORBIDDEN;
+        } catch (UncorrectedQueryException e) {
+            status = HttpStatus.FORBIDDEN;
         }
-        //TODO if not ok
         return new ResponseEntity(status);
     }
 
@@ -65,7 +66,6 @@ public class BookRestController {
     @RequestMapping(value = "/books/new", method = RequestMethod.POST)
     public ResponseEntity addBook(@RequestBody Book book) {
         bookService.addBook(book);
-        //TODO if not ok
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
@@ -83,39 +83,40 @@ public class BookRestController {
 
     @RequestMapping(value = "/publishers/{id}", method = RequestMethod.GET)
     public ResponseEntity<Publisher> getPublisher(@PathVariable("id") int id) {
-        Publisher publisher = publisherService.getPublisherById(id).get();
-        //TODO if not ok
-        return new ResponseEntity<>(publisher, HttpStatus.OK);
+        Optional<Publisher> publisher = Optional.empty();
+        HttpStatus status = HttpStatus.OK;
+        try {
+            publisher = publisherService.getPublisherById(id);
+        } catch (UncorrectedQueryException e) {
+            status = HttpStatus.NOT_FOUND;
+        }
+        return new ResponseEntity<>(publisher.get(), status);
     }
 
 
     @RequestMapping(value = "/publishers", method = RequestMethod.GET)
     public ResponseEntity<List<Publisher>> getAllPublishers() {
         List<Publisher> publisher = publisherService.getAllPublishers();
-        //TODO if not ok
         return new ResponseEntity<>(publisher, HttpStatus.OK);
     }
 
 
     @RequestMapping(value = "/publishers/{id}", method = RequestMethod.PUT)
-    public HttpStatus setPublisher(Publisher publisher) {
+    public HttpStatus setPublisher(Publisher publisher) throws UncorrectedQueryException {
         publisherService.savePublisher(publisher);
-        //TODO if not ok
         return HttpStatus.OK;
     }
 
     @RequestMapping(value = "/publishers/new", method = RequestMethod.POST)
     public HttpStatus addPublisher(Publisher publisher) {
         publisherService.addPublisher(publisher);
-        //TODO if not ok
         return HttpStatus.OK;
     }
 
 
     @RequestMapping(value = "/publishers/{id}", method = RequestMethod.DELETE)
-    public HttpStatus removePublisher(@PathVariable("id") int id) {
+    public HttpStatus removePublisher(@PathVariable("id") int id) throws UncorrectedQueryException {
         publisherService.removePublisher(id);
-        //TODO if not ok
         return HttpStatus.OK;
     }
 
@@ -123,21 +124,18 @@ public class BookRestController {
     @RequestMapping(value = "/authors/new", method = RequestMethod.POST)
     public HttpStatus createAuthor(Person author) {
         authorService.addAuthor(author);
-        //TODO if not ok
         return HttpStatus.OK;
     }
 
     @RequestMapping(value = "/authors/{id}", method = RequestMethod.GET)
     public ResponseEntity<Person> getAuthor(@PathVariable("id") int id) {
         Person author = authorService.getAuthorById(id);
-        //TODO if not ok
         return new ResponseEntity<>(author, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/authors", method = RequestMethod.GET)
     public ResponseEntity<List<Person>> getAllAuthors() {
         List<Person> author = authorService.getAllAuthors();
-        //TODO if not ok
         return new ResponseEntity<>(author, HttpStatus.OK);
     }
 
@@ -145,7 +143,6 @@ public class BookRestController {
     @RequestMapping(value = "/authors/{id}", method = RequestMethod.PUT)
     public HttpStatus setAuthor(Person author) {
         authorService.saveAuthor(author);
-        //TODO if not ok
         return HttpStatus.OK;
     }
 
@@ -153,7 +150,6 @@ public class BookRestController {
     @RequestMapping(value = "/authors/{id}", method = RequestMethod.DELETE)
     public HttpStatus deleteAuthor(@PathVariable("id") int id) {
         authorService.removeAuthor(id);
-        //TODO if not ok
         return HttpStatus.OK;
     }
 

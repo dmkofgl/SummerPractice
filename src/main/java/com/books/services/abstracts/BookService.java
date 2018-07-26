@@ -17,11 +17,11 @@ public interface BookService {
 
     void addBook(Book book);
 
-    void saveBook(Book book);
+    void saveBook(Book book) throws UncorrectedQueryException;
 
     void removeAuthorBook(int bookId, int authorId) throws UncorrectedQueryException;
 
-    void changePublisher(int bookId, int publisherId);
+    void changePublisher(int bookId, int publisherId) throws UncorrectedQueryException;
 
     void removeBook(int bookId) throws UncorrectedQueryException;
 

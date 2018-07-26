@@ -69,7 +69,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void saveBook(Book book) {
+    public void saveBook(Book book) throws UncorrectedQueryException {
         bookDAO.saveItem(book.getId(), book);
     }
 
@@ -81,7 +81,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void changePublisher(int bookId, int publisherId) {
+    public void changePublisher(int bookId, int publisherId) throws UncorrectedQueryException {
         Book book;
         try {
             book = getBookById(bookId);
@@ -99,12 +99,9 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void addAuthorBook(int bookId, int authorId)throws UncorrectedQueryException {
+    public void addAuthorBook(int bookId, int authorId) throws UncorrectedQueryException {
         Book book = null;
-
-            book = getBookById(bookId);
-
-
+        book = getBookById(bookId);
         Person author = authorService.getAuthorById(authorId);
         book.addAuthor(author);
         saveBook(book);

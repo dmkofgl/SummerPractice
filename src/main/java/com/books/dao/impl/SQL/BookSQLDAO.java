@@ -137,26 +137,27 @@ public class BookSQLDAO implements BookDAO {
                         return authorRepository.getAuthorById(authorId);
                     }));
         } catch (EmptyResultDataAccessException emptyResultExcept) {
-            throw new UncorrectedQueryException(emptyResultExcept.getMessage());
+            throw new UncorrectedQueryException("Value does't found:BOOK:id =  "+id);
         }
         return result;
     }
 
     @Override
-    public void saveItem(Integer id, Book item) {
-        Book book =null;
+    public void saveItem(Integer id, Book item) throws UncorrectedQueryException {
+        Book book = null;
         try {
             book = getBookById(id);
             remove(id);
-            //TODO create some exception?
         } catch (UncorrectedQueryException e) {
-            addWithId(book);
+            if (book != null) {
+                addWithId(book);
+                throw e;
+            }
             return;
         }
         addWithId(item);
 
     }
-
 
     private class BookMapper implements RowMapper<Book> {
         @Override
@@ -165,7 +166,11 @@ public class BookSQLDAO implements BookDAO {
             String name = resultSet.getString(BookTableColumnName.NAME.toString());
             java.util.Date date = resultSet.getDate(BookTableColumnName.BOOKDATE.toString());
             Integer publisherId = resultSet.getObject(BookTableColumnName.PUBLISHER_ID.toString(), Integer.class);
-            Publisher publisher = publisherRepository.getPublisherById(publisherId).orElse(null);
+            Publisher publisher=null;
+            try {
+                publisher = publisherRepository.getPublisherById(publisherId).orElse(null);
+            } catch (UncorrectedQueryException e) {
+            }
             Book book = new Book(id, name, date, publisher);
             return book;
         }

@@ -50,12 +50,8 @@ public class BookController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public String viewBook(@PathVariable("id") int id, Model model) {
-        Book book = null;
-        try {
-            book = bookService.getBookById(id);
-        } catch (UncorrectedQueryException e) {
-        }
+    public String viewBook(@PathVariable("id") int id, Model model) throws UncorrectedQueryException {
+        Book book = bookService.getBookById(id);
         putDataInModel(book, model);
         return "edit";
     }
@@ -76,15 +72,16 @@ public class BookController {
     }
 
     @RequestMapping(value = {"/{bookId}"}, method = RequestMethod.POST, params = "changePublisher")
-    public String changePublisher(@RequestParam("changePublisherId") Integer publisherId, @ModelAttribute("book") Book book, Model model) {
-        Optional<Publisher> publisher = publisherService.getPublisherById(publisherId);
+    public String changePublisher(@RequestParam("changePublisherId") Integer publisherId, @ModelAttribute("book") Book book, Model model) throws UncorrectedQueryException {
+        Optional<Publisher> publisher = Optional.empty();
+        publisher = publisherService.getPublisherById(publisherId);
         publisher.ifPresent(book::setPublisher);
         putDataInModel(book, model);
         return "edit";
     }
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public String saveBook(@ModelAttribute("book") Book book) {
+    public String saveBook(@ModelAttribute("book") Book book) throws UncorrectedQueryException {
         bookService.saveBook(book);
         return "redirect:list";
     }
@@ -105,8 +102,9 @@ public class BookController {
     }
 
     @RequestMapping(value = {"/new"}, method = RequestMethod.POST, params = "changePublisher")
-    public String changePublisherToNew(@RequestParam("changePublisherId") Integer publisherId, @ModelAttribute("book") Book book, Model model) {
-        Optional<Publisher> publisher = publisherService.getPublisherById(publisherId);
+    public String changePublisherToNew(@RequestParam("changePublisherId") Integer publisherId, @ModelAttribute("book") Book book, Model model) throws UncorrectedQueryException {
+        Optional<Publisher> publisher = Optional.empty();
+        publisher = publisherService.getPublisherById(publisherId);
         publisher.ifPresent(book::setPublisher);
         putDataInModel(book, model);
         return "new";

@@ -19,10 +19,13 @@ function getBook() {
 			type: "GET",
 			url: "/rest/books/" + id,
 			success: setBook,
-			error: function (error) {
+			error:  function (request, status, error) {
+				$("#editBook").remove();
 				console.log("Error:");
 				console.log(error);
-				console.log(error.responseText);
+				console.log(status);
+				console.log(request);
+				$("body").append(document.createTextNode(error))
 			}
 		});
 };

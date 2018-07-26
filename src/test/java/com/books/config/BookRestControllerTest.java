@@ -21,7 +21,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
 
 @WebAppConfiguration
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("file:src/main/webapp/WEB-INF/applicationContext.xml")
+@ContextConfiguration(locations="file:src/main/webapp/WEB-INF/applicationContext.xml")
 public class BookRestControllerTest {
     @Autowired
     private BookRestController controllerTest;
@@ -40,10 +40,10 @@ public class BookRestControllerTest {
     public void getBook() {
         given().
                 when().
-                get("/rest/books/1").
+                get("/rest/books/2").
                 then().
                 statusCode(200).
-                body("id", equalTo(1));
+                body("id", equalTo(2));
     }
 
     @Test
@@ -70,7 +70,6 @@ public class BookRestControllerTest {
     @Test
     public void removeBook() {
         MockMvcRequestSpecification request = RestAssuredMockMvc.given();
-        request.contentType("application/json");
         MockMvcResponse response = request.delete("/rest/books/1").andReturn();
         Assert.assertEquals(HttpStatus.OK.value(), response.statusCode());
 
