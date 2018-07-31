@@ -22,8 +22,18 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public void setPerson(int id, Person person) {
+    public void saveAuthor(int id, Person person) {
         authorDAO.saveItem(id, person);
+    }
+
+    @Override
+    public void saveAuthor(Person person) {
+        saveAuthor(person.getId(), person);
+    }
+
+    @Override
+    public void removeAuthor(int personId) {
+        authorDAO.remove(personId);
     }
 
     @Override

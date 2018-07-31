@@ -1,4 +1,4 @@
-package com.books.config;
+package com.books.controllers;
 
 import com.books.entities.Book;
 import com.books.entities.Person;
@@ -55,7 +55,6 @@ public class BookController {
         return "edit";
     }
 
-
     @RequestMapping(value = {"/{bookId}"}, method = RequestMethod.POST, params = "removeAuthor")
     public String removeAuthor(@RequestParam("removeAuthor") Integer authorId, @ModelAttribute("book") Book book, Model model) {
         book.removeAuthor(authorId);
@@ -73,7 +72,8 @@ public class BookController {
 
     @RequestMapping(value = {"/{bookId}"}, method = RequestMethod.POST, params = "changePublisher")
     public String changePublisher(@RequestParam("changePublisherId") Integer publisherId, @ModelAttribute("book") Book book, Model model) {
-        Optional<Publisher> publisher = publisherService.getPublisherById(publisherId);
+        Optional<Publisher> publisher = Optional.empty();
+        publisher = publisherService.getPublisherById(publisherId);
         publisher.ifPresent(book::setPublisher);
         putDataInModel(book, model);
         return "edit";
@@ -102,7 +102,8 @@ public class BookController {
 
     @RequestMapping(value = {"/new"}, method = RequestMethod.POST, params = "changePublisher")
     public String changePublisherToNew(@RequestParam("changePublisherId") Integer publisherId, @ModelAttribute("book") Book book, Model model) {
-        Optional<Publisher> publisher = publisherService.getPublisherById(publisherId);
+        Optional<Publisher> publisher = Optional.empty();
+        publisher = publisherService.getPublisherById(publisherId);
         publisher.ifPresent(book::setPublisher);
         putDataInModel(book, model);
         return "new";

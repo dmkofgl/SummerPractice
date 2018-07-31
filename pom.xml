@@ -13,6 +13,8 @@
         <slf4j.version>1.6.4</slf4j.version>
         <logback.version>1.0.1</logback.version>
         <org.springframework.version>5.0.0.RELEASE</org.springframework.version>
+        <jackson.version>2.9.2</jackson.version>
+        <apache.commons.dbcp.version>2.5.0</apache.commons.dbcp.version>
     </properties>
 
     <dependencies>
@@ -94,6 +96,39 @@
             <artifactId>thymeleaf-extras-java8time</artifactId>
             <version>3.0.0.RELEASE</version>
         </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-dbcp2</artifactId>
+            <version>${apache.commons.dbcp.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.7.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>2.7.0</version>
+        </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>rest-assured</artifactId>
+            <version>3.1.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.rest-assured</groupId>
+            <artifactId>spring-mock-mvc</artifactId>
+            <version>3.1.0</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
     <build>
         <plugins>

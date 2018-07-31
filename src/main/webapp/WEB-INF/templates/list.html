@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <title>Book list</title>
     <link th:href="@{/styles/bootstrap.css}" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
 </head>
 <body>
-<div th:replace="fragments/header :: header" ></div>
+<div th:replace="fragments/header :: header"></div>
 <div th:replace="fragments/bookList :: bookList"></div>
 <a href="#" th:href="new" class="btn btn-outline-success my-2 my-sm-0">add new book</a>
 

@@ -36,10 +36,13 @@ public class BookTest {
 
     @Test
     public void equals() {
-        Book book1 = new Book(0, "test1", new Date(),
-                new Publisher(0, "testPublisher"), authors[0]);
-        Book book2 = new Book(0, "test1", new Date(),
-                new Publisher(0, "testPublisher"), authors[0]);
-        assertTrue(book1.equals(book2));
+        Publisher publisher =  new Publisher(0, "testPublisher");
+        Date date = new Date();
+        Book book1 = new Book(0, "test1",date,
+                publisher , authors[0]);
+        Book book2 = new Book(0, "test1",date,
+                publisher, authors[0]);
+        boolean res = book1.equals(book2);
+        assertTrue(res);
     }
 }

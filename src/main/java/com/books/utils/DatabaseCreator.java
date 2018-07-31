@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.sql.*;
 import java.util.Scanner;
 
+
 public class DatabaseCreator {
     private static final String CREATE_DIRECTORY_PATH = "dbScripts/Create_tables/";
     private static final String ALTER_DIRECTORY_PATH = "dbScripts/Alter_tables/";
@@ -66,7 +67,6 @@ public class DatabaseCreator {
 
         StringBuilder result = new StringBuilder("");
 
-        //Get file from resources folder
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(classLoader.getResource(fileName).getFile());
 

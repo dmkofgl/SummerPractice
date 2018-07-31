@@ -6,4 +6,5 @@ public interface UserDAO {
     User takeUser(String login, String password);
 
     boolean checkExistsUser(String login);
+
 }

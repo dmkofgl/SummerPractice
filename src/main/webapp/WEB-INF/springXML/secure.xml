@@ -9,7 +9,8 @@
         <intercept-url pattern="/login" access="permitAll"/>
         <intercept-url pattern="/styles/**" access="permitAll"/>
         <intercept-url pattern="/js/**" access="permitAll"/>
-        <intercept-url pattern="/books/**" access="isAuthenticated()"/>
+        <intercept-url pattern="/*favicon.ico" access="permitAll"/>
+        <intercept-url pattern="/**" access="isAuthenticated()"/>
         <form-login
                 default-target-url="/books/list"
                 login-page="/login"
@@ -26,7 +27,7 @@
                 ref="CustomAuthenticateProvider"/>
     </authentication-manager>
 
-    <b:bean class=" com.books.config.CustomAuthenticateProvider" id="CustomAuthenticateProvider"/>
+    <b:bean class=" com.books.security.CustomAuthenticateProvider" id="CustomAuthenticateProvider"/>
 
 
 </b:beans>

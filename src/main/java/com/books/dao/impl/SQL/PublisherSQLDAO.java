@@ -2,7 +2,9 @@ package com.books.dao.impl.SQL;
 
 import com.books.dao.abstracts.PublisherDAO;
 import com.books.entities.Publisher;
+import com.books.exceptions.UncorrectedQueryException;
 import com.books.utils.PublisherTableColumnName;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -25,7 +27,7 @@ public class PublisherSQLDAO implements PublisherDAO {
         String addQuery = String.format("insert into %s (%s) values(?)",
                 PUBLISHER_TABLE_NAME,
                 PublisherTableColumnName.NAME.toString());
-        jdbcTemplate.update(addQuery, new Object[]{item.getName()});
+        jdbcTemplate.update(addQuery, item.getName());
     }
 
     @Override
@@ -56,7 +58,12 @@ public class PublisherSQLDAO implements PublisherDAO {
             return Optional.empty();
         }
         String query = String.format("select * from %s where %s = ?", PUBLISHER_TABLE_NAME, PublisherTableColumnName.ID);
-        Publisher publisher = jdbcTemplate.queryForObject(query, new Object[]{id}, new PublisherMapper());
+        Publisher publisher;
+        try {
+            publisher = jdbcTemplate.queryForObject(query, new Object[]{id}, new PublisherMapper());
+        } catch (EmptyResultDataAccessException e) {
+            throw new UncorrectedQueryException("Value does't found:PUBLISHER:id = " + id);
+        }
         return Optional.ofNullable(publisher);
     }
 
@@ -67,7 +74,7 @@ public class PublisherSQLDAO implements PublisherDAO {
                 PublisherTableColumnName.ID,
                 PublisherTableColumnName.NAME,
                 PublisherTableColumnName.ID);
-
+        Publisher publisher = getPublisherById(id).get();
         jdbcTemplate.update(setPublisherQuery, item.getId(), item.getName(), id);
     }
 

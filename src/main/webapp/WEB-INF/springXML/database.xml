@@ -4,16 +4,18 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
         http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource" >
+    <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource">
         <property name="driverClassName" value="org.h2.Driver"/>
         <property name="url" value="jdbc:h2:tcp://localhost/~/test"/>
         <property name="username" value="sa"/>
         <property name="password" value=""/>
+        <property name="initialSize" value="5"/>
+
     </bean>
-    <bean  id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
         <constructor-arg ref="dataSource"></constructor-arg>
     </bean>
-    <bean  id="databaseCreator" class="com.books.utils.DatabaseCreator">
+    <bean id="databaseCreator" class="com.books.utils.DatabaseCreator">
         <constructor-arg ref="dataSource"></constructor-arg>
     </bean>
 </beans>

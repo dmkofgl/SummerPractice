@@ -6,7 +6,7 @@
        xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
                     http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
                     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd">
-    <context:component-scan base-package="com.books"></context:component-scan>
+    <context:component-scan base-package="com.books"/>
     <import resource="/springXML/daos.xml"/>
     <import resource="/springXML/services.xml"/>
     <import resource="/springXML/database.xml"/>
@@ -17,6 +17,11 @@
     <mvc:resources mapping="/images/**" location="/images/" />
     <mvc:resources mapping="/js/**" location="/js/" />
     <mvc:view-controller path="/login" view-name="login" />
+    <mvc:view-controller path="/test" view-name="BookList" />
+    <mvc:view-controller path="/test/*" view-name="BookEdit" />
+    <mvc:resources mapping="swagger-ui.html" location="classpath:/META-INF/resources/"/>
+    <mvc:resources mapping="/webjars/**" location="classpath:/META-INF/resources/webjars/"/>
     <mvc:annotation-driven />
+
 
 </beans>

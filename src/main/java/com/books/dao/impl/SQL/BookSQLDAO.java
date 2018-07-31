@@ -6,8 +6,10 @@ import com.books.dao.abstracts.PublisherDAO;
 import com.books.entities.Book;
 import com.books.entities.Person;
 import com.books.entities.Publisher;
+import com.books.exceptions.UncorrectedQueryException;
 import com.books.utils.BookAuthorTableColumnName;
 import com.books.utils.BookTableColumnName;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -125,24 +127,36 @@ public class BookSQLDAO implements BookDAO {
         String queryBookAuthors = String.format("select * from %s where %s = ?",
                 BOOK_AUTHORS_TABLE_NAME,
                 BookAuthorTableColumnName.BOOK_ID);
+        Book result = null;
 
-        Book result = jdbcTemplate.queryForObject(queryBook, new Object[]{id}, new BookMapper());
-        result.setAuthors(
-                jdbcTemplate.query(queryBookAuthors, new Object[]{result.getId()}, (rs, rn) -> {
-                    Integer authorId = rs.getInt(BookAuthorTableColumnName.AUTHOR_ID.toString());
-                    return authorRepository.getAuthorById(authorId);
-                }));
+        try {
+            result = jdbcTemplate.queryForObject(queryBook, new Object[]{id}, new BookMapper());
+            result.setAuthors(
+                    jdbcTemplate.query(queryBookAuthors, new Object[]{result.getId()}, (rs, rn) -> {
+                        Integer authorId = rs.getInt(BookAuthorTableColumnName.AUTHOR_ID.toString());
+                        return authorRepository.getAuthorById(authorId);
+                    }));
+        } catch (EmptyResultDataAccessException emptyResultExcept) {
+            throw new UncorrectedQueryException("Value does't found:BOOK:id =  " + id);
+        }
         return result;
     }
 
     @Override
-    public void saveItem(Integer id, Book item) {
-        if (item.getId() == null) {
-            add(item);
-        } else {
-            remove(item);
-            addWithId(item);
+    public void saveItem(Integer id, Book item)  {
+        Book book = null;
+        try {
+            book = getBookById(id);
+            remove(id);
+        } catch (UncorrectedQueryException e) {
+            if (book != null) {
+                addWithId(book);
+                throw e;
+            }
+            return;
         }
+        addWithId(item);
+
     }
 
     private class BookMapper implements RowMapper<Book> {
@@ -152,7 +166,11 @@ public class BookSQLDAO implements BookDAO {
             String name = resultSet.getString(BookTableColumnName.NAME.toString());
             java.util.Date date = resultSet.getDate(BookTableColumnName.BOOKDATE.toString());
             Integer publisherId = resultSet.getObject(BookTableColumnName.PUBLISHER_ID.toString(), Integer.class);
-            Publisher publisher = publisherRepository.getPublisherById(publisherId).orElse(null);
+            Publisher publisher = null;
+            try {
+                publisher = publisherRepository.getPublisherById(publisherId).orElse(null);
+            } catch (UncorrectedQueryException e) {
+            }
             Book book = new Book(id, name, date, publisher);
             return book;
         }
