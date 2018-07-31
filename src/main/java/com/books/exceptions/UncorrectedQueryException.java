@@ -1,6 +1,6 @@
 package com.books.exceptions;
 
-public class UncorrectedQueryException extends Exception {
+public class UncorrectedQueryException extends RuntimeException {
     public UncorrectedQueryException() {
         super();
     }

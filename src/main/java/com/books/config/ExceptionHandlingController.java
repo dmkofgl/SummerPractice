@@ -20,8 +20,7 @@ public class ExceptionHandlingController {
     //        return new ErrorInfo(req.getRequestURL().toString(), ex);
     //    }
     // TODO return HTML ?
-    public ModelAndView
-    handleNotFound(HttpServletRequest req, Exception e) throws Exception {
+    public ModelAndView handleNotFound(HttpServletRequest req, Exception e) throws Exception {
         ModelAndView mav = new ModelAndView();
         mav.addObject("exception", e);
         mav.addObject("url", req.getRequestURL());

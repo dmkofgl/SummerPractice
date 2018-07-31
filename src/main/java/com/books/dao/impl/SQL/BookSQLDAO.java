@@ -89,13 +89,13 @@ public class BookSQLDAO implements BookDAO {
     }
 
     @Override
-    public void remove(Book item) throws UncorrectedQueryException {
+    public void remove(Book item) {
         if (item.getId() != null)
             remove(item.getId());
     }
 
     @Override
-    public Book remove(int id) throws UncorrectedQueryException {
+    public Book remove(int id) {
         Book result = getBookById(id);
         String queryDeleteBook = String.format("delete from %s where %s = ?; ", BOOK_TABLE_NAME, BookTableColumnName.ID);
         String deleteBookAuthorQuery = String.format("delete from %s where %s = ?", BOOK_AUTHORS_TABLE_NAME, BookAuthorTableColumnName.BOOK_ID);
@@ -121,7 +121,7 @@ public class BookSQLDAO implements BookDAO {
     }
 
     @Override
-    public Book getBookById(int id) throws UncorrectedQueryException {
+    public Book getBookById(int id) {
         String queryBook = String.format("select * from %s where %s = ?",
                 BOOK_TABLE_NAME, BookTableColumnName.ID.toString());
         String queryBookAuthors = String.format("select * from %s where %s = ?",
@@ -137,13 +137,13 @@ public class BookSQLDAO implements BookDAO {
                         return authorRepository.getAuthorById(authorId);
                     }));
         } catch (EmptyResultDataAccessException emptyResultExcept) {
-            throw new UncorrectedQueryException("Value does't found:BOOK:id =  "+id);
+            throw new UncorrectedQueryException("Value does't found:BOOK:id =  " + id);
         }
         return result;
     }
 
     @Override
-    public void saveItem(Integer id, Book item) throws UncorrectedQueryException {
+    public void saveItem(Integer id, Book item)  {
         Book book = null;
         try {
             book = getBookById(id);
@@ -166,7 +166,7 @@ public class BookSQLDAO implements BookDAO {
             String name = resultSet.getString(BookTableColumnName.NAME.toString());
             java.util.Date date = resultSet.getDate(BookTableColumnName.BOOKDATE.toString());
             Integer publisherId = resultSet.getObject(BookTableColumnName.PUBLISHER_ID.toString(), Integer.class);
-            Publisher publisher=null;
+            Publisher publisher = null;
             try {
                 publisher = publisherRepository.getPublisherById(publisherId).orElse(null);
             } catch (UncorrectedQueryException e) {

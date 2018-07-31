@@ -27,16 +27,16 @@ public class PublisherSQLDAO implements PublisherDAO {
         String addQuery = String.format("insert into %s (%s) values(?)",
                 PUBLISHER_TABLE_NAME,
                 PublisherTableColumnName.NAME.toString());
-        jdbcTemplate.update(addQuery, new Object[]{item.getName()});
+        jdbcTemplate.update(addQuery, item.getName());
     }
 
     @Override
-    public void remove(Publisher item) throws UncorrectedQueryException {
+    public void remove(Publisher item) {
         remove(item.getId());
     }
 
     @Override
-    public Publisher remove(int id) throws UncorrectedQueryException {
+    public Publisher remove(int id) {
         Publisher result = getPublisherById(id).get();
         String removeQuery = String.format("delete from %s where id = ?", PUBLISHER_TABLE_NAME);
         jdbcTemplate.update(removeQuery, id);
@@ -53,7 +53,7 @@ public class PublisherSQLDAO implements PublisherDAO {
     }
 
     @Override
-    public Optional<Publisher> getPublisherById(Integer id) throws UncorrectedQueryException {
+    public Optional<Publisher> getPublisherById(Integer id) {
         if (id == null) {
             return Optional.empty();
         }
@@ -62,13 +62,13 @@ public class PublisherSQLDAO implements PublisherDAO {
         try {
             publisher = jdbcTemplate.queryForObject(query, new Object[]{id}, new PublisherMapper());
         } catch (EmptyResultDataAccessException e) {
-            throw new UncorrectedQueryException(e.getMessage());
+            throw new UncorrectedQueryException("Value does't found:PUBLISHER:id = " + id);
         }
         return Optional.ofNullable(publisher);
     }
 
     @Override
-    public void saveItem(Integer id, Publisher item) throws UncorrectedQueryException {
+    public void saveItem(Integer id, Publisher item) {
         String setPublisherQuery = String.format("update %s set %s = ?,%s=? where %s =?",
                 PUBLISHER_TABLE_NAME,
                 PublisherTableColumnName.ID,

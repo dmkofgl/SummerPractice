@@ -50,7 +50,7 @@ public class BookController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public String viewBook(@PathVariable("id") int id, Model model) throws UncorrectedQueryException {
+    public String viewBook(@PathVariable("id") int id, Model model) {
         Book book = bookService.getBookById(id);
         putDataInModel(book, model);
         return "edit";
@@ -72,7 +72,7 @@ public class BookController {
     }
 
     @RequestMapping(value = {"/{bookId}"}, method = RequestMethod.POST, params = "changePublisher")
-    public String changePublisher(@RequestParam("changePublisherId") Integer publisherId, @ModelAttribute("book") Book book, Model model) throws UncorrectedQueryException {
+    public String changePublisher(@RequestParam("changePublisherId") Integer publisherId, @ModelAttribute("book") Book book, Model model) {
         Optional<Publisher> publisher = Optional.empty();
         publisher = publisherService.getPublisherById(publisherId);
         publisher.ifPresent(book::setPublisher);
@@ -81,7 +81,7 @@ public class BookController {
     }
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public String saveBook(@ModelAttribute("book") Book book) throws UncorrectedQueryException {
+    public String saveBook(@ModelAttribute("book") Book book) {
         bookService.saveBook(book);
         return "redirect:list";
     }
@@ -102,7 +102,7 @@ public class BookController {
     }
 
     @RequestMapping(value = {"/new"}, method = RequestMethod.POST, params = "changePublisher")
-    public String changePublisherToNew(@RequestParam("changePublisherId") Integer publisherId, @ModelAttribute("book") Book book, Model model) throws UncorrectedQueryException {
+    public String changePublisherToNew(@RequestParam("changePublisherId") Integer publisherId, @ModelAttribute("book") Book book, Model model) {
         Optional<Publisher> publisher = Optional.empty();
         publisher = publisherService.getPublisherById(publisherId);
         publisher.ifPresent(book::setPublisher);

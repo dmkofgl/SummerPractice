@@ -2,7 +2,9 @@ package com.books.dao.impl.SQL;
 
 import com.books.dao.abstracts.AuthorDAO;
 import com.books.entities.Person;
+import com.books.exceptions.UncorrectedQueryException;
 import com.books.utils.AuthorTableColomnName;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -61,8 +63,13 @@ public class AuthorSQLDAO implements AuthorDAO {
     @Override
     public Person getAuthorById(int id) {
         String getAuthorByIdQuery = String.format("select * from %s where %s = ?", AUTHOR_TABLE_NAME, AuthorTableColomnName.ID);
-
-        return jdbcTemplate.queryForObject(getAuthorByIdQuery, new Object[]{id}, new AuthorMapper());
+        Person author;
+        try {
+            author = jdbcTemplate.queryForObject(getAuthorByIdQuery, new Object[]{id}, new AuthorMapper());
+        } catch (EmptyResultDataAccessException e) {
+            throw new UncorrectedQueryException("Value does't found:PERSON:id =  " + id);
+        }
+        return author;
     }
 
     private class AuthorMapper implements RowMapper<Person> {

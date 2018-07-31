@@ -6,16 +6,17 @@ import com.books.exceptions.UncorrectedQueryException;
 import java.util.List;
 import java.util.Optional;
 
-public interface PublisherDAO  {
-    Optional<Publisher> getPublisherById( Integer id)throws UncorrectedQueryException;
+public interface PublisherDAO {
+    Optional<Publisher> getPublisherById(Integer id);
+
     void add(Publisher item);
 
-    void remove(Publisher item)throws UncorrectedQueryException;
+    void remove(Publisher item);
 
-    Publisher remove(int id)throws UncorrectedQueryException;
+    Publisher remove(int id);
 
     List<Publisher> getList();
 
-    void saveItem(Integer id, Publisher item)throws UncorrectedQueryException;
+    void saveItem(Integer id, Publisher item);
 
 }

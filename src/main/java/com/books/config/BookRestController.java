@@ -29,11 +29,7 @@ public class BookRestController {
     @RequestMapping(value = "/books", method = RequestMethod.GET)
     public ResponseEntity<List<Book>> getBooks() {
         List<Book> books;
-        try {
-            books = bookService.getAllBooks();
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-        }
+        books = bookService.getAllBooks();
         return new ResponseEntity<>(books, HttpStatus.OK);
     }
 
@@ -41,12 +37,8 @@ public class BookRestController {
     @RequestMapping(value = "/books/{id}", method = RequestMethod.GET)
     public ResponseEntity<Book> getBook(@PathVariable("id") int id) {
         Book book = null;
-        HttpStatus status =HttpStatus.OK;
-        try {
-            book = bookService.getBookById(id);
-        } catch (UncorrectedQueryException e) {
-            status=HttpStatus.NOT_FOUND;
-        }
+        HttpStatus status = HttpStatus.OK;
+        book = bookService.getBookById(id);
         return new ResponseEntity<>(book, status);
     }
 
@@ -54,11 +46,7 @@ public class BookRestController {
     @RequestMapping(value = "/books/{id}", method = RequestMethod.PUT)
     public ResponseEntity setBook(@RequestBody Book book) {
         HttpStatus status = HttpStatus.OK;
-        try {
-            bookService.saveBook(book);
-        } catch (UncorrectedQueryException e) {
-            status = HttpStatus.FORBIDDEN;
-        }
+        bookService.saveBook(book);
         return new ResponseEntity(status);
     }
 
@@ -72,11 +60,9 @@ public class BookRestController {
 
     @RequestMapping(value = "/books/{id}", method = RequestMethod.DELETE)
     public HttpStatus deletetBook(@PathVariable("id") Integer bookId) {
-        try {
-            bookService.removeBook(bookId);
-        } catch (UncorrectedQueryException e) {
-            return HttpStatus.NO_CONTENT;
-        }
+
+        bookService.removeBook(bookId);
+
         return HttpStatus.OK;
     }
 
@@ -85,11 +71,7 @@ public class BookRestController {
     public ResponseEntity<Publisher> getPublisher(@PathVariable("id") int id) {
         Optional<Publisher> publisher = Optional.empty();
         HttpStatus status = HttpStatus.OK;
-        try {
-            publisher = publisherService.getPublisherById(id);
-        } catch (UncorrectedQueryException e) {
-            status = HttpStatus.NOT_FOUND;
-        }
+        publisher = publisherService.getPublisherById(id);
         return new ResponseEntity<>(publisher.get(), status);
     }
 
@@ -102,7 +84,7 @@ public class BookRestController {
 
 
     @RequestMapping(value = "/publishers/{id}", method = RequestMethod.PUT)
-    public HttpStatus setPublisher(Publisher publisher) throws UncorrectedQueryException {
+    public HttpStatus setPublisher(Publisher publisher){
         publisherService.savePublisher(publisher);
         return HttpStatus.OK;
     }
@@ -115,7 +97,7 @@ public class BookRestController {
 
 
     @RequestMapping(value = "/publishers/{id}", method = RequestMethod.DELETE)
-    public HttpStatus removePublisher(@PathVariable("id") int id) throws UncorrectedQueryException {
+    public HttpStatus removePublisher(@PathVariable("id") int id) {
         publisherService.removePublisher(id);
         return HttpStatus.OK;
     }

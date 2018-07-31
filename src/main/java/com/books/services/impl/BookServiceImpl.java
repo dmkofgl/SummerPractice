@@ -94,7 +94,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void removeBook(int bookId) throws UncorrectedQueryException {
+    public void removeBook(int bookId) {
         bookDAO.remove(bookId);
     }
 

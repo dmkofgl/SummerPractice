@@ -23,7 +23,7 @@ public interface BookService {
 
     void changePublisher(int bookId, int publisherId) throws UncorrectedQueryException;
 
-    void removeBook(int bookId) throws UncorrectedQueryException;
+    void removeBook(int bookId) ;
 
     void addAuthorBook(int bookId, int authorId) throws UncorrectedQueryException;
 
