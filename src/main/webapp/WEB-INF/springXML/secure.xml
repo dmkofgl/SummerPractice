@@ -27,7 +27,7 @@
                 ref="CustomAuthenticateProvider"/>
     </authentication-manager>
 
-    <b:bean class=" com.books.config.CustomAuthenticateProvider" id="CustomAuthenticateProvider"/>
+    <b:bean class=" com.books.security.CustomAuthenticateProvider" id="CustomAuthenticateProvider"/>
 
 
 </b:beans>

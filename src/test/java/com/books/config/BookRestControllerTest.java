@@ -1,5 +1,6 @@
 package com.books.config;
 
+import com.books.controllers.BookRestController;
 import com.books.entities.Book;
 import com.books.entities.Person;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;

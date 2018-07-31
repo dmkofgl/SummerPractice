@@ -1,4 +1,4 @@
-package com.books.config;
+package com.books.controllers.exceptionHandling;
 
 import com.books.exceptions.UncorrectedQueryException;
 import org.springframework.http.HttpStatus;

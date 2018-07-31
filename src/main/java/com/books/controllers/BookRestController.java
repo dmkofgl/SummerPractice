@@ -1,4 +1,4 @@
-package com.books.config;
+package com.books.controllers;
 
 import com.books.entities.Book;
 import com.books.entities.Person;

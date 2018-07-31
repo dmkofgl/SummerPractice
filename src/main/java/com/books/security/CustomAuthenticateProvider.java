@@ -1,4 +1,4 @@
-package com.books.config;
+package com.books.security;
 
 import com.books.entities.User;
 import com.books.services.abstracts.AuthenticateService;
