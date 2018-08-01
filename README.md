@@ -10,10 +10,10 @@ You need:
  Default url:'localhost:8080'
 # Task5
 Create pages for displaying information about books and editing/creating books:
--GET   '/books/list '- shows page with the list of Books
--GET  ' /books/{bookId}' - shows edits form for editing book. If {bookId == 'new'} - происходит создание книги.
--POST '/books/{bookId}' - handles edits form and redirects to page List of Books
--GET   '/books/search '- shows page with the filtered list of books 
+- GET   '/books/list '- shows page with the list of Books
+- GET  ' /books/{bookId}' - shows edits form for editing book. If {bookId == 'new'} - происходит создание книги.
+- POST '/books/{bookId}' - handles edits form and redirects to page List of Books
+- GET   '/books/search '- shows page with the filtered list of books 
 Extract application logic into Service tier
 # Task6
  Add database support. Use JDBC and H2 database.
@@ -30,8 +30,8 @@ Extract application logic into Service tier
 - If user entered not valid credentials it should be redirected on login page with error Message "Invalid login or password. Please try again"
 - On logout do session invalidation and redirect to login page with message "Successfully logged out"
 Implementation notes:
-Bonus1: Create EncryptService with ability to plugin different types of password encription (MD5, SHA1...). In app password encription should be MD5.
-Bonus2: Create Header for all pages so to have App Logo, App Name, Login and Logout links. Header should be implemted without Paste &Copy. Use <jsp:include> for example.
+1. Bonus1: Create EncryptService with ability to plugin different types of password encription (MD5, SHA1...). In app password encription should be MD5.
+2. Bonus2: Create Header for all pages so to have App Logo, App Name, Login and Logout links. Header should be implemted without Paste &Copy. Use <jsp:include> for example.
 # Task8
 Add Spring framework support.
 - Refactor your code to use dependency injection (DI)
