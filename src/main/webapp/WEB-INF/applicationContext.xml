@@ -19,6 +19,7 @@
     <mvc:view-controller path="/login" view-name="login" />
     <mvc:view-controller path="/test" view-name="BookList" />
     <mvc:view-controller path="/test/*" view-name="BookEdit" />
+    <mvc:view-controller path="/" view-name="welcomePage" />
     <mvc:resources mapping="swagger-ui.html" location="classpath:/META-INF/resources/"/>
     <mvc:resources mapping="/webjars/**" location="classpath:/META-INF/resources/webjars/"/>
     <mvc:annotation-driven />

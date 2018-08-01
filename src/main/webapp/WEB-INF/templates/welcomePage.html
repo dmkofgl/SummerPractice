@@ -1,21 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Book list</title>
-    <link href="/styles/bootstrap.css" rel="stylesheet">
-    <script src="/js/BookList.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
-</head>
-<body onload=" getAllBooks()">
+<html>
+<title>Welcome</title>
+<link href="/styles/bootstrap.css" rel="stylesheet">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<body>
 
 <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
             aria-controls="navbarsExample03" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <div class=" navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
                 <a class="nav-link" href="/books/list">Book list</a>
@@ -29,9 +23,11 @@
         </form>
     </div>
 </nav>
-<ul class="list-inline container">
-    <div id="BookContainer"></div>
-</ul>
 
+<ul class="navbar-nav">
+    <li><a href="/swagger-ui.html">Rest Documentation</a></li>
+    <li><a href="/books/list">Books list(thymeleaf)</a></li>
+    <li><a href="/test">Books list (html+ajax)</a></li>
+</ul>
 </body>
 </html>

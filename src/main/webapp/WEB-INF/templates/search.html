@@ -8,10 +8,9 @@
 <body>
 
 <div th:replace="fragments/header :: header"></div>
-<form method="post" th:object="${query}">
+<form method="post" th:object="${query}" class="text-center">
     <label> Author name:
         <input type="text" th:if="${query != null}"  th:value="${query}" id="query" name="query" class="form-control" >
-
     </label>
     <input type="submit" value="filter" class="btn btn-primary my-2 my-sm-0">
 </form>
