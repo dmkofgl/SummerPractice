@@ -1,5 +1,6 @@
 package com.books.controllers.exceptionHandling;
 
+import com.books.controllers.BookController;
 import com.books.exceptions.UncorrectedQueryException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -9,7 +10,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 
-@ControllerAdvice
+@ControllerAdvice(assignableTypes = BookController.class)
 public class ExceptionHandlingController {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(UncorrectedQueryException.class)
